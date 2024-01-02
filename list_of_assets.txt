@@ -48,11 +48,3 @@ https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/Ma
 High_Relief_Region: region in which slope mask is applied
 “users/jordanffieldsgr/ArcticCarbon/High_Relief_Region”
 https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/High_Relief_Region
-
-NDVI export:
-
-Temp export:
-
-Land gained/lost export:
-
-Total water area export:
