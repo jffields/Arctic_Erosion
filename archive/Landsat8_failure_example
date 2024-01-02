@@ -1,0 +1,114 @@
+var aoi = ee.Geometry.Point(-130.987, 67.453)
+
+var ls7 = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+              .filterDate('2018-06-01', '2018-09-01')
+              .filterBounds(aoi)
+              .filter(ee.Filter.lt('CLOUD_COVER', 20))
+              .first()
+              
+var nd = ls7.normalizedDifference(['B4','B2'])
+
+var water = nd.lt(0).selfMask()
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/////// LANDSAT 7 and 8 HARMONIZATION (because LS8 has slighlty different band values) ///////
+// Code taken from: https://developers.google.com/earth-engine/tutorials/community/landsat-etm-to-oli-harmonization
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Table 2 ELM+ regression coefficients (use these to make LS8 bands in terms of LS7)
+var coefficients = {
+  itcps: ee.Image.constant([0.0183, 0.0123, 0.0123, 0.0448, 0.0306, 0.0116])
+                 .multiply(10000),
+  slopes: ee.Image.constant([0.885, 0.9317, 0.9372, 0.8339, 0.8639, 0.9165])
+ };
+
+// Function to get and rename bands of interest from OLI (LANDSAT 8).
+function renameOli(img) {
+  return img.select(
+      ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'pixel_qa'],
+      ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']);
+}
+
+// Function to get and rename bands of interest from ETM+ (LANDSAT 7).
+function renameEtm(img) {
+  return img.select(
+      ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa'],
+      ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']);
+}
+
+// Transformation function, applies the linear model to OLI data (LANDSAT 8) and
+// reattaches the pixel_qa band for later use in cloud and shadow masking.
+// original code cast ETM data to signed 16-bit int (toShort()), but I checked
+// and all data (TM, ETM+, OLI) seems to be signed 16-bit int already so not going to cast
+function OliToEtm(img) {
+  return img.select(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+      .multiply(coefficients.slopes)
+      .add(coefficients.itcps)
+      .round()
+      .addBands(img.select('pixel_qa'));
+}
+
+// Define wrapper function to prepare OLI images: 
+// consolidates all above functions for convenience in 
+// applying them to their respective image collections.
+function prepOli(img) {
+  var orig = img;
+  img = renameOli(img);
+  img = OliToEtm(img);
+  return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+}
+
+// Define function to prepare ETM+ images.
+// the same coefficients work for TM images as well (landsat 5)
+function prepEtm(img) {
+  var orig = img;
+  img = renameEtm(img);
+  return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+}
+
+//////////// END HARMONIZATION CODE ////////////
+
+//// IMPORT IMAGES ////
+// using collection 1 (deprecated) instead of collection 2
+// water detection tool is calibrated for collection 1 values
+
+var ls8old = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+// var ls8old = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+                                .filterBounds(aoi)
+                                .filterDate('2019-06-01', '2019-09-01')
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+                                
+var ls8toa = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+              .filterDate('2018-06-01', '2018-09-01')
+              .filterBounds(aoi)
+              .filter(ee.Filter.lt('CLOUD_COVER', 20))
+              .first()
+  
+print(ls8old.first())
+// Defining function to remove Speckle from water occurence sensing code
+var removeSpeckle = function(image){
+  var imageSel = image.select(['Green', 'NIR']);
+  var replaceNegatives = imageSel.where(imageSel.lt(0), 1);
+  var returnImage = image.addBands(replaceNegatives, null, true);
+  return returnImage;
+  };
+  
+// Filter collections and prepare them for merging.
+var oliCol = ls8old.map(prepOli);
+
+
+
+
+Map.addLayer(ls7, {min: 0, max: 2200, bands: ['B3','B2','B1']}, 'ls7 example')
+Map.addLayer(ls8toa, {min: 0, max: 0.25, bands: ['B4','B3','B2']}, 'ls8 toa example')
+Map.addLayer(ls8old.first(), {min: 0, max: 2200, bands: ['B4','B3','B2']}, 'ls8 unharmonized example')
+Map.addLayer(oliCol.first(), {min: 0, max: 2200, bands: ['Red','Green','Blue']}, 'ls8 example')
+Map.addLayer(nd, {min: -1, max: 1, bands: ['nd']}, 'ndwi', 0)
+Map.addLayer(water, {min: -1, max: 1, bands: ['nd']}, 'water')
+
+
+
+
+              
+

@@ -1,0 +1,126 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var High_Relief_Region = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/High_Relief_Region"),
+    WesternMack_1 = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-136.6456709949952, 69.08700872525338],
+          [-135.9095870106202, 67.87016851592068],
+          [-139.8097334949952, 65.58436510570839],
+          [-137.7223311512452, 64.72117178492286],
+          [-137.0961104481202, 64.18582131453974],
+          [-132.86735897662507, 64.13488777854788],
+          [-132.14226132037507, 63.96663147147016],
+          [-131.72478085162507, 63.62706112028824],
+          [-132.16423397662507, 61.21772241622296],
+          [-130.81291561725007, 58.961706898233146],
+          [-127.73674374225007, 56.99327089862608],
+          [-126.27556210162507, 55.547683741517396],
+          [-124.39450906519401, 55.18418223783264],
+          [-123.46067117456901, 54.82504107514072],
+          [-122.66965554956901, 54.57108866017406],
+          [-119.70334695581901, 53.55889196832195],
+          [-117.87961648706901, 52.48844832964847],
+          [-115.04514383081901, 52.94100627077756],
+          [-112.71604226831901, 54.187173343213814],
+          [-111.51853250269401, 55.259381607205],
+          [-109.68381570581901, 55.781807596214904],
+          [-107.81613992456901, 56.79995924397231],
+          [-107.93698953394401, 57.337475413529546],
+          [-110.2660286621488, 58.19765033824793],
+          [-110.6780159668363, 58.461542875776566],
+          [-110.7823860840238, 58.6463837443152],
+          [-110.87851645511755, 58.64209618896625],
+          [-111.02133872074255, 58.742002033794655],
+          [-111.0185921387113, 59.54630702154173],
+          [-112.3589241699613, 60.540548039770066],
+          [-113.11835410160192, 61.29017605178613],
+          [-113.56879355472692, 61.34158994661358],
+          [-113.66217734378942, 61.31259760425681],
+          [-114.01648642582067, 60.892299219090994],
+          [-114.63446738285192, 60.8695777282006],
+          [-114.93109824222692, 60.858879663748255],
+          [-115.15082480472692, 60.79997622390134],
+          [-116.18903281253942, 60.90832818122992],
+          [-116.83447958988317, 61.12393190089451],
+          [-117.7971565918363, 61.64517054926209],
+          [-119.22054667045435, 62.47716940751586],
+          [-119.90169901420435, 62.750060973609536],
+          [-122.31319803764185, 62.69467530114029],
+          [-122.99600661276838, 63.55539257222384],
+          [-124.15231764792463, 64.60551065147534],
+          [-123.80075514792463, 64.79331762591438],
+          [-123.62772047995588, 64.95425769744203],
+          [-123.33246291159651, 65.04943298104435],
+          [-123.51511061667463, 65.15811986175466],
+          [-124.08509852381793, 65.23314032381094],
+          [-125.22767664881793, 65.83822432510175],
+          [-126.28236414881793, 66.43049026853159],
+          [-127.64673126694969, 66.52074455978627],
+          [-128.20909393784814, 66.45911486041581],
+          [-130.0117241586976, 67.33934298019352],
+          [-130.9180962290101, 67.55214316628319],
+          [-131.2312065805726, 67.52695949984033],
+          [-131.7200981821351, 67.47230296197807],
+          [-132.9066216196351, 67.30121806529371],
+          [-133.3790337290101, 67.54165322583393],
+          [-133.3131157602601, 67.75473063347964],
+          [-133.77462392248088, 68.11158271667242],
+          [-133.64004140294963, 68.54969176170329],
+          [-133.83779530919963, 69.47427105762804],
+          [-135.28799062169963, 69.73462108489251]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Slope mask created here is exported as an asset and imported elsewhere to save memory
+// can run this code to re-generate slope mask
+
+// the purpose of the slope mask is to mask out mountain shadow areas in high-relief
+// regions of the project study area, since they are sometimes mis-identified as water
+
+// Arctic DEM (better resolution, doesn't cover entire study area)
+var arcticDEM = ee.Image("UMN/PGC/ArcticDEM/V3/2m_mosaic").int16();
+
+// Load SRTM image (worse resolution, covers entire study area)
+var SRTM1 = ee.Image("CGIAR/SRTM90_V4").int16();
+
+// Get information about the SRTM projection
+var srtmProjection = SRTM1.projection();
+
+// Combine DEMs
+var allDEM = ee.ImageCollection([SRTM1,arcticDEM]).mean(); 
+var allDEM = allDEM.round().int16();
+var allDEM = allDEM.setDefaultProjection(srtmProjection);
+
+// Get the Artic DEM data at SRTM scale and projection
+var arcticMean = allDEM
+    // Force the next reprojection to aggregate instead of resampling
+    .reduceResolution({
+      reducer: ee.Reducer.mean(),
+      maxPixels: 65536
+    })
+    // Request the data at the scale and projection of the SRTM image
+    .reproject({crs: srtmProjection});
+
+var arcticMean = arcticMean.round().int16();
+
+// define region in which to use slope mask
+var AOI_DEM = arcticMean.clip(High_Relief_Region);
+
+// make DEM into slope image
+var slope = ee.Terrain.slope(AOI_DEM);
+// extract image's mask and create mask to filter out partially transparent pixels
+var slope_img_mask = slope.mask().eq(1); 
+
+var ArcticSlopeMask = slope.updateMask(slope_img_mask).unmask(1).lt(22);
+var ArcticSlopeMask = ArcticSlopeMask.updateMask(ArcticSlopeMask);
+// mask any partially transparent pixels
+// unmask masked pixels and set to 1 (so they pass the filter)
+// any slope over 22 is invalid and will be masked out (can't be detected as water)
+
+// export
+var extent = WesternMack_1.union(High_Relief_Region);
+Export.image.toAsset({image: ArcticSlopeMask, 
+                      description: 'Mack_SlopeMask', 
+                      assetId: 'ArcticCarbon/Mack_SlopeMask',
+                      scale: 30, 
+                      maxPixels: 1e13, 
+                      region:extent });

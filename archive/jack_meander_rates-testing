@@ -1,0 +1,340 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var rivers_asset = ee.FeatureCollection("users/JohnPerrotti/rivers"),
+    segmentBuffers_asset = ee.FeatureCollection("users/JohnPerrotti/segmentBuffers"),
+    lat67 = 
+    /* color: #ff0000 */
+    /* shown: false */
+    ee.Geometry.LineString(
+        [[-139.9739142314343, 67.57763006526794],
+         [-125.58889654024293, 67.53463809829742]]),
+    WesternMack = ee.FeatureCollection("users/jordanffieldsgr/WesternMack"),
+    MERIT_VF_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Vectors_filtered_Ord7"),
+    MERIT_Segment_Buffers = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Segment_Buffers"),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Unioned_Streams"),
+    connected_collection = ee.ImageCollection("users/jackkreisler/MackRiverCPixelCollect"),
+    Test_Site = 
+    /* color: #d63f0c */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-135.37568100609369, 67.70397400859605],
+          [-135.37568100609369, 66.71901199375851],
+          [-130.05829819359369, 66.71901199375851],
+          [-130.05829819359369, 67.70397400859605]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// load pre-generated assets: rivers, segment buffers, and re-defined project area
+// this is much faster then attempting to generate them from scratch
+//Map.addLayer(rivers_asset, {},'rivers_asset');
+//Map.addLayer(segmentBuffers_asset, {},'segmentBuffers_asset');
+//Map.addLayer(WesternMack, {}, 'Western Mack');
+
+// Functions to renmae bands in LS5 and LS7 image Collections
+// Function to get and rename bands of interest from ETM+ (LANDSAT 7).
+function renameEtm(img) {
+  return img.select(
+      ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa'],
+      ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']);
+}
+
+
+// Define function to prepare ETM+ images.
+// works for TM images as well (landsat 5)
+function prepEtm(img) {
+  var orig = img;
+  img = renameEtm(img);
+  return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+}
+
+
+//// IMPORT IMAGES ////
+// using collection 1 (deprecated) instead of collection 2
+// water detection tool is calibrated for collection 1 values
+// NOT using LS8 because surface reflectance images are bad/weird
+var ls5old = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+                                .filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,270))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+var ls7old = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                                .filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,270))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+  
+// Defining function to remove Speckle from water occurence sensing code
+var removeSpeckle = function(image){
+  var imageSel = image.select(['Green', 'NIR']);
+  var replaceNegatives = imageSel.where(imageSel.lt(0), 1);
+  var returnImage = image.addBands(replaceNegatives, null, true);
+  return returnImage;
+  };
+  
+// Filter collections and prepare them for merging.
+var etmCol = ls7old.map(prepEtm);
+var tmCol = ls5old.map(prepEtm);
+
+// Merge the collections.
+var allImages = etmCol
+                      .merge(tmCol)
+                      .map(removeSpeckle);
+
+var Images2019 = allImages
+                        .filterDate('2019-06-01', '2020-09-01')
+                        .filter(ee.Filter.bounds(Test_Site))
+                          
+// True color visParams dictionary
+var trueColorVis = {
+  min: 0,
+  max: 1000,
+  bands: ['Red', 'Green', 'Blue']
+};
+
+var bitmasked = Images2019.map(function(image) {
+  var bitmask = getQABits(image.select("pixel_qa"),1,1,"cloud_state")
+                .select("cloud_state").multiply(1);
+  // multiply by -1 so that cloud = -1 (instead of 1) and clear = 0
+  var qa = image.select("pixel_qa")
+  var other_bitmask = qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3)).rename("waterOnly_cloudstate");
+  var toreturn = image.addBands(bitmask).addBands(other_bitmask);
+  return toreturn;
+})
+print(bitmasked.first())
+Map.addLayer(Images2019, trueColorVis, '2019 Images');
+Map.addLayer(bitmasked.first(), trueColorVis, "first image")
+Map.addLayer(bitmasked.first(), {bands:"cloud_state", min:0, max:1}, "bitmask")
+Map.addLayer(bitmasked.first(), {bands:"waterOnly_cloudstate", min:0, max:1}, "bitmask waterOnly")
+
+// Add MERIT_Vectors_Filtered Earth Engine asset to the map
+var MERIT = ee.FeatureCollection(MERIT_VF_Ord7); 
+// 'VF_Ord7' stands for vectors filtered for lakes and only rivers of 7th order and greater
+//Map.addLayer(MERIT_VF_Ord7, {color: 'blue'}, 'MERIT_VF_Ord7');
+
+/* jack testing
+var ls7 = etmCol.sort('CLOUD_COVER').limit(20);
+//Map.addLayer(ls7,{bands:['Red','Green','Blue'], min:0, max:3000},"ls7");
+//print(ls7);
+//print(allImages.filterDate('2013-01-01','2014-01-01'));
+
+Map.addLayer(connected_collection.filter(ee.Filter.eq("year",'1990')),{palette:['blue','green','red'],min:0,max:1024},"1990")
+Map.addLayer(connected_collection.filter(ee.Filter.eq("year",'1992')),{palette:['blue','green','red'],min:0,max:1024},"1992")
+Map.addLayer(connected_collection.filter(ee.Filter.eq("year",'2015')),{palette:['blue','green','red'],min:0,max:1024},"2015")
+*/
+
+
+/// FUNCTIONS FOR ANALYSIS ///
+// Function for masking all pixels in an image except water pixels
+// using normalized differences and bitmasks
+var waterOnly = function(image){ 
+  var land = image.select('SWIR2').lt(500);
+  var cloudFinal = image.select('Blue').add(image.select('Green'))
+      .lt(5000); // usually .lt(3500), but not >>ssc, like white r. SD
+  // var snowIceFinal = image.select('B3').divide(image.select('B1'))
+  //                     .add(image.select('B4').divide(image.select('B1')))
+  //                     .gt(1.6)
+  var qa = image.select('pixel_qa');
+  var bitcloud = qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3));   
+          // .or(qa.bitwiseAnd(1 << 4)) 
+  
+  var snow_ice_qa = qa.updateMask(qa.bitwiseAnd(1 << 4)).rename('snow_ice_qa');
+  var snow_ice_qa_b1 = image.select('Blue').lt(2000);
+      
+  var cloud_qa = qa
+      .updateMask(qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3))).rename('cloud_qa');
+          
+  var nd = image.normalizedDifference(['NIR','Green']);
+  
+  return image.addBands(nd)
+              .addBands(ee.Image(1).rename('water'))
+              .updateMask(cloudFinal)
+              // .updateMask(snowIceFinal)
+              .updateMask(land)
+              .updateMask(bitcloud.not())
+              .updateMask(nd.lt(0)) // threshold of 0
+              .updateMask(snow_ice_qa_b1)
+              .addBands(snow_ice_qa)
+              .addBands(cloud_qa);
+}; 
+
+// Function to unmask the image, setting non-water pixels = 0
+var getUnmask = function(image){ 
+  return(image.unmask(0));
+  };
+
+// define latitude filter to use later with connected pixels mask:
+// any pixel below 67.7 degrees latitude passes the mask
+var latMask = ee.Image.pixelLonLat().select('latitude').lt(67.7);
+
+// MAIN FUNCTION FOR ANALYSIS
+// For a given set of years:
+// Of all selected images, only select water pixels
+// Result is mean water occurrence (1 = always water, 0 = never water)
+var img_collection = allImages;
+var cutoff = 0.5;
+var years = 2
+var getWater_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(years, 'year'); // rolling 2 year time window
+    
+  // get the right connected pixel image and turn it into a usable mask
+  var connectedImg = connected_collection.filter(ee.Filter.eq('year', ee.Number(year).toInt16().format())).first(); // only one image should match
+  var connectedMask = connectedImg
+                                  .lt(1024) // binary image where lakes = 1
+                                  .unmask() // make image 0 where no data (land, ice, etc)
+                                  .not() // rivers plus land/ice/etc are 1, only lakes set to zero (to mask out)
+                                  .set('system:footprint', latMask.geometry()) // change footprint to cover entire world
+                                  .unmask() // make image 0 where it was previously masked
+                                  .add(latMask) // make image 1 where below 67.7 deg lat
+                                  .clip(WesternMack); // not necessary?
+    
+  var water = img_collection
+            .filterDate(startDate, endDate)
+            .map(waterOnly)       // mask out non-water pixels
+            .select('water')      // select only the water occurrence band
+            .map(getUnmask)       // unmask the image, setting non-water pixels = 0
+            .median();            // compute the median water occurrence for each pixel across all images
+  return(water
+          .updateMask(water.gt(cutoff)) // any pixels that are water in less than X% (currently 50%) of images don't count as water
+          //.updateMask(connectedMask) // mask out any lake areas as determined by connected pixels
+          .set('start_year',year));
+  };
+  
+// Helper function to extract the bits in a bitmask for an image
+function getQABits(image, start, end, newName) {
+    // Compute the bits we need to extract.
+    var pattern = 0;
+    for (var i = start; i <= end; i++) {
+       pattern += Math.pow(2, i);
+    }
+    // Return a single band image of the extracted QA bits, giving the band
+    // a new name.
+    return image.select([0], [newName])
+                  .bitwiseAnd(pattern)
+                  .rightShift(start);
+}
+
+// // test striping
+// years = 3;
+// var all_2018 = getWater_years(2018).clip(WesternMack);
+// img_collection = no7;
+// var no7_2018 = getWater_years(2018).clip(WesternMack);
+// Map.addLayer(all_2018, {bands: 'water', min:0,max:1, palette: ['white','purple']}, 'LS7');
+// //Map.addLayer(no7_2018, {bands: 'water', min:0,max:1, palette: ['white','green']}, 'no LS7');
+
+// img_collection = allImages;
+// var three_year = getWater_years(2018).clip(WesternMack);
+// //Map.addLayer(three_year, {bands: 'water', min:0,max:1, palette: ['white','red']}, 'three year window');
+
+// var simple = allImages.filterBounds(WesternMack).filterDate("2018-01-01","2020-01-01");
+
+
+// Map.addLayer(simple)
+// var avgd = allImages.filterDate("2018-01-01","2021-01-01").mean();
+// //Export.image.toDrive(all_2018, "all data 2018", "all data 2018");
+// //Export.image.toDrive(no7_2018, "no LS7 2018", "no LS7 2018");
+
+
+
+// test 0.1 vs 0.5 cutoff
+var fifty_2019 = getWater_years(2019);
+var fifty_2018 = getWater_years(2018);
+cutoff = 0.03;
+var ten_2019 = getWater_years(2019);
+Map.addLayer(fifty_2019.clip(Test_Site), {bands: 'water', min:0,max:1, palette: ['white','purple']}, '50%');
+Map.addLayer(ten_2019.clip(Test_Site), {bands: 'water', min:0,max:1, palette: ['white','red']}, '10%');
+//Map.addLayer(fifty_2018.clip(WesternMack), {bands: 'water', min:0,max:1, palette: ['white','green']}, '50% 2018');
+
+/*  
+//// PERFORM ANALYSES ////
+//// CALCULATE WATER OCCURRENCE FOR SELECTED FIVE-YEAR PERIODS ////
+
+// Construct list 1984-2020 -- all years for which we have data
+var waterYear = ee.List.sequence(1984,2021,1);
+
+// Select water pixels for each year
+var waterYear_long = ee.ImageCollection(waterYear.map(getWater_years));
+
+// Select water pixels for each year starting in 1989
+// we will later do area calculations over a 5 year span, so can't
+// perform the first calculation until 1989, when we have 5 years of data
+var waterYear_short = waterYear_long.filter(ee.Filter.gte('start_year', 1989));
+  
+// Subtract water occurence of earlier year from more recent year
+// results in map of area that changed between land and water
+ var getareaChange = function(image){
+   var year_sel = ee.Number(image.get('start_year'));
+   var year_pre = year_sel.subtract(5);
+   var pre_image = ee.Image(waterYear_long
+        .filterMetadata('start_year', 'equals', year_pre)
+        .first());
+   var inverse = pre_image.gt(0).unmask(0).eq(0);
+   var landLost = image.updateMask(inverse);
+   return ee.Image(landLost);
+   };
+
+// Generate water occurence difference for each range of years
+var mappedArea =  waterYear_short.map(getareaChange);
+//print(mappedArea);
+
+// Function to count quantity of area change for an image that is a map of area change
+// returns the input feature collection with added properties 
+var areaCount = function(image){
+  var start_year = image.get('start_year');
+  var reduced = image
+    .reduceRegions({
+      reducer: ee.Reducer.count(), // output has band "count"
+      collection: MERIT_Segment_Buffers, 
+      scale: 30,
+      crs: 'EPSG:32610'
+    });
+    return reduced.map(function(feature){ // map function to generate properties over each image
+      return ee.Feature(feature)
+                                .set('start_year', start_year) // For 1990 - 1985, 1990 is the start year
+                                .setGeometry(null)
+                                .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                                .set('longitude', feature.geometry().centroid().coordinates().get(0))
+                                .set('area_km2', ee.Number(feature.get('count')).multiply(0.0009));
+                
+    });
+};
+
+// function to select desired properties for export
+var get_export_props = function(feature) {
+  return ee.Feature(feature.select(['start_year', 'area_km2', 'count', 'latitude', 'longitude', 'mean', 'system:index', 'order', 'cut_length_km']));
+};
+
+// Calculate pixels lost by segment over all years, flatten output, select properties
+var pixelsLost = ee.FeatureCollection(mappedArea.map(areaCount)).flatten();
+var pixelsLost_to_export = pixelsLost.map(get_export_props);
+//print(mappedArea.limit(1).map(pixelsLost));
+
+// Export area lost to drive
+  Export.table.toDrive({
+  collection: pixelsLost_to_export,
+  folder: 'ARCTIC_CARBON',
+  description: 'AreaLost1989_2020_091922', // to calculate a different year range
+                                           // you change waterYear_short  
+  fileNamePrefix: 'AreaLost1989_2020_091922',
+  fileFormat: 'CSV'
+});
+
+// Calculate total area covered by water by segment over all years
+var totalArea = ee.FeatureCollection(waterYear_long.map(areaCount)).flatten();
+var totalArea_to_export = totalArea.map(get_export_props);
+
+// Export Total Water Area
+Export.table.toDrive({
+  collection: totalArea_to_export,
+  folder: 'ARCTIC_CARBON',
+  description: 'TotalArea1984_2022_091922',
+  fileNamePrefix: 'TotalArea1984_2022_091922',
+  fileFormat: 'CSV'
+});
+*/

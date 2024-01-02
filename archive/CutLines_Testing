@@ -1,0 +1,1221 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var Liard_River = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry({
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.87327331625887,
+              61.11599048430778
+            ],
+            [
+              -122.91790527426669,
+              61.095751778394586
+            ],
+            [
+              -123.02982849204012,
+              61.088781357379574
+            ],
+            [
+              -123.05660766684481,
+              61.10106154468853
+            ],
+            [
+              -123.0614141853995,
+              61.117317160049495
+            ],
+            [
+              -123.08270019614169,
+              61.124281294152624
+            ],
+            [
+              -123.11016601645419,
+              61.1193070692536
+            ],
+            [
+              -123.13351196371981,
+              61.113005260282996
+            ],
+            [
+              -123.16166442954012,
+              61.110683224460516
+            ],
+            [
+              -123.17471069418856,
+              61.108692772290084
+            ],
+            [
+              -123.17265075766512,
+              61.103052477261265
+            ],
+            [
+              -123.15205139243075,
+              61.09210079700413
+            ],
+            [
+              -123.1383184822745,
+              61.080149184489876
+            ],
+            [
+              -123.14518493735262,
+              61.067860878741925
+            ],
+            [
+              -123.16990417563387,
+              61.068857405527595
+            ],
+            [
+              -123.18638366782137,
+              61.07616431056484
+            ],
+            [
+              -123.22346252524325,
+              61.08380154496904
+            ],
+            [
+              -123.24612182700106,
+              61.07948507366833
+            ],
+            [
+              -123.27290100180575,
+              61.07151465699494
+            ],
+            [
+              -123.29350036704012,
+              61.064871110241654
+            ],
+            [
+              -123.3140997322745,
+              61.05590011129161
+            ],
+            [
+              -123.30929321371981,
+              61.047591365545635
+            ],
+            [
+              -123.27221435629794,
+              61.018992640803305
+            ],
+            [
+              -123.25230163657137,
+              61.00335220506445
+            ],
+            [
+              -123.24474853598544,
+              60.98970212662772
+            ],
+            [
+              -123.25779480063387,
+              60.97937744082305
+            ],
+            [
+              -123.28320068442294,
+              60.97438042082269
+            ],
+            [
+              -123.32302612387606,
+              60.975379887661745
+            ],
+            [
+              -123.34499878012606,
+              60.972381392881346
+            ],
+            [
+              -123.35873169028231,
+              60.96071789133206
+            ],
+            [
+              -123.34087890707919,
+              60.948383252288586
+            ],
+            [
+              -123.32027954184481,
+              60.94138038394528
+            ]
+          ]
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.50386723539208,
+              60.79542774835128
+            ],
+            [
+              -123.49639996549462,
+              60.79354312398825
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.49631413480614,
+              60.793668769062506
+            ],
+            [
+              -123.48807438871239,
+              60.79337559645585
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.48807438871239,
+              60.79337559645585
+            ],
+            [
+              -123.47931965848778,
+              60.794925192697434
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.47966298124169,
+              60.79488331270367
+            ],
+            [
+              -123.47331151029442,
+              60.79613968869551
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.47348317167138,
+              60.79613000427006
+            ],
+            [
+              -123.4642134573159,
+              60.796716296377184
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.46429928800438,
+              60.79675817397415
+            ],
+            [
+              -123.44987973234032,
+              60.79499926775335
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.44987973234032,
+              60.79499926775335
+            ],
+            [
+              -123.44052418729638,
+              60.79298897092909
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.44069584867333,
+              60.79292762783486
+            ],
+            [
+              -123.4243021871743,
+              60.79497980843146
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4243021871743,
+              60.79497980843146
+            ],
+            [
+              -123.4133158590493,
+              60.80080058482629
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4133158590493,
+              60.80080058482629
+            ],
+            [
+              -123.4063635732827,
+              60.80406645637983
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4063635732827,
+              60.80406645637983
+            ],
+            [
+              -123.39340313932274,
+              60.805531803291885
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.39366063138817,
+              60.805531803291885
+            ],
+            [
+              -123.3756361868081,
+              60.80682962597643
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3756361868081,
+              60.80682962597643
+            ],
+            [
+              -123.3609591390786,
+              60.80599232704103
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3609591390786,
+              60.80603419250791
+            ],
+            [
+              -123.35486516019677,
+              60.80172176181319
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.35486516019677,
+              60.80172176181319
+            ],
+            [
+              -123.35100277921532,
+              60.79510544786998
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3510886099038,
+              60.795147327573275
+            ],
+            [
+              -123.3221636678872,
+              60.77935479768457
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3221636678872,
+              60.77935479768457
+            ],
+            [
+              -123.3195887472329,
+              60.76248302270474
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3195887472329,
+              60.76248302270474
+            ],
+            [
+              -123.31841788655187,
+              60.75352224694719
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.31841788655187,
+              60.75352224694719
+            ],
+            [
+              -123.33292327290441,
+              60.7382546052988
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.33292327290441,
+              60.7382546052988
+            ],
+            [
+              -123.3567842043009,
+              60.72525583484826
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.3567842043009,
+              60.72525583484826
+            ],
+            [
+              -123.37970099812414,
+              60.7235769495784
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.37970099812414,
+              60.7235769495784
+            ],
+            [
+              -123.43574843769933,
+              60.731466947383645
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.51905750697927,
+              60.544000608774745
+            ],
+            [
+              -123.51116108363942,
+              60.53792213317614
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.51116108363942,
+              60.53792213317614
+            ],
+            [
+              -123.50154804653005,
+              60.53302475305983
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.50159734328983,
+              60.53305040321693
+            ],
+            [
+              -123.4735240879429,
+              60.51380228855388
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4735240879429,
+              60.51380228855388
+            ],
+            [
+              -123.47661399272806,
+              60.49605366537234
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.47661399272806,
+              60.49617927443615
+            ],
+            [
+              -123.47335242656595,
+              60.48214258540435
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.47335242656595,
+              60.48214258540435
+            ],
+            [
+              -123.45395469097025,
+              60.467084444896706
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.45395469097025,
+              60.467084444896706
+            ],
+            [
+              -123.4563579502476,
+              60.455151406775634
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.45652961162455,
+              60.45532070039277
+            ],
+            [
+              -123.44966315654642,
+              60.43449096296947
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.44966315654642,
+              60.43449096296947
+            ],
+            [
+              -123.43455695537455,
+              60.42703643129949
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4347286167515,
+              60.42720587145819
+            ],
+            [
+              -123.4295787754429,
+              60.41364786809714
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.4295787754429,
+              60.41364786809714
+            ],
+            [
+              -123.4021129551304,
+              60.395335596130664
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.40228461650736,
+              60.395505201472254
+            ],
+            [
+              -123.37756537822611,
+              60.38218849404099
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.37756537822611,
+              60.38218849404099
+            ],
+            [
+              -123.36469077495462,
+              60.357746233166644
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.36486243633158,
+              60.357746233166644
+            ],
+            [
+              -123.37310218242533,
+              60.33676899284634
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.37310218242533,
+              60.33676899284634
+            ],
+            [
+              -123.3494129124058,
+              60.31798844543261
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.34958457378275,
+              60.31815845358746
+            ],
+            [
+              -123.33997153667337,
+              60.304384925241116
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.33997153667337,
+              60.304384925241116
+            ],
+            [
+              -123.36125754741556,
+              60.2958798480255
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.36125754741556,
+              60.2958798480255
+            ],
+            [
+              -123.3856334629429,
+              60.30055791440436
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.385290140189,
+              60.30038781463109
+            ],
+            [
+              -123.40657615093119,
+              60.29188169706387
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.40657615093119,
+              60.29188169706387
+            ],
+            [
+              -123.42563056377298,
+              60.272564593169
+            ]
+          ],
+          "geodesic": true
+        },
+        {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -123.42563056377298,
+              60.272564593169
+            ],
+            [
+              -123.44434165386087,
+              60.25970856949856
+            ]
+          ],
+          "geodesic": true
+        }
+      ],
+      "coordinates": []
+    }),
+    S_Nahani_River = 
+    /* color: #102bff */
+    /* shown: false */
+    ee.Geometry.MultiLineString(
+        [[[-123.62309021079012, 61.12832286426726],
+          [-123.60867065512606, 61.125670381081434],
+          [-123.60455078207919, 61.120364746602164],
+          [-123.61347717368075, 61.10875556507617],
+          [-123.59768432700106, 61.104774292692824],
+          [-123.58120483481356, 61.10278346851584],
+          [-123.56953186118075, 61.09714211938007],
+          [-123.56197876059481, 61.093823208671],
+          [-123.55854553305575, 61.08984005618093],
+          [-123.57365173422762, 61.08220427887035],
+          [-123.57708496176669, 61.07423454683263],
+          [-123.57571167075106, 61.071245380023335],
+          [-123.5667852791495, 61.06825593102427],
+          [-123.54549926840731, 61.06892027741179],
+          [-123.53039306723544, 61.07091323295908],
+          [-123.51803344809481, 61.06825593102427],
+          [-123.51460022055575, 61.062940658203516],
+          [-123.5228399666495, 61.05795677979934],
+          [-123.53176635825106, 61.05197509070951],
+          [-123.53657287680575, 61.04499502619892],
+          [-123.53451294028231, 61.03967585001711],
+          [-123.52695983969637, 61.0373484298018],
+          [-123.51818815690905, 61.035557379096886],
+          [-123.51097837907702, 61.03522485776943],
+          [-123.50771681291491, 61.033562198832996],
+          [-123.5059143684569, 61.03123432987984],
+          [-123.50359693986803, 61.029031010819565],
+          [-123.496387162036, 61.02832425341968],
+          [-123.49269644243151, 61.031275900466554],
+          [-123.49012152177721, 61.036388667161965],
+          [-123.4850575111571, 61.040087634819564],
+          [-123.47475782853991, 61.04283041086117],
+          [-123.46754805070788, 61.04274729992174],
+          [-123.4568192146483, 61.040752572011804],
+          [-123.45398680192858, 61.03784336884258],
+          [-123.45364347917467, 61.035557379096886],
+          [-123.45424429399401, 61.033063384154566],
+          [-123.45716253740221, 61.030278191348685],
+          [-123.46248404008776, 61.02799165625353],
+          [-123.46943632585436, 61.026952267633526],
+          [-123.47784773332506, 61.0258296896736],
+          [-123.48693007406517, 61.02504731503091],
+          [-123.49388235983177, 61.02371676801522],
+          [-123.49920386251732, 61.02263565747844],
+          [-123.50323790487572, 61.021429759960256],
+          [-123.50649947103783, 61.02001589071355],
+          [-123.51010435995384, 61.01727114116135],
+          [-123.5120784657888, 61.01423500530639],
+          [-123.51130598959251, 61.01132336937195],
+          [-123.51036185201927, 61.009659457496916],
+          [-123.50778693136498, 61.00732983435322],
+          [-123.50263709005638, 61.004750409328516],
+          [-123.49637144979759, 61.00366865259997],
+          [-123.4875308888845, 61.003585439017534],
+          [-123.47920531210228, 61.003585439017534],
+          [-123.47371214803978, 61.00549929624529],
+          [-123.4666740315847, 61.00816186224232],
+          [-123.46495741781517, 61.010990593973844],
+          [-123.46143835958763, 61.01390226043087],
+          [-123.45513536445067, 61.01859118171437],
+          [-123.4524746131079, 61.020753641552865],
+          [-123.44826890937254, 61.02324860441774],
+          [-123.4432907294409, 61.02753116657545],
+          [-123.43625261298583, 61.03089860067992],
+          [-123.41888030779626, 61.039763993707844],
+          [-123.40720733416345, 61.043213239145274]],
+         [[-123.40935310137536, 61.0425899093157],
+          [-123.40454658282067, 61.04404432652086],
+          [-123.39373191607262, 61.04213279298498],
+          [-123.38120063555505, 61.03739501745018],
+          [-123.37613662493493, 61.036813136558706],
+          [-123.36386283648278, 61.040428937687246],
+          [-123.35836967242028, 61.04425209496057],
+          [-123.35030158770348, 61.047825498999075],
+          [-123.33759864580895, 61.050650696093854],
+          [-123.32618316424157, 61.053309475087744],
+          [-123.32008918535973, 61.054846479941425],
+          [-123.31408103716637, 61.05588495453217]]]),
+    otherRivers = 
+    /* color: #0b4a8b */
+    /* shown: false */
+    ee.Geometry.MultiLineString(
+        [[[-120.50010677300742, 61.48095313439184],
+          [-120.46852107964804, 61.462588708559444],
+          [-120.43693538628867, 61.44618274788294],
+          [-120.41084285699179, 61.442572277534296],
+          [-120.38063045464804, 61.43830481902388],
+          [-120.34973140679648, 61.443885224213346],
+          [-120.31883235894492, 61.44552632982354],
+          [-120.27900691949179, 61.442572277534296],
+          [-120.24261470757773, 61.44060275386047],
+          [-120.20553585015585, 61.42319989173311],
+          [-120.16914363824179, 61.40381547326691],
+          [-120.1313781353121, 61.392639324395965],
+          [-120.09086605035117, 61.37619654706382],
+          [-120.05378719292929, 61.37093303141838],
+          [-120.03387447320273, 61.36599768088192],
+          [-119.9995421978121, 61.342626453425986],
+          [-119.93019100152304, 61.32220349857677],
+          [-119.86083980523398, 61.323851004676754],
+          [-119.79560848199179, 61.31000926129703],
+          [-119.75646968804648, 61.295172038274664],
+          [-119.7138976665621, 61.28494675666894],
+          [-119.67338558160117, 61.27966788827528],
+          [-119.63630672417929, 61.28032779537164],
+          [-119.6040343853121, 61.2737281001784],
+          [-119.56489559136679, 61.25359046062778]],
+         [[-123.94642963700127, 61.81678570731321],
+          [-123.94385471634698, 61.81565064487166],
+          [-123.94608631424737, 61.81329931060044],
+          [-123.94917621903252, 61.811596507852315],
+          [-123.94917621903252, 61.809812517975004],
+          [-123.94694462113213, 61.80786622899438],
+          [-123.94368305497002, 61.806893038248106],
+          [-123.94076481156182, 61.80640643131068],
+          [-123.93544330887627, 61.80640643131068],
+          [-123.93115177445245, 61.806893038248106],
+          [-123.92995014481377, 61.8084339093554],
+          [-123.93046512894463, 61.810866706338516],
+          [-123.93183841996026, 61.813461477365856],
+          [-123.93183841996026, 61.81548848966852],
+          [-123.9287485151751, 61.81711000316012],
+          [-123.92737522415948, 61.818974637801375],
+          [-123.93012180619073, 61.82083915918672],
+          [-123.93218174271416, 61.822217210899716],
+          [-123.92892017655205, 61.82294674264165],
+          [-123.92514362625909, 61.82318991603564],
+          [-123.92256870560479, 61.824081535329896],
+          [-123.91862049393487, 61.82513523382845],
+          [-123.91621723465752, 61.823757313128986],
+          [-123.91175403885674, 61.82318991603564],
+          [-123.90814914994073, 61.824243645145955],
+          [-123.90488758377862, 61.824243645145955],
+          [-123.89750614456963, 61.82675623780086],
+          [-123.89149799637627, 61.82675623780086],
+          [-123.88617649369073, 61.82675623780086],
+          [-123.88136997513604, 61.82683728575186],
+          [-123.87656345658135, 61.82699938101172],
+          [-123.8708986311419, 61.82724252229607],
+          [-123.86695041947198, 61.827323568962754],
+          [-123.86197223954034, 61.82683728575186],
+          [-123.85802402787041, 61.82643204385625],
+          [-123.8489259748919, 61.82562154401069],
+          [-123.83999958329034, 61.8261888961502],
+          [-123.83467808060479, 61.827323568962754],
+          [-123.82901325516534, 61.827323568962754],
+          [-123.82249012284112, 61.827809844467765],
+          [-123.81751194290948, 61.82845819982094],
+          [-123.81098881058526, 61.83105148424561],
+          [-123.80395069413018, 61.831537700674936],
+          [-123.7994874983294, 61.83105148424561],
+          [-123.79519596390557, 61.83088941039023],
+          [-123.78472461991143, 61.83137562938795],
+          [-123.77820148758721, 61.83202390939909],
+          [-123.77373829178643, 61.83088941039023],
+          [-123.76858845047784, 61.828215068168866],
+          [-123.76412525467705, 61.827323568962754],
+          [-123.75605716996026, 61.8275667076785],
+          [-123.75090732865166, 61.82967382918523],
+          [-123.74901905350518, 61.83145666513846],
+          [-123.74335422806573, 61.83388763813033],
+          [-123.73665943436455, 61.83745271676329],
+          [-123.73339786820245, 61.83955915939287],
+          [-123.7306512861712, 61.842475533451086],
+          [-123.72979297928643, 61.84571562382644],
+          [-123.72859134964776, 61.84879339259197],
+          [-123.72859134964776, 61.85049413226356],
+          [-123.72378483109307, 61.85219477758869],
+          [-123.72172489456963, 61.853247510749505],
+          [-123.7196649580462, 61.85527189598418],
+          [-123.71520176224541, 61.85600064193955],
+          [-123.71348514847588, 61.857134212319565]]]),
+    MERIT_VF_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Vectors_filtered_Ord7"),
+    Union_AOI = 
+    /* color: #d63000 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-120.26143676319292, 61.43259862780444],
+          [-120.26143676319292, 60.98017314490523],
+          [-119.60225707569292, 60.98017314490523],
+          [-119.60225707569292, 61.43259862780444]]], null, false),
+    WesternMack = ee.FeatureCollection("users/jordanffieldsgr/WesternMack"),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Unioned_Streams"),
+    MERIT_Segment_Buffers = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Segment_Buffers");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var S_Nahani = ee.Feature(S_Nahani_River);
+var Liard = ee.FeatureCollection(Liard_River);
+var otherRivs = ee.FeatureCollection(otherRivers);
+var MERIT = ee.FeatureCollection(MERIT_VF_Ord7);
+Map.addLayer(WesternMack,{},'Western Mack');
+//Map.addLayer(MERIT_Unioned_Streams,{},'MERIT Unioned Streams')
+var Liard_union = Liard
+                      .union();
+                      
+//Map.addLayer(Liard_union, {}, 'Liard Union');
+
+var bothRivers = ee.FeatureCollection(Liard_union.union(S_Nahani)); // join the two rivers together 
+//var allRivers = bothRivers.dissolve(otherRivs); // join the other river segments too
+
+//Map.addLayer(otherRivers, {}, 'Joined Rivers');
+
+var distances = ee.List.sequence(0,100000,5000); // create a list of distances in 5km increments from 0 to 100000 
+
+//var segments = ee.FeatureCollection(bothRivers.cutLines(distances)); // cut the rivert network using the distances listed above
+
+//////// CODE BELOW IS CURRENLTY USED IN OUR MAIN SCRIPT ///////// 
+
+var MERIT_7Only = MERIT
+                       .filterBounds(Union_AOI)
+                       .filter(ee.Filter.eq('strmOrder', 7));
+                       
+/// START BY Making MERIT a raster again /// 
+// Create an empty image into which to paint the features, cast to byte.
+var empty = ee.Image().byte();
+var empty1 = ee.Image().byte();
+// Paint the edges with different colors, display.
+var riverSegments = empty.paint({
+  featureCollection: MERIT,
+  color: 'strmOrder',
+  width: 4
+});
+//Map.addLayer(riverSegments.randomVisualizer(), {}, '7th Order Collection');
+
+
+// connect river segments in the riverSegments image, colored by stream order
+var Connected = riverSegments
+                            .select('constant') // this is the band that has the stream order info
+                            .int32() //have to cast the image to 32 bit for connected components to work
+                            .connectedComponents(ee.Kernel.plus(1), 1024); //connect streams 
+                            
+                  
+                            
+//Map.addLayer(Connected.randomVisualizer(), {}, 'MERIT_Connected');
+
+//convert MERIT image, classified by stream order, back to a feature collection
+// playing around with this, not sure it's right. The scale is definitely too coarse
+var StrmOrder_Collection = Connected.reduceToVectors({
+  scale: 2000,
+  geometry: WesternMack,
+  geometryType: 'polygon', //I wish there was a polyline geometry option
+  eightConnected: true,
+  labelProperty: 'constant',
+  maxPixels: 1000000000,
+  reducer: ee.Reducer.mean()
+});
+                 
+                       
+Map.addLayer(StrmOrder_Collection, {}, 'Stream Order Collection');
+
+Export.table.toAsset({
+  collection: StrmOrder_Collection,  
+  description: 'Stream_Order_Collection',
+  assetId: 'MERIT_Streamline_Polygons'
+  });
+                              
+//Map.addLayer(MERIT_7Only, {}, '7th Order Strms')
+
+//Function that takes the Merit vectors original feature collection and 
+//filters it by the bounding polygons of 'StrmOrder_Collection', created above
+//then unions the segements of the MERIT vector feature collection within 
+//the bounding polygon and returns a feature, the unioned river segment
+var getSections = function(feature){
+  var meritFilter = MERIT.filterBounds(feature.geometry())
+  var meritUnion = ee.Feature(meritFilter
+                                      .union()
+                                      .first())
+                                      .set("order", feature.get('mean'))
+  return(meritUnion)
+};
+
+var strmSections = StrmOrder_Collection
+                                      .map(getSections)
+                                      .filterBounds(WesternMack);
+                                      
+print(strmSections.limit(3)); 
+
+//Map.addLayer(strmSections, {}, 'Stream Sections Union');
+
+Export.table.toAsset({
+  collection: strmSections, 
+  description: 'MERIT_Unioned_Streams',
+  assetId: 'MERIT_Unioned_Streams'
+  });
+
+
+
+//filtering the features of merit vector by strm order collection polygons
+//then union
+//then set a property that is the ID for that segment of river
+//then export each stream and buffers as an asset 
+//var localfeatures = Merit
+
+//// Try this, from Ev (08/19/2022)
+
+/// union step seems to be the main issue? Is it making one gigantic feature of all 7th order streams
+// convert these 7th ord streams to raster w/ "paint" tool
+// Connected Components -- ee.Image function
+// Convert back so 
+
+
+var MERIT_ALL_join = MERIT_7Only
+                              .union(); // join all the segments into one feature
+var MERIT_7_join = ee.FeatureCollection(MERIT_7Only
+                                                  .union()); // join all the segments denoted as 7th order into one feature
+
+                   
+//Map.addLayer(MERIT_ALL_join, {color: 'red'}, 'joined 7th order strms');
+
+// Set the length of the desired cutLines segments
+// For each feature, we will make sure the feature length is longer than this length 
+var cutLength = 5000   
+
+// Function to calculate the length of a feature
+// from the original code
+var getLength = function(feature){
+  var length = feature.geometry().length()
+  return(feature.set('length',length))
+  }   
+
+///// Cut Lines Function from our original code /////
+   /// (made by Evan Dethier / John Perrotti)  /// 
+
+var getCutRivers = function(feature){
+            // get the properties of the input feature
+            var properties = feature.toDictionary()
+            // Get the maximum length of the cut. 
+            var length = ee.Number(feature.get('length'))
+            // This makes sure that the cut is shorter than the total length.
+            var max_cut = length.clamp(0, cutLength)
+            // generate cut lines 
+            var cutLines = feature.cutLines(ee.List.sequence(0, length,max_cut))
+            // Get the geometries of the cut lines. Returns a list.
+            var geometries = cutLines.geometry().geometries()
+            // Convert each element of the list into a feature
+            var getGeomLength = function(list){
+                 var geom_sel = ee.Geometry(list)
+                 var geomLength = geom_sel.length()
+                 return(ee.Feature(geom_sel).set('length',geomLength))
+              } 
+            var filteredFeatures = ee.FeatureCollection(geometries.map(getGeomLength))
+                                             .filter(ee.Filter.gte('length',3000));
+            var segments = filteredFeatures.map(function(feature2){
+              // Make a feature with the geometry of the list
+              // The next line also takes the 5km segments, selects the middle Km (between 2 and 3km) and 
+              // then applies the 2km buffer to that segment, which creates a 5km long segment by 2km wide
+              // and prevents overlap with other segmetns
+                        var list = ee.List(feature2.geometry().cutLines([0,2000,3000]).geometries()).get(1)
+                        var feature = ee.Feature(null).setGeometry(list)
+              // Calculate the length of the feature in km
+                        var length_km = ee.Number(feature2.geometry().length()).divide(1000)
+              // Return the feature with properties copied from the input rivers feature
+                        return(feature2.set(properties)
+                                .set('cut_length_km', length_km,
+              // get rid of the length variable from before, since we've now cut it into multiple                 
+                                      'length', null)) 
+                      })
+              // Explicitly cast the output from our mapped function (a list)
+              // as a feature collection for export
+                  return(ee.FeatureCollection(segments)
+                  // Make sure we're not trying to export any zero length features
+                            .filterMetadata('cut_length_km','greater_than',1)
+                            )    
+                    
+                      }
+                      
+  // Apply the getCutRivers function to the rivers feature collection
+  var cutRivers = MERIT_Unioned_Streams
+          //.limit(10)
+          .map(getLength) // get the length of each feature
+          //.filter(ee.Filter.gte('length', 3000))
+          .map(getCutRivers)
+          // Flatten our cutRivers output so its not a collection of collections
+          // Result is a feature collection
+          .flatten();
+  
+ 
+  // Print first example of cutRivers
+  print('cut example', cutRivers.first());
+  // Add all the cutRivers to the map (there are a lot of features, so this is slow)
+  // Map.addLayer(cutRivers, {}, 'cut rivers flatten');
+ 
+   
+   // Apply a buffer to each cut segment
+   var segmentBuffers= cutRivers.map(function (feature) {
+   return feature.buffer(2000); // change buffer size here
+   });
+   
+  //Map.addLayer(segmentBuffers, {}, 'Segment Buffers')
+  
+// Get centroid of each buffer area
+   var get_centroids = (function (feature) {
+   return feature.centroid();
+   });
+
+var centroids = MERIT_Segment_Buffers.map(get_centroids);
+
+Map.addLayer(centroids, {}, '5km Points')
+
+
+//DRAW THIESSEN POLYGONS
+
+//FROM: https://code.earthengine.google.com/94f412c3272d5c02139879a8ac4a7860
+// Define a feature collection of coal power plants.
+var IDENTIFIER = centroid.id;
+var mask = ee.Image.constant(1).clip(StrmOrder_Collection).mask().focal_max(1);
+
+// Construct a collection of images with two bands, one of which is the
+// distance to the point and the other is an identifier for the point.
+var distanceImages = centroids.map(function(point) {
+  // Compute distance from points, apply mask, invert for qualityMosaic.
+  var distanceImage = ee.FeatureCollection([point]).distance(1e6, 1e2)
+    .updateMask(mask).multiply(-1);
+  
+  // Make an image from the unique point identifier.
+  var numberImage = ee.Image.constant(point.getNumber(IDENTIFIER))
+    .int32().rename(IDENTIFIER);
+  
+  // Concatenate bands and return the image.
+  return distanceImage.addBands(numberImage);
+});
+
+// Reduce the collection to a single image based on minimum distances.
+var nearest = ee.ImageCollection(distanceImages)
+  .qualityMosaic('distance')
+  .select(IDENTIFIER)
+  .randomVisualizer();
+
+// Display the Thiessen polygons.
+//Map.setOptions('Custom', {'Custom': customMap()});
+Map.addLayer(nearest, null, 'Thiessen polygons');
+  
+  
+Export.table.toAsset({
+  collection: segmentBuffers, 
+  description: 'MERIT_Segment_Buffers',
+  assetId: 'MERIT_Segment_Buffers'
+  });
+  
+
+
+
+ 
+ /*  
+
+/// VISUALIZING THE INDIVIDUAL RIVER SEGMENT /// 
+// Create an empty image into which to paint the features, cast to byte.
+var empty = ee.Image().byte();
+// Paint the edges with different colors, display.
+var riverSegments = empty.paint({
+  featureCollection: segments,
+  color: 'ID',
+  width: 4
+});
+
+Map.addLayer(riverSegments.randomVisualizer(), {}, 'segments'); 
+
+// Print first example of cutRivers
+var first = segments.first();
+
+Map.addLayer(first,{}, 'first')
+
+
+*/
+
+
+
+

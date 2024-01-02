@@ -1,0 +1,358 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var monthly_climate = ee.ImageCollection("ECMWF/ERA5/MONTHLY"),
+    daily_climate = ee.ImageCollection("ECMWF/ERA5/DAILY"),
+    lakes = ee.FeatureCollection("users/JohnPerrotti/HydroLAKES_polys_v10_shp"),
+    segmentBuffers_asset = ee.FeatureCollection("users/JohnPerrotti/segmentBuffers"),
+    rivers_asset = ee.FeatureCollection("users/JohnPerrotti/rivers");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+Map.addLayer(segmentBuffers_asset, {}, 'segmentBuffers_asset')
+
+// Import rivers for lake selection
+var rivers_1 = ee.FeatureCollection("WWF/HydroSHEDS/v1/FreeFlowingRivers")
+  // Filter by large drainage area
+          .filterMetadata("UPLAND_SKM", "greater_than", 2000)
+  // Select only rivers from the Mackenzie River watershed
+          .filterMetadata("BAS_NAME", "equals", "Mackenzie")
+          
+Map.addLayer(rivers_1, {}, 'rivers_1')
+
+// filter lakes layer to make sure they are large, in Canada, and intersect our rivers
+var lakes_filtered = lakes  
+                        .filterBounds(rivers_1)
+                        .filterMetadata('Lake_area', 'greater_than', 200)
+                        .filterMetadata('Country', 'equals', 'Canada')
+
+Map.addLayer(lakes_filtered, {}, 'lakes_filtered')
+print('lakes_filtered', lakes_filtered)
+
+// Filters for removing river lines that go into lakes
+var filterInside = ee.Filter.bounds(lakes_filtered)
+var filterNot = filterInside.not()
+
+  // Import rivers dataset and filter by basin, size, and to remove segments in rivers
+  var rivers = ee.FeatureCollection("WWF/HydroSHEDS/v1/FreeFlowingRivers")
+  // Filter by large drainage area
+          .filterMetadata("UPLAND_SKM", "greater_than", 2000)
+  // Select only rivers from the Mackenzie River watershed
+          .filterMetadata("BAS_NAME", "equals", "Mackenzie")
+         .filter(filterNot)
+          
+  // Add rivers layer to map
+  print('rivers.first()', rivers.first())
+  Map.addLayer(rivers, {}, 'rivers')
+  
+  
+// NOTE: this next section is only needed if not working with a pre-imported asset layer
+// it is recomended you use asset layers. As they load/calculate much quicker in processing
+
+/*
+
+  // Set the length of the desired cutLines segments
+  // For each feature, we will make sure the feature length is longer than this length 
+  var cutLength = 50000   
+  
+  // Function to calculate the length of a feature
+  var getLength = function(feature){
+    var length = feature.geometry().length()
+    return(feature.set('length',length))
+  }   
+  
+  // Function to cut a feature into multiple shorter segments 
+  // ee.Clamp does not work. Unclear why it is not recognized as a function
+  var getCutRivers = function(feature){
+            // get the properties of the input feature
+            var properties = feature.toDictionary()
+            // get the length of the input feature
+            var length = ee.Number(feature.get('length'))
+            // Get the maximum length of the cut. 
+            // This makes sure that the cut is shorter than the total length.
+            var max_cut = ee.Number.clamp(cutLength, 0, length)
+            // generate cut lines 
+            var cutLines = feature.cutLines(ee.List.sequence(0, length,max_cut))
+            // Get the geometries of the cut lines. Returns a list.
+            var geometries = cutLines.geometry().geometries()
+            // Convert each element of the list into a feature
+            var segments = geometries.map(function(list){
+              // Make a feature with the geometry of the list
+                        var feature = ee.Feature(null).setGeometry(list)
+              // Calculate the length of the feature in km
+                        var length_km = ee.Number(feature.geometry().length()).divide(1000)
+              // Return the feature with properties copied from the input rivers feature
+                        return(feature.set(properties)
+                                .set('cut_length_km', length_km,
+              // get rid of the length variable from before, since we've now cut it into multiple                 
+                                      'length', null)) 
+                      })
+              // Explicitly cast the output from our mapped function (a list)
+              // as a feature collection for export
+                  return(ee.FeatureCollection(segments)
+                  // Make sure we're not tryint to export any zero length features
+                            .filterMetadata('cut_length_km','greater_than',3)
+                            )    
+                    
+                      }
+                      
+  // Apply the getCutRivers function to the rivers feature collection
+  var cutRivers = rivers
+          .map(getLength) // get the length of each feature
+          .map(getCutRivers)
+          // Flatten our cutRivers output so its not a collection of collections
+          // Result is a feature collection
+          .flatten();
+         
+ 
+  // Print first example of cutRivers
+   print('cut example', cutRivers.first());
+  // Add all the cutRivers to the map (there are a lot of features, so this is slow)
+   Map.addLayer(cutRivers, {}, 'cut rivers flatten');
+   
+  // Buffer Application on Segment Buffers 
+   var segmentBuffers = cutRivers.map(function (feature) {
+   return feature.buffer(2000);
+   });
+  
+  // Add all the buffered river segments
+    Map.addLayer(segmentBuffers, {}, 'Buffered River Segments'); //slow use asset when possible
+ 
+
+*/
+
+ // Temperature Raster //
+ // A lot of these variables were not used for final temp parameters. left here for reference
+ // and for visualization purposes
+  var max_t_C_1985 = monthly_climate.filterDate('1985-01-01', '1985-12-31')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273)
+
+  var sd_max_t_C_1970s = monthly_climate.filterDate('1970-01-01', '1980-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .reduce(ee.Reducer.stdDev());
+  
+  var sd_max_t_C_2010s = monthly_climate.filterDate('2010-01-01', '2020-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .reduce(ee.Reducer.stdDev());
+                    
+  var max_t_C_1980s = monthly_climate.filterDate('1980-01-01', '1990-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+                    
+  var max_t_C_1990s = monthly_climate.filterDate('1990-01-01', '2000-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+  
+  var max_t_C_2000s = monthly_climate.filterDate('2000-01-01', '2010-01-01')
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273)
+                    
+  var max_t_C_2010s = monthly_climate.filterDate('2010-01-01', '2020-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+                    
+   var precip_m_2010s = monthly_climate.filterDate('2010-01-01', '2020-01-01')
+                    .filter(ee.Filter.dayOfYear(153, 245))
+                    .select('total_precipitation')
+                    .mean()
+                    .multiply(12)  
+  
+                    
+  var t_vis = {min: -10, max: 40, palette: ['black','navy','blue','green','yellow','red']};
+  var t_compare_vis = {min: -5, max: 5, palette: ['black','navy','grey','red','white']};
+   var t_vis = {min: -10, max: 40, palette: ['black','navy','blue','green','yellow','red']};
+  var t_sd_vis = {min: 0, max: 10, palette: ['green','grey','orange']};
+  var precip_vis = {min: 0, max: 4, palette: ['black','green','yellow','red', 'white']};
+  
+  // Map.addLayer(max_t_C_1990s, t_vis, 'mean max T deg C, 1990s');
+  //Map.addLayer(max_t_C_1970s, t_vis, 'mean max T deg C, 1970s')
+  //Map.addLayer(max_t_C_2010s, t_vis, 'mean max T deg C, 2010s')
+  // Map.addLayer(sd_max_t_C_1970s, t_sd_vis, 'sd max T deg C, 1970s')
+  //Map.addLayer(sd_max_t_C_2010s, t_sd_vis, 'sd max T deg C, 2010s')
+  //Map.addLayer(precip_m_2010s, precip_vis, 'precip, annual avg. meters, 2010s')
+  //Map.addLayer(max_t_C_2010s.subtract(max_t_C_1970s), t_compare_vis, 'mean max T deg C, 2010s vs 1970s')
+
+
+
+    
+    // Function to calculate select temp parameters for each year from temp raster
+    var gettemp_years = function(year){ 
+      var startDate = ee.Date.fromYMD(year, 1, 1);
+      var endDate = startDate.advance(5, 'year') 
+      var temp = monthly_climate.filterDate(startDate, endDate) 
+                      .filter(ee.Filter.dayOfYear(153, 245))
+                      .select('minimum_2m_air_temperature')  // can change min to max/mean
+                      .mean()
+                      .subtract(273)
+                      .set('year', year)
+    //           // compute the mean water occurrence for each pixel across all images
+    return(temp)
+     };
+     
+ var yearList = ee.List.sequence(1985,2020,1);
+
+// Collection of years with the temperature variable selected above (line ~185) 
+var tempCollection = ee.ImageCollection(yearList.map(gettemp_years));
+ print('tempCollection', tempCollection);
+       
+  //Reformats so that "year" property in 1985-1990 is represented by 1990 instead of 1985
+  // neccessary to get into same format as area is calculated.
+     var reformat_TC = tempCollection.map(function(image){
+      var startYear = ee.Number(image.get('year'))
+      var endYear = startYear.add(5)
+      return image.set('year', endYear) 
+       
+     });
+    
+     print('Reformat', reformat_TC);
+    
+ /*  
+     var tempCollection1990 = reformat_TC.filterMetadata('year', 'equals', 1990)
+     Map.addLayer(tempCollection1990, t_vis, 'tempCollection1990')
+
+    
+  //Reducing to find the mean temperature in each temp parameter
+  //NOTE: commented out because did not end up being used in final analysis
+  
+  
+    var reduced = reformat_TC.map(function(image){
+      var year = function(image){
+          return image.get('year')};
+    return image
+                .reduceRegions({
+                    collection:segmentBuffers_asset, 
+                    reducer:ee.Reducer.mean(), 
+                    scale: 500})
+                .map((function(feature){
+    var year = function(image) {
+      return image.get('year');
+    };
+    return ee.Feature(feature)
+        .set('date', year(image))
+        .setGeometry(null)
+        .set('latitude', feature.geometry().centroid().coordinates().get(1))
+        .set('longitude', feature.geometry().centroid().coordinates().get(0));
+      //Selecting only for attributes we need 
+}));
+           
+    });
+    //Flatten collection of collections
+    var flatten_reduced = reduced.flatten();
+    
+    //Remove extraenous properties
+    var export_temp_parameter = flatten_reduced.map(function(feature) {
+            // return ee.Feature(feature.select(['date','count', 'latitude', 'longitude', 'mean', 'system:index', 'BB_LEN_KM', 'BB_VOL_TCM', 'LENGTH_KM', 'OBJECTID', 'RIV_ORD', 'UPLAND_SKM', 'VOLUME_TCM', 'cut_length_km']));
+            return ee.Feature(feature.select(['date', 'latitude', 'longitude', 'mean', 'OBJECTID']));
+    });
+   
+    
+    print('export_temp_parameter', export_temp_parameter.first());
+    
+    // Export
+    Export.table.toDrive({
+    collection: export_temp_parameter, 
+    folder: 'Thesis',
+    description: 'export_minimumtemp1985-2020',
+    fileNamePrefix: 'export_minimumtemp1985-2020',
+    fileFormat: 'CSV'
+  }) ;
+  */
+  
+  
+  // NOTE: This is the start of calculating temp parameters used in final analysis
+  
+  // Days Above 0 Degrees and Degree Days  // 
+  
+// Select mean daily temperature
+var dailyMean = daily_climate.select('mean_2m_air_temperature');
+print('dailyMean', dailyMean.first());
+
+// Generates image collection for each day with mean air temperature
+var mean_tempCollection = dailyMean.filterDate('1985-01-01','2020-01-01')
+          .map(function(dailyMean){
+            var date = ee.Date(dailyMean.get('system:time_start'))
+            var DOY = date.getRelative('day', 'year')
+            var year = date.get('year')
+            var temp = dailyMean
+                          .subtract(273)
+                          .set('date', date)
+                          .set('system:time_start', date)
+                          .set('DOY', DOY)
+                          .set('year', year)
+              return temp
+          });
+print ('mean_tempCollection', mean_tempCollection.first());
+Map.addLayer(mean_tempCollection.first(), {min: 0, max: 1, palette: ['blue','red']}, 'mean_tempCollection.first()')  // Maps everywhere that is above freezing in red  
+
+// Select for day of year 250 for visualization/valaidation purposes
+var mean_tempCollectionDOY250 = mean_tempCollection.filterMetadata('DOY', 'equals', 250)
+ // Maps everywhere that is above freezing in red  
+Map.addLayer(mean_tempCollectionDOY250, {min: 0, max: 1, palette: ['blue','red']}, 'mean_tempCollectionDOY250')
+print(mean_tempCollectionDOY250, 'mean_tempCollectionDOY250')
+
+
+// List of years for temperature calculation 
+var temp_yearList = ee.List.sequence(1979, 2020, 1)  //takes a very long time to loadd
+                                                     // to visualize, narrow year range (minimum range is 5 years however)
+
+// Calculate number of days above 0 and degree days
+var get_above0 = function(list){
+  var startDate = ee.Date.fromYMD(list, 1, 1)
+  var advanceYear = 5
+  var endDate = startDate.advance(advanceYear,'year') // 5 years to match up with meander rate calculations
+  var tempImage_select = mean_tempCollection.filterDate(startDate, endDate)
+  var sum = ee.ImageCollection(tempImage_select).map(function(image){
+    var image_above0 = image.gt(0)
+    return image_above0
+  }).sum().rename('above0Days')
+  var degreeDays = tempImage_select.map(function(image){
+    var image_below0 = image.where(image.lt(0), 0)
+    return image_below0
+  }).sum()
+  return sum.addBands(degreeDays.rename('degreeDays'))
+          .set('year', ee.Number(list).add(advanceYear)) //'year' represents the end year of the range
+                                                         // e.g. 'year' = 1990 means that between 1985 and 1990 there were X days
+                                                         // above 0 degrees celsius
+}
+
+var above0Result = ee.ImageCollection(temp_yearList.map(get_above0))
+ print('above0Result', above0Result.first())
+Map.addLayer(above0Result.first().select('above0Days'),  {min: 50, max: 1500, palette: ['blue','red']}, 'above0Days.first()');
+Map.addLayer(above0Result.first().select('degreeDays'),  {min: 100, max: 1300, palette: ['blue','red']}, 'degreeDays.first()');
+
+
+// Calculate each parameter within the segmentBuffer
+var reduceAbove0 = above0Result.map(function(image){
+  var reducer = image.reduceRegions({
+          collection: segmentBuffers_asset, // remove _asset if working with new areas
+          reducer: ee.Reducer.mean(), 
+          scale: 500,
+          crs: 'EPSG:32610'
+  })
+          .map(function(feature){
+            return feature.set('year', image.get('year'))
+                          .setGeometry(null)
+                          .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                          .set('longitude', feature.geometry().centroid().coordinates().get(0));
+          });
+      return reducer;
+}).flatten();
+
+print('reduceAbove0', reduceAbove0.first());
+
+// Export temperature parameters to drive
+Export.table.toDrive({
+    collection: reduceAbove0, 
+    folder: 'Thesis',
+    description: 'export_Above0_allyears',
+    fileNamePrefix: 'export_Above0_allyears',
+    fileFormat: 'CSV'
+  }) ;

@@ -1,0 +1,9 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var MERIT_VF_filtered_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/MERIT_Vectors_filtered_Ord7");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Export the FeatureCollection to a KML file.
+Export.table.toDrive({
+  collection: MERIT_VF_filtered_Ord7,
+  description:'MERIT_VF_filtered_Ord7',
+  fileFormat: 'KML'
+});

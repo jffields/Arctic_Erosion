@@ -1,0 +1,234 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var WesternMack_1 = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-136.6456709949952, 69.08700872525338],
+          [-135.9095870106202, 67.87016851592068],
+          [-139.8097334949952, 65.58436510570839],
+          [-137.7223311512452, 64.72117178492286],
+          [-137.0961104481202, 64.18582131453974],
+          [-132.86735897662507, 64.13488777854788],
+          [-132.14226132037507, 63.96663147147016],
+          [-131.72478085162507, 63.62706112028824],
+          [-132.16423397662507, 61.21772241622296],
+          [-130.81291561725007, 58.961706898233146],
+          [-127.73674374225007, 56.99327089862608],
+          [-126.27556210162507, 55.547683741517396],
+          [-124.39450906519401, 55.18418223783264],
+          [-123.46067117456901, 54.82504107514072],
+          [-122.66965554956901, 54.57108866017406],
+          [-119.70334695581901, 53.55889196832195],
+          [-117.87961648706901, 52.48844832964847],
+          [-115.04514383081901, 52.94100627077756],
+          [-112.71604226831901, 54.187173343213814],
+          [-111.51853250269401, 55.259381607205],
+          [-109.68381570581901, 55.781807596214904],
+          [-107.81613992456901, 56.79995924397231],
+          [-107.93698953394401, 57.337475413529546],
+          [-110.2660286621488, 58.19765033824793],
+          [-110.6780159668363, 58.461542875776566],
+          [-110.7823860840238, 58.6463837443152],
+          [-110.87851645511755, 58.64209618896625],
+          [-111.02133872074255, 58.742002033794655],
+          [-111.0185921387113, 59.54630702154173],
+          [-112.3589241699613, 60.540548039770066],
+          [-113.11835410160192, 61.29017605178613],
+          [-113.56879355472692, 61.34158994661358],
+          [-113.66217734378942, 61.31259760425681],
+          [-114.01648642582067, 60.892299219090994],
+          [-114.63446738285192, 60.8695777282006],
+          [-114.93109824222692, 60.858879663748255],
+          [-115.15082480472692, 60.79997622390134],
+          [-116.18903281253942, 60.90832818122992],
+          [-116.83447958988317, 61.12393190089451],
+          [-117.7971565918363, 61.64517054926209],
+          [-119.22054667045435, 62.47716940751586],
+          [-119.90169901420435, 62.750060973609536],
+          [-122.31319803764185, 62.69467530114029],
+          [-122.99600661276838, 63.55539257222384],
+          [-124.15231764792463, 64.60551065147534],
+          [-123.80075514792463, 64.79331762591438],
+          [-123.62772047995588, 64.95425769744203],
+          [-123.33246291159651, 65.04943298104435],
+          [-123.51511061667463, 65.15811986175466],
+          [-124.08509852381793, 65.23314032381094],
+          [-125.22767664881793, 65.83822432510175],
+          [-126.28236414881793, 66.43049026853159],
+          [-127.64673126694969, 66.52074455978627],
+          [-128.20909393784814, 66.45911486041581],
+          [-130.0117241586976, 67.33934298019352],
+          [-130.9180962290101, 67.55214316628319],
+          [-131.2312065805726, 67.52695949984033],
+          [-131.7200981821351, 67.47230296197807],
+          [-132.9066216196351, 67.30121806529371],
+          [-133.3790337290101, 67.54165322583393],
+          [-133.3131157602601, 67.75473063347964],
+          [-133.77462392248088, 68.11158271667242],
+          [-133.64004140294963, 68.54969176170329],
+          [-133.83779530919963, 69.47427105762804],
+          [-135.28799062169963, 69.73462108489251]]]),
+    Good_Thiessens = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// uncomment to view assets
+//Map.addLayer(WesternMack_1, {}, 'Western Mack 1'); // project AOI
+//Map.addLayer(Good_Thiessens, {}, 'Thiessens'); // thiessen polygons
+
+//// TOGGLES FOR BATCHED EXPORTS /////
+// var tFirst = 0; // change this for exports
+// var tEnd = tFirst + 55; 
+
+////// *** DEFINE FUNCTIONS *** //////
+
+// Function to remove Speckle for water occurence sensing code
+var removeSpeckle = function(image){
+  var imageSel = image.select(['Green', 'NIR']);
+  var replaceNegatives = imageSel.where(imageSel.lt(0), 1);
+  var returnImage = image.addBands(replaceNegatives, null, true);
+  return returnImage;
+  };
+  
+////// RENAME BANDS ///////
+//Function to get and rename bands all landsat 8 collection 2 images.
+// not keeping pixel_qa band b/c not needed
+function renameOli(img) {
+  return img.select(
+                  ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7'],
+                  ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+            .copyProperties(img, img.propertyNames()); 
+}
+
+// Function to rename bands in LS5 and LS7 Collection 2 images.
+// not keeping pixel_qa band b/c not needed
+function renameEtm(img) {
+  return img.select(
+                  ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7'],
+                  ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+            .copyProperties(img, img.propertyNames()); 
+}
+ 
+////// NDVI ///// 
+//create function to calc NDVI
+function NDVI_Calc(image) {
+  // Calculate NDVI using normalizedDifference([list of bandname]).rename()
+  var NDVI = image.normalizedDifference(['NIR','Red']).rename('NDVI');
+  //Add the NDVI band to the image and return
+  return image.addBands([NDVI]);
+}
+
+// function to calculate mean NDVI value per pixel
+// over entire study area, in two year rolling windows
+var getNDVI_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(2, 'year'); // rolling 2 year time window
+  var meanNDVI = allImages_NEW
+            .filterDate(startDate, endDate)
+            .select('NDVI')
+            .mean(); // This returns the mean value of each pixel, not mean for entire image 
+  return ee.Image(meanNDVI).set('start_year',year);
+};
+
+////// *** END FUNCTIONS *** //////
+
+////// *** LOAD AND PREP IMAGES *** //////
+
+// import collection 2 landsat images
+var ls5new = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
+                                .filter(ee.Filter.bounds(WesternMack_1)) // project area
+                                .filter(ee.Filter.dayOfYear(151,288)) // ice off season
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20); // images with few clouds
+var ls7new = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')
+                                .filter(ee.Filter.bounds(WesternMack_1))
+                                .filter(ee.Filter.dayOfYear(151,288))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+                                
+var ls8new = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2") //new
+                                .filter(ee.Filter.bounds(WesternMack_1))
+                                .filter(ee.Filter.dayOfYear(151,288))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+
+// Rename bands
+var etmCol_new = ls7new.map(renameEtm);
+var tmCol_new = ls5new.map(renameEtm);
+var oliCol_new = ls8new.map(renameOli);
+
+// Merge collections
+var allImages_tm_new = etmCol_new
+                      .merge(tmCol_new)
+                      .map(removeSpeckle);
+var allImages_NEW = oliCol_new
+                      .merge(allImages_tm_new);
+
+////// *** END IMAGE LOAD/PREP *** //////
+
+////// *** CALCULATE NDVI *** //////
+
+// calculate per-pixel NDVI for all images
+var allImages_NEW = allImages_NEW.map(NDVI_Calc); 
+
+// Construct list 1985-2023 -- all years for which we have data
+var waterYear = ee.List.sequence(1985,2023,1);
+
+// calculate yearly per-pixel mean NDVI values
+var ndviYear_long = ee.ImageCollection(waterYear.map(getNDVI_years));  // image collection of mean NDVI value per pixel for summer period
+
+////// *** END NDVI CALCULATIONS *** //////
+
+////// *** LOAD THIESSENS *** //////
+
+// thiessen polygons filtered to be in study area and remove lakes
+var thiessen_polys = Good_Thiessens;
+
+// select only some thiessen polys -- only for use with batched exports
+// var tlist_ALL = thiessen_polys.aggregate_array('point_ID'); 
+// var tlist_select = tlist_ALL.slice(tFirst,tEnd); // select group based on export toggle above
+// var thiessen_polys = thiessen_polys.filter(ee.Filter.inList('point_ID', tlist_select)); 
+
+////// *** NDVI REDUCTION AND EXPORT *** //////
+
+// BIG LOOP (uncomment for batched exports)
+
+// for(var i = 0; i < 28; i++) {
+//   var tFirst = (i * 100)
+//   var tEnd = (tFirst + 100);
+
+// Function to get mean NDVI value in each Thiessen Polygon
+// returns feature collection with NDVI in each poly 
+var ndviReduce = function(image){
+  var Year = image.get('start_year');
+  var reduced = image.reduceRegions({
+      reducer: ee.Reducer.mean(),
+      collection: thiessen_polys,
+      scale: 30
+    });
+    // generate properties for each feature before returning
+    return reduced.map(function(feature){
+      return ee.Feature(feature)
+                                .set('Year', Year)
+                                .set('NDVI', ee.Number(feature.get('mean')))
+                                .set('Thiessen_ID', feature.get('point_ID'));
+    });
+};
+
+// function to select desired properties for export
+var get_export_props = function(feature) {
+  return ee.Feature(feature.select(['Year', 'NDVI', 'Thiessen_ID']));
+};
+
+// Calculate mean NDVI in each thiessen polygon over all years
+var ndviData = ee.FeatureCollection(ndviYear_long.map(ndviReduce)).flatten();
+
+// Map export Properties fxn
+var ndviExport = ndviData.map(get_export_props);
+
+//Export NDVI Ratio for each Thiessen Polygon
+Export.table.toDrive({
+  collection: ndviExport,
+  folder: 'ARCTIC_CARBON',
+  description: 'NDVI_all', //if batch export: 'ndviRatio_' + 'Thiessens_' + tFirst + '_' + tEnd,
+  fileNamePrefix: 'NDVI_all', //if batch export: 'ndviRatio_' + 'Thiessens_' + tFirst + '_' + tEnd,
+  fileFormat: 'CSV'
+});
+
+
+//} // END FOR LOOP used for batch exports

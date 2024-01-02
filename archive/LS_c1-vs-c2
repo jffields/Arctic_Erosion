@@ -1,0 +1,25 @@
+// investigating differences between landsat collection 1 and 2
+// load same img from both collections onto map
+// conversions: https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products
+
+// this is the deprecated collection 1 dataset -- landsat 8 surface reflectance
+var c1img = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_062012_20210607").select("B1", "B2", "B3", "B4", "B5", "B6", "B7");
+
+// this is the current collection 2 dataset -- landsat 8 surface reflectance
+var c2img = ee.Image("LANDSAT/LC08/C02/T1_L2/LC08_062012_20210607").select("SR_B1", "SR_B2", "SR_B3", "SR_B4", "SR_B5", "SR_B6", "SR_B7");
+
+Map.addLayer(c1img, {bands:['B4', 'B3', 'B2'], gamma:1.4, min:0, max:2000}, "collection 1");
+Map.addLayer(c1img, {bands:['B4', 'B3', 'B2'], min:0, max:2000}, "collection 1 no gamma");
+Map.addLayer(c2img, {bands:['SR_B4', 'SR_B3', 'SR_B2'], min:7000, max:13000}, "collection 2");
+
+// var c2img_converted = c2img.multiply(0.0000275).add(-0.2); // as specified by USGS
+// var c1img_converted = c1img.multiply(0.0001); // as specified by USGS
+var c2img_converted = c2img.multiply(0.0275).add(-200);
+var c1img_converted = c1img;
+var diffimg = c2img_converted.subtract(c1img_converted);
+
+Map.addLayer(diffimg, {/*min:-0.03, max:0.02*/}, "difference of c1 and c2");
+// i would expect this to ideally be a zero image (no difference between collections),
+//  or potentially random noise if the conversion is imperfect.
+//  but you can observe features in the image, so there must be some kind of systematic
+//  thing going on here

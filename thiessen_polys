@@ -1,0 +1,107 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var Single_Unioned_Buffer = ee.FeatureCollection("users/jekreisler/mackenzie/Single_Unioned_Buffer"),
+    MERIT_Segment_Buffers = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Segment_Buffers"),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+/// CREATING THIESSEN POLYGONS /// 
+
+// function to pull centroid out of a buffer
+var get_centroid = function(feature) {
+  return feature.centroid();
+};
+
+// we want a single polygon that buffers all stream lines, which is the union of the buffers
+// created in buffer_generator. To save time, it is loaded in as an asset here
+var unioned_polys = Single_Unioned_Buffer;
+
+// get centroid for every buffer, which are spaced roughly every 5km (4010 centroids total)
+// each centroid is a feature, w/properties for length of buffer and stream order
+var centroids = MERIT_Segment_Buffers.map(get_centroid);
+centroids = centroids.randomColumn("point_ID")
+                     .map(function(point) {
+                       // assign a random identifier to each centroid
+                       var ID = point.getNumber("point_ID").multiply(1e7).round().int32();
+                       return point.set("point_ID", ID);
+                     });
+
+// for each centroid, create an image with three bands:
+// one band is the distance from the centroid
+// one band is a constant image with the value of the centroid's identifier
+// one band is a constant image with the value of the centroid's stream order
+var distanceImages = centroids.map(function(point) {
+  // Compute distance from centroid (up to a max of 10 km)
+  // invert distance so it will work with qualityMosaic.
+  var distanceImage = ee.FeatureCollection([point]).distance(1e4, 10)
+    .multiply(-1);
+
+  // Make an image from the unique point identifier.
+  var numberImage = ee.Image.constant(point.getNumber("point_ID"))
+    .int32().rename("point_ID");
+  
+  // Make an image from the stream order
+  var orderImage = ee.Image.constant(point.getNumber("order"))
+    .int32().rename("order");
+  
+  // Concatenate bands and return the image.
+  return distanceImage.addBands(numberImage).addBands(orderImage);
+});
+
+// Reduce the collection to a single image based on minimum distances
+var nearest = ee.ImageCollection(distanceImages)
+  .qualityMosaic('distance')
+  .select("point_ID", "order");
+// results in an image where for each pixel, the value of point_ID and order
+// is that of the closest centroid. These groupings are the thiessen polygons, but in raster format
+
+// next step: vectorize so each raster polygon is its own feature
+// first band of nearest is point_ID, so image is grouped by point_ID (as desired)
+var thiessen_vector = nearest.reduceToVectors({
+  scale: 300, // in meters. also tested 400m and 500m but 300m worked well 
+  geometry: unioned_polys, 
+  geometryType: 'polygon',
+  eightConnected: true,
+  maxPixels: 1000000000,
+  reducer: ee.Reducer.mean(), // takes mean value of stream order within poly (which should be constant)
+  labelProperty: "point_ID", // vector polys keep same identifier as raster polys
+  tileScale: 16
+});
+
+/// END THIESSEN POLYGON CREATION ///
+
+// export vector thiessen polygons
+// note -- computation may time out, in which case have to export
+// the polygons in batches
+Export.table.toDrive({
+    collection: thiessen_vector,
+    description: "Thiessen_Polygons_300m"
+  });
+
+// note: defective vector polygon features were manually trimmed from exported collection
+// before being used in master_meander_rates
+
+// note for transparency: to create the Single_Unioned_Buffer asset, run the lines in block comment below
+/*
+// buffer 11th order (main stem) by 3k on each side
+var elevens = MERIT_Unioned_Streams.filter(ee.Filter.eq('order',11))
+              .map(function(feature){
+                return feature.buffer(3000);
+              });
+// buffer all other streams according to order (larger order = larger buffer)
+var others = MERIT_Unioned_Streams.filter(ee.Filter.neq('order',11))
+              .map(function(feature){
+                var buffer_size = feature.getNumber("order");
+                return feature.buffer(buffer_size.multiply(200));
+              });
+
+var buffered = elevens.merge(others);
+
+// join these into a single river-scale buffer
+var unioned_polys = buffered.union();
+
+// Export buffer as an asset.
+Export.table.toAsset({
+  collection: unioned_polys,
+  description:'Single_Unioned_Buffer',
+  assetId: 'Single_Unioned_Buffer',
+});
+*/

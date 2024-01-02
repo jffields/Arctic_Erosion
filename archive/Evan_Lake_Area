@@ -1,0 +1,225 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var ls5 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR"),
+    c_blanca_mtns = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-77.37912634677515, -9.606238969575196],
+          [-77.1236942178689, -9.473517691939032],
+          [-77.7444217569314, -8.553934950121386],
+          [-77.9641483194314, -8.646268732173889]]]),
+    la_paz_mtns = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-68.1508683334988, -16.36877046447057],
+          [-68.02177897803006, -16.25805834121941],
+          [-68.4969376694363, -15.737938943526077],
+          [-68.6507462631863, -15.841013897968462]]]),
+    rinconada_mtns = 
+    /* color: #98ff00 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-69.54738934980945, -14.501437505962077],
+          [-69.5611222599657, -14.68749457644095],
+          [-69.26174481855945, -14.740624756719324],
+          [-69.1491349552782, -15.024650046995479],
+          [-69.00356610762195, -15.080349227373233],
+          [-68.89919599043445, -14.990162313693569],
+          [-69.21779950605945, -14.570562772960425]]]),
+    ls8 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
+    western_lakes_bounds = ee.FeatureCollection("users/edethier/western_lakes/western_lakes_bounds"),
+    drought_index = ee.ImageCollection("GRIDMET/DROUGHT"),
+    elevation = ee.Image("CGIAR/SRTM90_V4");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+// SET UP OBJECTS, AREA, ETC.
+
+// Set date for image to display
+  var startDate = '2015-07-22'
+  var endDate = ee.Date(startDate).advance(60, 'days')
+  
+  // Set center of map on lake of interest
+  var selected_lake = western_lakes_bounds.filterMetadata('name','equals','mono_lake')
+  // var selected_lake = ee.Geometry.Point([-121.151, 41.8697])
+  print(selected_lake)
+  // Map.addLayer(selected_lake, {color: 'red'})
+  Map.centerObject(selected_lake,11);
+  
+  var regional_areas = western_lakes_bounds
+
+Map.addLayer(regional_areas, {}, 'water bodies')
+
+// Export.table.toAsset({
+//   collection: regional_areas,
+//   description: 'western_lakes_export'
+// })
+
+// IMPORT PDSI DATASET
+  var pdsi = drought_index.select('pdsi')
+// IMPORT LANDSAT ARCHIVE
+  var cloud_cover_threshold = 20
+  var ls_ic = ls5
+        .filterBounds(regional_areas.geometry()) // filter images with 10 km of AOI
+        .filter(ee.Filter.dayOfYear(200, 240))
+        .filterMetadata('CLOUD_COVER','less_than',cloud_cover_threshold) // select only mostly cloud-free images
+  var ls8_ic = ls8
+        .filterBounds(regional_areas.geometry()) // filter images with 10 km of AOI
+        .filter(ee.Filter.dayOfYear(200, 240))
+        .filterMetadata('CLOUD_COVER','less_than',cloud_cover_threshold) // select only mostly cloud-free images
+
+// IDENTIFY WATER IN ALL IMAGES
+  // For Landsat 5
+  var getLakes = function(image){
+    var image = image.where(image.lt(0), 1)
+    var ndsi = image.normalizedDifference(['B2','B5'])
+    var lake = ee.Image(0)
+          .updateMask(ndsi.gt(0.1))
+          .updateMask(image.select('B4').lt(2000))
+          .rename('lake')
+    var clouds = ee.Image(0)
+            .updateMask(
+              image.select('pixel_qa')
+              .bitwiseAnd(1 << 5))
+    return(image
+            .addBands(lake)
+            .addBands(ndsi.rename('ndsi'))
+            .addBands(clouds.rename('clouds'))
+            )
+  }
+  // For Landsat 8
+  var getLakes_ls8 = function(image){
+    var image = image.where(image.lt(0), 1)
+    var ndsi = image.normalizedDifference(['B3','B6'])
+    var lake = ee.Image(0)
+          .updateMask(ndsi.gt(0.1))
+          .updateMask(image.select('B6').lt(1000))
+          .rename('lake')
+    var clouds = ee.Image(0)
+            .updateMask(
+              image.select('pixel_qa')
+              .bitwiseAnd(1 << 5))
+    return(image
+            .addBands(lake)
+            .addBands(ndsi.rename('ndsi'))
+            .addBands(clouds.rename('clouds'))
+            )
+  }
+  
+  
+
+// Generate image collection with each image containing a snow band ('snow')
+  var ls_lakes = ls_ic.map(getLakes).merge(ls8_ic.map(getLakes_ls8))
+
+// CALCULATE LAKE (AND CLOUD) AREA
+
+  var LakeExtract = function(image){
+    // Only select feature(s) that intersect with selected image area
+    var fc_overlapping = regional_areas.filterBounds(image.geometry().buffer(-14000))
+    var snowArea = image
+          .select(['lake','clouds'])
+          .reduceRegions({
+            collection: fc_overlapping, 
+            reducer: ee.Reducer.count(),
+            scale: 30
+          });
+          
+    return(snowArea.map(function(feature){
+      var ft_with_props = feature.setGeometry(null)
+      .set(
+        'lake_area_km2',ee.Number(feature.get('lake')).multiply(0.0009),
+        'cloud_area_km2',ee.Number(feature.get('clouds')).multiply(0.0009),
+        'latitude', feature.geometry().centroid().coordinates().get(1),
+        'longitude', feature.geometry().centroid().coordinates().get(0),
+            'date',ee.Date(image.get('system:time_start')).format('yyyy-MM-dd'));
+      return(ft_with_props);
+    }));
+    // return(snowArea)
+  };
+
+// Calculate PDSI at each lake for each day in record
+  var pdsiExtract = function(image){
+    var pdsi = image.reduceRegions({
+      collection: regional_areas,
+      reducer: ee.Reducer.mean(),
+      scale: 500})
+      
+    var pdsi_elevation = pdsi.map(function(feature){
+      var lake_elevation = elevation.reduceRegion({
+        geometry: feature.geometry().centroid(),
+        reducer: ee.Reducer.mean(),
+        scale: 500
+      })
+      return(feature.setGeometry(null)
+                    .set(
+                'elevation',lake_elevation.get('elevation'),
+                'pdsi_date',ee.Date(image.get('system:time_start')).format('yyyy-MM-dd')))
+    })
+ 
+    
+    return(pdsi_elevation)
+    
+  }
+    
+  var lake_pdsi_elevation = pdsi.map(pdsiExtract).flatten()
+  // print('lake pdsi elevation', lake_pdsi_elevation.first())
+
+// Export to drive
+  Export.table.toDrive({
+    collection: lake_pdsi_elevation,
+    folder: 'ears76',
+    description: 'lake_pdsi_elevation',
+    fileNamePrefix: 'western_lakes_pdsi_elevation',
+    fileFormat: 'CSV'
+  })
+  
+  var lake_area = ls_lakes.map(LakeExtract)
+            .flatten()
+            .filterMetadata('lake', 'greater_than', 0)
+
+// DISPLAY IMAGE FROM SELECTED DATE
+  
+  var selectImage = ls_lakes
+                      .filterBounds(selected_lake.geometry().buffer(-4000))
+                      .filterDate(startDate, endDate)
+                      .first()
+
+  var one_lake_images = ls_lakes
+                          .filterBounds(selected_lake.geometry())
+                          
+// EXPORT DATA
+Export.table.toDrive({
+  collection: lake_area,
+  fileNamePrefix: 'california_lake_timeseries_ls58',
+  description: 'california_lake_timeseries_ls58',
+  fileFormat: 'CSV',
+  folder: 'ears76'
+})
+
+// Get first and last image in record
+var first_image = one_lake_images.sort('system:time_start').first()
+var last_image = one_lake_images.sort('system:time_start',false).first()
+
+
+
+// PRINT RESULTS
+  // print('All cloud-free landsat images',ls_lakes) 
+  // print('Lake area example',lake_area.first())        
+  // print('Lake area example',lake_area.aggregate_array('lake_area_km2'))        
+
+  // print image date
+  print('first image date',first_image.date())
+  print('last image date',last_image.date())
+  print('selected image date',selectImage.date())
+// MAP RESULTS
+  var landsat_vis = {bands: ['B3','B2','B1'], min: 200, max: 2000}
+  var landsat8_vis = {bands: ['B4','B3','B2'], min: 200, max: 2000}
+
+  Map.addLayer(first_image, landsat_vis, 'Selected lake first image')
+  Map.addLayer(first_image, {bands:'lake', opacity: 0.5}, 'Selected lake first image water')
+  
+  Map.addLayer(last_image, landsat8_vis, 'Selected lake last image')
+  Map.addLayer(one_lake_images.sort('system:time_start',false).first(), {bands:'lake', opacity: 0.5}, 'Selected lake last image water')
+  
+  Map.addLayer(selectImage, landsat8_vis, 'selected image')
+  Map.addLayer(selectImage, {bands:'lake', opacity: 0.5}, 'selected image water')

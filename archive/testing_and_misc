@@ -1,0 +1,150 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-138.8216405296328, 68.73551191316034],
+                  [-138.8216405296328, 68.37401450873229],
+                  [-135.9432225608828, 68.37401450873229],
+                  [-135.9432225608828, 68.73551191316034]]], null, false),
+            {
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-136.3607030296328, 68.80711681589808],
+                  [-136.3607030296328, 68.57556307677152],
+                  [-133.7459569358828, 68.57556307677152],
+                  [-133.7459569358828, 68.80711681589808]]], null, false),
+            {
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-134.3611913108828, 68.94963708122017],
+                  [-134.3611913108828, 68.3578128558669],
+                  [-133.0428319358828, 68.3578128558669],
+                  [-133.0428319358828, 68.94963708122017]]], null, false),
+            {
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-137.1517186546328, 68.47098216734398],
+                  [-137.1517186546328, 68.17883054137396],
+                  [-133.6141209983828, 68.17883054137396],
+                  [-133.6141209983828, 68.47098216734398]]], null, false),
+            {
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-141.8978124046328, 68.65568032555575],
+                  [-141.8978124046328, 68.47904408753845],
+                  [-138.4261327171328, 68.47904408753845],
+                  [-138.4261327171328, 68.65568032555575]]], null, false),
+            {
+              "system:index": "4"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-141.5462499046328, 68.55147206891563],
+                  [-141.5462499046328, 67.69185876497527],
+                  [-140.9090428733828, 67.69185876497527],
+                  [-140.9090428733828, 68.55147206891563]]], null, false),
+            {
+              "system:index": "5"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-142.3812108421328, 68.71956840704408],
+                  [-142.3812108421328, 67.55803062277718],
+                  [-140.0521092796328, 67.55803062277718],
+                  [-140.0521092796328, 68.71956840704408]]], null, false),
+            {
+              "system:index": "6"
+            })]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var overlap = function(feature) {
+  // find the current feature in the big collection
+  //var self = ee.Feature(geometry.filter(ee.Filter.eq("system:index",feature.id())).first());
+  // look at everything except the current feature
+  var others = geometry.filter(ee.Filter.neq("system:index",feature.id()));
+  // find the intersecting others and merge
+  var intersecting = ee.Feature(others.filterBounds(feature.geometry())
+                                      .union(1).first());
+  
+  // find the intersection of self and merged
+  var intersection = feature.intersection(intersecting, 1);
+  // subtract the intersection from self and update its geometry
+  var new_geom = feature.difference(intersection,1).geometry();
+  feature = feature.setGeometry(new_geom);
+  feature.set({modified:"yes"});
+  // continue to next feature
+  return feature;
+};
+Map.addLayer(geometry, {}, "all shapes");
+var output = geometry.map(overlap);
+Map.addLayer(geometry,{},"modified shapes");
+print(output);
+print(geometry)
+
+var ls5old = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR') // use LANDSAT/LT05/C02/T1_L2
+                                //.filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,270))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20)
+var ls7old = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR') // use LANDSAT/LE07/C02/T1_L2
+                                //.filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,270))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20)
+var ls8old = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+                                //.filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,270))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20)
+                                
+                      
+print(ls5old.first().bandTypes())
+print(ls7old.first().bandTypes())
+print(ls8old.first().bandTypes())
+/*
+print(output);
+var intersecting = ee.Feature(geometry
+                            .filter(ee.Filter.neq("system:index","0"))
+                            .filterBounds(geometry.first().geometry())
+                            .union(1).first());
+var base = ee.Feature(geometry.first());
+print(intersecting);
+Map.addLayer(intersecting, {}, "intersecting shapes");
+Map.addLayer(base,{}, "shape 0");
+
+var intersection = base.intersection(intersecting,1);
+Map.addLayer(intersection,{},'intersection');
+
+base = base.difference(intersection,1);
+Map.addLayer(base,{},'shape 0 again');
+*/

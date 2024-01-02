@@ -1,0 +1,582 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = /* color: #0b4a8b */ee.Geometry.MultiPoint(),
+    mackenzie = 
+    /* color: #bf04c2 */
+    /* shown: false */
+    ee.Geometry.LineString(
+        [[-134.2465691616823, 68.6722175532347],
+         [-134.1971306851198, 68.63722731907842],
+         [-134.1476922085573, 68.60318441368062],
+         [-134.19987726715104, 68.58413792328467],
+         [-134.2410759976198, 68.54097303140227],
+         [-134.26030207183854, 68.50577763308955],
+         [-134.22184992340104, 68.49269105565659],
+         [-134.1257195523073, 68.50275832712433],
+         [-134.0927605679323, 68.49772525264883],
+         [-134.0982537319948, 68.4765740795053],
+         [-134.15043879058854, 68.4574202284754],
+         [-134.2136101773073, 68.44834168636945],
+         [-134.19438410308854, 68.42108419308911],
+         [-134.07353449371354, 68.40592695916912],
+         [-134.0598015835573, 68.38772489671442],
+         [-134.15593195465104, 68.36849576092364],
+         [-134.2300896694948, 68.35127693911646],
+         [-134.23283625152604, 68.30868036690815],
+         [-134.40861750152604, 68.28633605162516],
+         [-134.3674187710573, 68.25481369918849],
+         [-134.4333367398073, 68.21815245238963],
+         [-134.4553093960573, 68.19163832293026],
+         [-134.42509699371354, 68.13135772593334],
+         [-134.47453547027604, 68.03499002865465],
+         [-134.4388299038698, 67.95678074234223],
+         [-134.34269953277604, 67.88761369359466],
+         [-134.33171320465104, 67.82791459077875],
+         [-134.3234734585573, 67.75628427760898],
+         [-134.28227472808854, 67.68339141153241],
+         [-134.2026238491823, 67.62700495466262],
+         [-133.9883904507448, 67.57153128762995],
+         [-133.81472431364185, 67.49817780498019],
+         [-133.78725849332935, 67.47083210952263],
+         [-133.77077900114185, 67.45188202354258],
+         [-133.65542255582935, 67.46767481056398],
+         [-133.5922511691106, 67.4718844493123],
+         [-133.5483058566106, 67.44872220736981],
+         [-133.5483058566106, 67.4023299941533],
+         [-133.41921650114185, 67.33574731329162],
+         [-133.07864032926685, 67.24136930274052],
+         [-133.0099757784856, 67.20947271216173],
+         [-132.8396876925481, 67.19883111369506],
+         [-132.5924953097356, 67.25199210369632],
+         [-132.41946064176685, 67.30927414087272],
+         [-132.1145900362981, 67.33680563140392],
+         [-131.68161941844724, 67.40353742420699],
+         [-131.5085847504785, 67.4572991663015],
+         [-131.23117996532224, 67.45203377213693],
+         [-131.1350495942285, 67.45308694421828],
+         [-131.01145340282224, 67.47940109726548],
+         [-130.90708328563474, 67.47098373722758],
+         [-130.84665848094724, 67.40353742420699],
+         [-130.7615144379785, 67.33907459604886],
+         [-130.5417878754785, 67.31684219064844],
+         [-130.35227371532224, 67.27019299876498],
+         [-130.2341706879785, 67.10727296605565],
+         [-130.23691727000974, 66.99804636764657],
+         [-130.151773227041, 66.87430772747592],
+         [-130.11057449657224, 66.80300862746594],
+         [-129.9595124848535, 66.7596960261575],
+         [-129.80845047313474, 66.73909579067121],
+         [-129.62717605907224, 66.73584154581553],
+         [-129.49534012157224, 66.68262798131816],
+         [-129.3662507661035, 66.62712039177573],
+         [-129.283853305166, 66.5965926226954],
+         [-129.2344148286035, 66.55073040564959],
+         [-129.07785965282224, 66.52995536537242],
+         [-129.00095535594724, 66.45216854876146],
+         [-128.95933901921882, 66.39394391360861],
+         [-128.81926333562507, 66.38184255805659],
+         [-128.69566714421882, 66.35431772481772],
+         [-128.66820132390632, 66.32235103988906],
+         [-128.63249575750007, 66.28261159846429],
+         [-128.71489321843757, 66.24059623838612],
+         [-128.82200991765632, 66.22399193422594],
+         [-128.89616763250007, 66.19629380295049],
+         [-129.09941470281257, 66.12302466235579],
+         [-129.09666812078132, 65.97025747247682],
+         [-129.06370913640632, 65.9064269104806],
+         [-128.99504458562507, 65.85255122539512],
+         [-128.86870181218757, 65.80869385996212],
+         [-128.79729067937507, 65.77490649254871],
+         [-128.78585232206524, 65.72094032453833],
+         [-128.8105715603465, 65.68025198549063],
+         [-128.70894802519024, 65.65648755382493],
+         [-128.60457790800274, 65.63610068572218],
+         [-128.530420193159, 65.61569778681897],
+         [-128.31893337675274, 65.60775899467473],
+         [-128.11568630644024, 65.61683170193392],
+         [-127.959131130659, 65.58619861125528],
+         [-127.79158962675275, 65.52482402292776],
+         [-127.56087673612775, 65.44390745728654],
+         [-127.4049776217527, 65.39821021418881],
+         [-127.3006075045652, 65.33753852628851],
+         [-127.1248262545652, 65.30313391790287],
+         [-126.88587361784646, 65.2594901683187],
+         [-126.6688936373777, 65.22843622731767],
+         [-126.3942354342527, 65.14891017594196],
+         [-126.2459200045652, 65.10847952938715],
+         [-126.15674754609248, 65.01556456275964],
+         [-126.05787059296748, 64.9574975451764],
+         [-125.94526072968623, 64.92026842134278],
+         [-125.78046580781123, 64.92026842134278],
+         [-125.66236278046748, 64.88298753708773],
+         [-125.50855418671748, 64.89580868275921],
+         [-125.32178660859248, 64.87832378435422],
+         [-125.21741649140498, 64.87016026855869],
+         [-125.12952586640498, 64.86432766725252],
+         [-125.11579295624873, 64.80827026269229],
+         [-125.09931346406123, 64.7403783266165],
+         [-125.09382029999873, 64.69228264964347],
+         [-125.03614207734248, 64.68288815825969],
+         [-124.97846385468623, 64.69463076364198],
+         [-124.89606639374873, 64.69463076364198],
+         [-124.87409373749873, 64.67349040959486],
+         [-124.91444573370346, 64.65431566634543],
+         [-124.92387553681513, 64.63307236949255],
+         [-124.89160319794794, 64.62056733954378],
+         [-124.87873633328984, 64.60833867267837],
+         [-124.8929905201074, 64.59611039389766],
+         [-124.92216427448392, 64.5747416519247],
+         [-124.91254588593623, 64.54984261415251],
+         [-124.94225295081341, 64.5113321166361],
+         [-124.89556105628216, 64.48886595264703],
+         [-124.81316359534466, 64.46993274872939],
+         [-124.78844435706341, 64.43558290118976],
+         [-124.76372511878216, 64.38932030885435],
+         [-124.71154006018841, 64.31561392464279],
+         [-124.55498488440716, 64.29894320340199],
+         [-124.48906691565716, 64.25509675611728],
+         [-124.42314894690716, 64.20135869722161],
+         [-124.42314894690716, 64.14991139107566],
+         [-124.43688185706341, 64.05514285911897],
+         [-124.42589552893841, 64.01907016533573],
+         [-124.37645705237591, 64.00222027494127],
+         [-124.34899123206341, 63.95884528873656],
+         [-124.22814162268841, 63.972105893993714],
+         [-124.17046340003216, 63.92989124372542],
+         [-124.12377150550091, 63.89728215725684],
+         [-124.02764113440716, 63.86463514764777],
+         [-123.97270949378216, 63.757966446744256],
+         [-123.88207228675091, 63.71178002416422],
+         [-123.80791457190716, 63.63626111648971],
+         [-123.75298293128216, 63.53362386868088],
+         [-123.68157179846966, 63.41832839873344],
+         [-123.67058547034466, 63.333400406301266],
+         [-123.59093459143841, 63.261817202088444],
+         [-123.3650378217478, 63.17146810515776],
+         [-123.3046130170603, 63.13673871393582],
+         [-123.27989377877905, 63.063422667797006],
+         [-123.25792112252905, 63.03603712261585],
+         [-123.2551745404978, 62.98493169036956],
+         [-123.2222155561228, 62.966212209963054],
+         [-123.2277087201853, 62.91248320947434],
+         [-123.24693479440405, 62.85239007015792],
+         [-123.2002428998728, 62.793429529040246],
+         [-123.1562975873728, 62.75950510833292],
+         [-123.1892565717478, 62.70665613532911],
+         [-123.2002428998728, 62.618364136216556],
+         [-123.2551745404978, 62.49684941605188],
+         [-123.2991198529978, 62.41652874996705],
+         [-123.36229123971655, 62.34649916605977],
+         [-123.4089831342478, 62.29801946349472],
+         [-123.35130491159155, 62.26224751029153],
+         [-123.24144163034155, 62.225153159693505],
+         [-123.12608518502905, 62.1803233122406],
+         [-123.0134753217478, 62.153393454155534],
+         [-122.8816393842478, 62.13927776833231],
+         [-122.7662829389353, 62.12772367520877],
+         [-122.67015256784155, 62.14826123891123],
+         [-122.51085081002905, 62.14184474617217],
+         [-122.4586657514353, 62.130291632299574],
+         [-122.3652819623728, 62.143128153500726],
+         [-122.2828845014353, 62.09817652188218],
+         [-122.09337034127905, 62.06088035759488],
+         [-121.9917468061228, 62.05444535321645],
+         [-121.92518290410317, 62.03611720470027],
+         [-121.84553202519692, 61.99874478481731],
+         [-121.72468241582192, 61.97810587309221],
+         [-121.62855204472817, 61.96261751607144],
+         [-121.56812724004067, 61.93032483840604],
+         [-121.40882548222817, 61.888940352080915],
+         [-121.25227030644692, 61.846203913915254],
+         [-121.01606425175942, 61.839723493996594],
+         [-120.84302958379067, 61.82805528675521],
+         [-120.70295390019692, 61.79172580750627],
+         [-120.71668681035317, 61.76315105493387],
+         [-120.68922099004067, 61.715033606967445],
+         [-120.70844706425942, 61.66684094600172],
+         [-120.74415263066567, 61.61465606785673],
+         [-120.68647440800942, 61.58591683601971],
+         [-120.66948827975183, 61.553226244041895],
+         [-120.61181005709558, 61.521810851350615],
+         [-120.54039892428308, 61.495607077677214],
+         [-120.47997411959558, 61.47069303525791],
+         [-120.41405615084558, 61.44182027933526],
+         [-120.33989843600183, 61.44313325767647],
+         [-120.25475439303308, 61.44313325767647],
+         [-120.16686376803308, 61.406348961599655],
+         [-120.05700048678308, 61.36557289226871],
+         [-119.95537695162683, 61.32210762802985],
+         [-119.84002050631433, 61.32342564387066],
+         [-119.73015722506433, 61.28781975463261],
+         [-119.60930761568933, 61.27462212711777],
+         [-119.51592382662683, 61.23103057647605],
+         [-119.44176611178308, 61.221776109597826],
+         [-119.33464941256433, 61.23235242097999],
+         [-119.24126562350183, 61.21516410945436],
+         [-118.99681982272058, 61.25085241272592],
+         [-118.83202490084558, 61.26670088713836],
+         [-118.69194921725183, 61.30101183466521],
+         [-118.52990087740808, 61.30760579488588],
+         [-118.40355810397058, 61.35372471263581],
+         [-118.32940038912683, 61.41292076620625],
+         [-118.11302276461967, 61.44838461823913],
+         [-117.93174835055717, 61.423432777047175],
+         [-117.76970001071342, 61.387940549464226],
+         [-117.62413116305717, 61.29705479304394],
+         [-117.40440460055717, 61.22442052074909],
+         [-117.20115753024467, 61.12245015789127],
+         [-116.97319122165092, 61.09325516710712]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+//-------------------------------------------------------
+// Load the datasets, geometries, and visual parameter dictionaries   
+//-------------------------------------------------------
+
+// Load Landsat 8 Level 2, Collection 2, Tier 1 dataset for
+// atmospherically corrected surface reflectance
+var landsat = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2");
+
+// Define the band names to change them to standard names
+var landsatBandNames = ['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','SR_B6', 'SR_B7'];
+var standardBandNames = ['ultrablue','blue','green', 'red', 'nir','swir1','swir2'];
+
+
+// Locate Santa Rosa, Peru
+//var miningCenter = ee.Geometry.Point([-69.96, -12.94]);
+
+//Cuprite, NV
+//var miningCenter = ee.Geometry.Point([-117.17, 37.54]); 
+
+//Mackenzie River
+         
+var PeelRiver = ee.Geometry.Point([-134.6245250893785, 67.66711383507051]);
+
+var Lac_a_Jacques = ee.Geometry.Point([-127.43907287328602, 66.1565807725609]);
+   
+/*
+// Santa Rosa mining area AOI       
+var miningAOI = 
+    ee.Geometry.Polygon(
+        [[[-70.69, -12.61],
+          [-70.69, -13.15],
+          [-69.79, -13.15],
+          [-69.79, -12.611]]], null, false); 
+*/
+          
+/*
+// Cuprite area AOI       
+var miningAOI =  
+    ee.Geometry.Polygon(
+        [[[-117.23, 37.63],
+          [-117.23, 37.47],
+          [-116.97, 37.47],
+          [-116.97, 37.63]]], null, false); 
+*/
+
+//Mackenzie River AOI
+var MackAOI = 
+    ee.Geometry.Polygon(
+        [[[-134.97196771633162, 67.71533391379944],
+          [-134.97196771633162, 67.58399601429167],
+          [-134.36840631496443, 67.58399601429167],
+          [-134.36840631496443, 67.71533391379944]]], null, false);
+
+
+//Another arctic AOI       
+var Arctic_AOI = 
+    ee.Geometry.Polygon(
+        [[[-134.76039314661108, 68.53345288358153],
+          [-134.76039314661108, 68.39102966648308],
+          [-133.79840279016577, 68.39102966648308],
+          [-133.79840279016577, 68.53345288358153]]], null, false);
+          
+
+
+
+
+//------------------------------------------------------
+// visParams Dictionaries
+//------------------------------------------------------
+
+// True color visParams
+var landsatVis = {
+  min: 0,
+  max: 20000,
+  gamma: 0.5,
+  bands: ['red', 'green', 'blue']
+};
+
+// Define a visParams dictionary for rivers only layer
+var RivVis = {
+  min: 0,
+  max: 1,
+ palette: 'blue',
+};
+
+
+//*********************************************************
+// Define the functions
+//*********************************************************
+
+
+//-------------------------------------------------------
+// Function to get cloud-free landsat composite for given year
+//-------------------------------------------------------
+var getCloudFreeImage = function(year) {
+  
+    // Define start and end dates for images
+  var startDate = ee.Date.fromYMD(year, 6, 1)
+  var endDate = ee.Date.fromYMD(year, 8, 30)
+
+  //Get the Landsat collection from given year for Mackenzie Basin
+  var imageCollection = landsat
+    .filterBounds(mackenzie)
+    .filterDate(startDate, endDate)
+    .sort('CLOUD_COVER', false)
+    .select(landsatBandNames,standardBandNames)
+    
+  // Get a cloud-free Landsat composite image
+  var image = imageCollection.mosaic();
+  
+  // Reduce image noise by smoothing  
+  //var smoothing_radius = 200;
+  //image = image.focal_mean(smoothing_radius, 'circle', 'meters');
+  
+  // return the image
+  return image;
+}
+//-------------------------------------------------------
+
+
+//-------------------------------------------------------
+// Function to calcuates PCA's of an image
+// Number of PCs calculated equals number of bands in image
+// Based on code at:
+// https://developers.google.com/earth-engine/guides/arrays_eigen_analysis
+// Before calling use must set var boundary = AOI
+//-------------------------------------------------------
+function getPCA(maskedImage){
+  var image = maskedImage.unmask()
+  var scale = 30;
+  var region = boundary;
+  var bandNames = image.bandNames();
+  // Mean center the data to enable a faster covariance reducer
+  // and an SD stretch of the principal components.
+  var meanDict = image.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: region,
+    scale: scale,
+    maxPixels: 1e9,
+    bestEffort: true,
+    tileScale: 16
+  });
+  var means = ee.Image.constant(meanDict.values(bandNames));
+  var centered = image.subtract(means);
+  // This helper function returns a list of new band names.
+  var getNewBandNames = function(prefix) {
+    var seq = ee.List.sequence(1, bandNames.length());
+    return seq.map(function(b) {
+      return ee.String(prefix).cat(ee.Number(b).int());
+    });
+  };
+  // This function accepts mean centered imagery, a scale and
+  // a region in which to perform the analysis.  It returns the
+  // Principal Components (PC) in the region as a new image.
+  var getPrincipalComponents = function(centered, scale, region) {
+    // Collapse the bands of the image into a 1D array per pixel.
+    var arrays = centered.toArray();
+    
+    // Compute the covariance of the bands within the region.
+    var covar = arrays.reduceRegion({
+      reducer: ee.Reducer.centeredCovariance(),
+      geometry: region,
+      scale: scale,
+      maxPixels: 1e9,
+      bestEffort: true,
+      tileScale: 16
+    });
+
+    // Get the 'array' covariance result and cast to an array.
+    // This represents the band-to-band covariance within the region.
+    var covarArray = ee.Array(covar.get('array'));
+
+    // Perform an eigen analysis and slice apart the values and vectors.
+    var eigens = covarArray.eigen();
+
+    // This is a P-length vector of Eigenvalues.
+    var eigenValues = eigens.slice(1, 0, 1);
+    
+    // Compute Percentage Variance of each component
+    var eigenValuesList = eigenValues.toList().flatten()
+    var total = eigenValuesList.reduce(ee.Reducer.sum())
+    var percentageVariance = eigenValuesList.map(function(item) {
+      return (ee.Number(item).divide(total)).multiply(100).format('%.2f')
+    })
+    // This will allow us to decide how many components capture
+    // most of the variance in the input
+    print('Percentage Variance of Each Component', percentageVariance)
+    // This is a PxP matrix with eigenvectors in rows.
+    var eigenVectors = eigens.slice(1, 1);
+    print ('PC Loadings', eigenVectors)
+    // Convert the array image to 2D arrays for matrix computations.
+    var arrayImage = arrays.toArray(1);
+
+    // Left multiply the image array by the matrix of eigenvectors.
+    var principalComponents = ee.Image(eigenVectors).matrixMultiply(arrayImage);
+
+    // Turn the square roots of the Eigenvalues into a P-band image.
+    var sdImage = ee.Image(eigenValues.sqrt())
+      .arrayProject([0]).arrayFlatten([getNewBandNames('sd')]);
+
+    // Turn the PCs into a P-band image, normalized by SD.
+    return principalComponents
+      // Throw out an an unneeded dimension, [[]] -> [].
+      .arrayProject([0])
+      // Make the one band array image a multi-band image, [] -> image.
+      .arrayFlatten([getNewBandNames('pc')])
+      // Normalize the PCs by their SDs.
+      .divide(sdImage);
+  };
+  var pcImage = getPrincipalComponents(centered, scale, region);
+  return pcImage.mask(maskedImage.mask());
+}
+
+
+
+
+
+
+//******************************************************
+// Center map and add true color image
+//******************************************************
+
+
+// Center map on selected basin
+Map.centerObject(Arctic_AOI, 11);
+
+// Get cloud-free image for given year
+var year = 2019;
+var landsatImage = getCloudFreeImage(year);
+
+// Add true color median image to display
+Map.addLayer(landsatImage, landsatVis, 'True Color');
+
+
+
+//----------------------------------------------------
+// Cluster image using PCA
+//----------------------------------------------------
+
+// Define boundary for PCA analysis
+var boundary = Arctic_AOI
+
+// Call the getPCA, keeping just first three bands
+var fullPCA = getPCA(landsatImage);
+
+// Call the getPCA, keeping just first three bands
+var firstThreePCA = fullPCA.select(['pc1', 'pc2', 'pc3'])
+
+//Display image using first three PCA bands
+//Map.addLayer(firstThreePCA, {bands: ['pc3', 'pc1', 'pc2']}, 'PCA')
+//----------------------------------------------------
+
+
+
+
+
+//----------------------------------------------------
+// Cluster image using K means
+//----------------------------------------------------
+
+// Sample with image within AOI
+var sampleDataset = landsatImage.sample({ 
+  region: Arctic_AOI,
+  scale: 30,
+  numPixels: 5000
+});
+
+// Set thenumber of clusters and create the K-means clusterer
+var numberOfClusters = 9
+var clusterer = ee.Clusterer.wekaKMeans(numberOfClusters).train(sampleDataset);
+
+// Use the clusterer to cluster the image
+var clusteredImage = landsatImage.cluster(clusterer);
+
+// Display the clusters with random colors.
+Map.addLayer(clusteredImage.randomVisualizer(), {}, 'Orig Image Clusters');
+//----------------------------------------------------
+
+
+
+
+//----------------------------------------------------
+// Apply K means clusterer to second image
+//----------------------------------------------------
+
+// Get cloud-free image for another year >= 2014
+year = 2014;
+var landsatImage2 = getCloudFreeImage(year);
+
+// Add true color  image to display
+//Map.addLayer(landsatImage2, landsatVis, '2nd Image');
+
+
+// Use the clusterer to cluster the image
+var clusteredImage2 = landsatImage2.cluster(clusterer);
+
+// Display the clusters with random colors.
+//Map.addLayer(clusteredImage2.randomVisualizer(), {}, '2nd Image Clusters');
+//----------------------------------------------------
+
+
+
+
+//----------------------------------------------------
+// Cluster image using PCA
+//----------------------------------------------------
+
+// Sample with image within AOI
+var sampleDataset = fullPCA.sample({ 
+  region: Arctic_AOI,
+  scale: 30,
+  numPixels: 5000
+});
+
+
+// Create the K-means clusterer
+var clustererPCA = ee.Clusterer.wekaKMeans(numberOfClusters).train(sampleDataset);
+
+// Use the clusterer to cluster the image
+var clusteredPCAImage = fullPCA.cluster(clustererPCA);
+
+// Display the clusters with random colors.
+Map.addLayer(clusteredPCAImage.randomVisualizer(), {}, 'PCA Image Clusters');
+
+
+//----------------------------------------------------
+
+
+
+
+
+//Create a mask that shows where the copper deposits are based
+// on the image classificiation from PCS/K Means clustering
+var mask = clusteredPCAImage.select('cluster').eq(7);
+var river = mask.updateMask(mask);
+Map.addLayer(river, RivVis, 'Rivers');
+
+
+
+/*
+//Create a mask that shows where the copper deposits are based
+// on the image classificiation from PCS/K Means clustering
+var bleachedsandmask = clusteredPCAImage.select('cluster').eq(3);
+var bleachedSand = mask.updateMask(bleachedsandmask);
+Map.addLayer(bleachedSand, {}, 'Bleached Sand');
+
+//Create a mask that shows where the copper deposits are based
+// on the image classificiation from PCS/K Means clustering
+var sandmask = clusteredPCAImage.select('cluster').eq(6);
+var sand = mask.updateMask(sandmask);
+Map.addLayer(sand, {}, 'Sand');
+
+*/
+

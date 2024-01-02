@@ -1,0 +1,58 @@
+This file has a list of assets used in this project. Each asset is listed with the file path that can be used for import
+(e.g. var Good_Thiessens = ee.FeatureCollection(“users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3”)) and a link to view
+the asset in the Earth Engine code editor, where appropriate. Not all assets are used in all files, but all assets listed here are used in
+at least one file.
+
+WesternMack_1: study area 
+Polygon, avaiable as geometry import in MASTER_meander_rates
+
+New_cpixel_AOI: area in which connected pixel mask is applied
+Polygon, avaiable as geometry import in MASTER_meander_rates
+
+cpixel_Masks: collection of all connected pixel mask images
+“users/jordanffieldsgr/ArcticCarbon/cpixel_Masks_Sept23”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/cpixel_Masks_Sept23
+
+Lakes: collection of large lakes from which streamlines are filtered out in buffer_generator
+“users/JohnPerrotti/HydroLAKES_polys_v10_shp”
+<viewing link>
+
+MERIT_VF_Ord7: vector streamlines before being combined
+“users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7
+
+MERIT_Unioned_Streams: combined vector streamlines
+“users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams
+
+MERIT_Segment_Buffers: streamlines buffered into vector buffers in buffer_generator
+“users/jordanffieldsgr/ArcticCarbon/MERIT_Segment_Buffers”
+<viewing link>
+
+Single_Unioned_Buffer: buffers joined into a single feature in thiessen_polys
+“users/jekreisler/mackenzie/Single_Unioned_Buffer”
+https://code.earthengine.google.com/?asset=users/jekreisler/mackenzie/Single_Unioned_Buffer
+
+Good_Thiessens: all thiessen polygons (study sites) used in analysis
+“users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3
+
+Mack_GT_Sites: location of all sites used for groundtruthing (results in supplementary information)
+“users/jordanffieldsgr/ArcticCarbon/Mack_Groundtruth_Sites”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/Mack_Groundtruth_Sites
+
+Mack_SlopeMask: image used to mask out high-relief areas often misidentified as water
+“users/jordanffieldsgr/ArcticCarbon/Mack_SlopeMask”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/Mack_SlopeMask
+
+High_Relief_Region: region in which slope mask is applied
+“users/jordanffieldsgr/ArcticCarbon/High_Relief_Region”
+https://code.earthengine.google.com/?asset=users/jordanffieldsgr/ArcticCarbon/High_Relief_Region
+
+NDVI export:
+
+Temp export:
+
+Land gained/lost export:
+
+Total water area export:

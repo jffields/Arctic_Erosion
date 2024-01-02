@@ -1,0 +1,58 @@
+///////////////////////////////////////////////////////////////////////////////////////////////
+/////// LANDSAT 7 and 8 HARMONIZATION (because LS8 has slighlty different band values) ///////
+// Code taken from: https://developers.google.com/earth-engine/tutorials/community/landsat-etm-to-oli-harmonization
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Table 2 ELM+ regression coefficients (use these to make LS8 bands in terms of LS7)
+var coefficients = {
+  itcps: ee.Image.constant([0.0183, 0.0123, 0.0123, 0.0448, 0.0306, 0.0116])
+                 .multiply(10000),
+  slopes: ee.Image.constant([0.885, 0.9317, 0.9372, 0.8339, 0.8639, 0.9165])
+ };
+
+// Function to get and rename bands of interest from OLI (LANDSAT 8).
+function renameOli(img) {
+  return img.select(
+      ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'pixel_qa'],
+      ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']);
+}
+
+// Function to get and rename bands of interest from ETM+ (LANDSAT 7).
+function renameEtm(img) {
+  return img.select(
+      ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa'],
+      ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']);
+}
+
+// Transformation function, applies the linear model to OLI data (LANDSAT 8) and
+// reattaches the pixel_qa band for later use in cloud and shadow masking.
+// original code cast ETM data to signed 16-bit int (toShort()), but I checked
+// and all data (TM, ETM+, OLI) seems to be signed 16-bit int already so not going to cast
+function OliToEtm(img) {
+  return img.select(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+      .multiply(coefficients.slopes)
+      .add(coefficients.itcps)
+      .round()
+      .addBands(img.select('pixel_qa'));
+}
+
+// Define wrapper function to prepare OLI images: 
+// consolidates all above functions for convenience in 
+// applying them to their respective image collections.
+function prepOli(img) {
+  var orig = img;
+  img = renameOli(img);
+  img = OliToEtm(img);
+  return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+}
+
+// Define function to prepare ETM+ images.
+// the same coefficients work for TM images as well (landsat 5)
+function prepEtm(img) {
+  var orig = img;
+  img = renameEtm(img);
+  return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+}
+
+//////////// END HARMONIZATION CODE ////////////
+

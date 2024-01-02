@@ -1,0 +1,270 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var lakes = ee.FeatureCollection("users/JohnPerrotti/HydroLAKES_polys_v10_shp"),
+    MERIT_VF_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7"),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams"),
+    WesternMack_1 = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-136.6456709949952, 69.08700872525338],
+          [-135.9095870106202, 67.87016851592068],
+          [-139.8097334949952, 65.58436510570839],
+          [-137.7223311512452, 64.72117178492286],
+          [-137.0961104481202, 64.18582131453974],
+          [-132.86735897662507, 64.13488777854788],
+          [-132.14226132037507, 63.96663147147016],
+          [-131.72478085162507, 63.62706112028824],
+          [-132.16423397662507, 61.21772241622296],
+          [-130.81291561725007, 58.961706898233146],
+          [-127.73674374225007, 56.99327089862608],
+          [-126.27556210162507, 55.547683741517396],
+          [-124.39450906519401, 55.18418223783264],
+          [-123.46067117456901, 54.82504107514072],
+          [-122.66965554956901, 54.57108866017406],
+          [-119.70334695581901, 53.55889196832195],
+          [-117.87961648706901, 52.48844832964847],
+          [-115.04514383081901, 52.94100627077756],
+          [-112.71604226831901, 54.187173343213814],
+          [-111.51853250269401, 55.259381607205],
+          [-109.68381570581901, 55.781807596214904],
+          [-107.81613992456901, 56.79995924397231],
+          [-107.93698953394401, 57.337475413529546],
+          [-110.2660286621488, 58.19765033824793],
+          [-110.6780159668363, 58.461542875776566],
+          [-110.7823860840238, 58.6463837443152],
+          [-110.87851645511755, 58.64209618896625],
+          [-111.02133872074255, 58.742002033794655],
+          [-111.0185921387113, 59.54630702154173],
+          [-112.3589241699613, 60.540548039770066],
+          [-113.11835410160192, 61.29017605178613],
+          [-113.56879355472692, 61.34158994661358],
+          [-113.66217734378942, 61.31259760425681],
+          [-114.01648642582067, 60.892299219090994],
+          [-114.63446738285192, 60.8695777282006],
+          [-114.93109824222692, 60.858879663748255],
+          [-115.15082480472692, 60.79997622390134],
+          [-116.18903281253942, 60.90832818122992],
+          [-116.83447958988317, 61.12393190089451],
+          [-117.7971565918363, 61.64517054926209],
+          [-119.22054667045435, 62.47716940751586],
+          [-119.90169901420435, 62.750060973609536],
+          [-122.31319803764185, 62.69467530114029],
+          [-122.99600661276838, 63.55539257222384],
+          [-124.15231764792463, 64.60551065147534],
+          [-123.80075514792463, 64.79331762591438],
+          [-123.62772047995588, 64.95425769744203],
+          [-123.33246291159651, 65.04943298104435],
+          [-123.51511061667463, 65.15811986175466],
+          [-124.08509852381793, 65.23314032381094],
+          [-125.22767664881793, 65.83822432510175],
+          [-126.28236414881793, 66.43049026853159],
+          [-127.64673126694969, 66.52074455978627],
+          [-128.20909393784814, 66.45911486041581],
+          [-130.0117241586976, 67.33934298019352],
+          [-130.9180962290101, 67.55214316628319],
+          [-131.2312065805726, 67.52695949984033],
+          [-131.7200981821351, 67.47230296197807],
+          [-132.9066216196351, 67.30121806529371],
+          [-133.3790337290101, 67.54165322583393],
+          [-133.3131157602601, 67.75473063347964],
+          [-133.77462392248088, 68.11158271667242],
+          [-133.64004140294963, 68.54969176170329],
+          [-133.83779530919963, 69.47427105762804],
+          [-135.28799062169963, 69.73462108489251]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+
+/*
+The streamlines dataset, MERIT Hydro, is filtered to:
+ - remove large lakes
+ - remove streams smaller than 7th order
+ - keep only streamlines within the study area
+
+The filtered dataset is imported below as an asset to save computation time
+To generate the asset from scratch, run code in block comment below
+*/
+
+/*
+// Generate lake areas to filter out the river lines that pass through lakes
+var lakes_filtered = lakes // data source is WWF Hydrosheds
+                        .filterBounds(WesternMack_1)
+                        .filter(ee.Filter.eq('Country', 'Canada'))
+                        .filter(ee.Filter.gte('Lake_area', 25));
+
+
+// Creating filters to select for rivers outside lakes
+var filterInside = ee.Filter.bounds(lakes_filtered);
+var filterNot = filterInside.not();
+
+var MERIT_Vectors = ee.FeatureCollection(MERIT_Vectors_Mack)
+  // filter by stream order greater than or equal to 7
+                    .filter(ee.Filter.gte('strmOrder', 7)) // filter for streams greater than or equal to 7th order
+                    .filter(ee.Filter.bounds(WesternMack_1)) // filter for Western Mackenzie Basin
+                    .filter(filterNot); // Filter out lakes greater than 50km2 area
+
+//Map.addLayer(MERIT_Vectors_Mack, {}, 'MERIT_Vectors_All');
+Map.addLayer(MERIT_Vectors, {}, 'MERIT_Vectors');
+
+// Export MERIT_Vectors FeatureCollection as an Earth Engine asset.
+Export.table.toAsset({
+  collection: MERIT_Vectors,
+  description:'MERIT_Vectors_filtered',
+  assetId: 'MERIT_Vectors_filtered',
+});
+*/
+
+// Import filtered streamlines dataset
+// 'VF_Ord7' stands for vector streamlines filtered
+// to remove lakes and keep only rivers of 7th order and greater
+var MERIT = ee.FeatureCollection(MERIT_VF_Ord7); 
+
+
+////////////////////////////
+// Features (streamline segments) in dataset are sometimes very short
+//  and we want segments approx 5 km long, so combine adjacent features
+//  of identical stream order together
+// NOTE: there is probably a less complicated way to do this...
+////////////////////////////
+
+// Make MERIT Vector file a raster again
+// Create an empty image into which to paint the streamline features, cast to byte.
+var empty = ee.Image().byte();
+
+// Paint the image with colors corresponding to stream order
+var riverSegments = empty.paint({
+  featureCollection: MERIT,
+  color: 'strmOrder',
+  width: 4
+});
+
+// connect river segments in the riverSegments image, colored by stream order
+// this step is maybe unnecessary?
+var Connected = riverSegments
+                            .select('constant') // this is the band that has the stream order info
+                            .int32()
+                            .connectedComponents(ee.Kernel.plus(1), 1024);
+ 
+
+// Now re-vectorize image so that each stretch of constant stream order is a feature
+// this creates a polygon, so we will have to make it back into a line after this step
+var StrmOrder_Collection = Connected.reduceToVectors({
+  scale: 2000,
+  geometry: WesternMack_1,
+  geometryType: 'polygon', //have to use polygon here, there is no polyline option
+  eightConnected: true,
+  labelProperty: 'constant', // 'constant' is the property that holds the stream order info
+  maxPixels: 1000000000,
+  reducer: ee.Reducer.mean()
+});
+
+// Function that takes the Merit vectors original feature collection and 
+// filters it by the bounding polygons of 'StrmOrder_Collection', created above
+// then unions the segements of the MERIT vector polyline feature collection within 
+// the bounding polygon and returns a polyline feature, the unioned river segment
+var getSections = function(feature){
+  var meritFilter = MERIT.filterBounds(feature.geometry());
+  var meritUnion = ee.Feature(meritFilter
+                                      .union()
+                                      .first())
+                                      .set("order", feature.get('mean'));
+  return(meritUnion);
+};
+
+// create the collection of all unioned river segments by mapping over all features in the
+// re-vectorized collection of river segments unioned by stream order
+var strmSections = StrmOrder_Collection
+                                      .map(getSections) // map the function over the polygon collection
+                                      .filterBounds(WesternMack_1);
+                                      
+
+// This collection of unioned streamline segments is used below and elsewhere (in thiessen_polys)
+// and so is exported here to save computation time (uncomment to run export task)
+// Export.table.toAsset({
+//   collection: strmSections, 
+//   description: 'MERIT_Unioned_Streams',
+//   assetId: 'MERIT_Unioned_Streams'
+//   });
+
+
+///////////////////////////////////////////////////////////////         
+ //             GENERATIING SEGMENT BUFFERS                 //
+ // This code uses the river network shapefile to generate  //
+ // the segment buffers used as 'study sites' and then      //
+ // exports the buffer feature collection as an asset to    // 
+ // save time when running the code in the future.          //
+ //            First written by John Perrotti               //
+/////////////////////////////////////////////////////////////// 
+
+// NOTE -- since switching to Thiessen polygons, the only use of the 
+//  segment buffers generated here is providing the centroids from which
+//  Thiessen polys are generated
+
+// Set the length of the desired cutLines segments
+// For each feature, we will make sure the feature length is longer than this length 
+var cutLength = 5000;
+
+// Function to calculate the length of a feature
+var getLength = function(feature){
+  var length = feature.geometry().length();
+  return(feature.set('length',length));
+};
+
+// Function to chop up a streamline into segments of an appropriate size
+var getCutRivers = function(feature){
+  // get the properties of the input feature
+  var properties = feature.toDictionary();
+  // Get the maximum length of the cut. 
+  var length = ee.Number(feature.get('length'));
+  // This makes sure that the cut is shorter than the total length.
+  var max_cut = length.clamp(0, cutLength);
+  // cut feature into multiple segments
+  var cutLines = feature.cutLines(ee.List.sequence(0, length,max_cut));
+  // Get the geometries of the cut lines. Returns a list.
+  var geometries = cutLines.geometry().geometries();
+  
+  // function to convert each element of the list into a feature
+  var getGeomLength = function(list){
+     var geom_sel = ee.Geometry(list);
+     var geomLength = geom_sel.length();
+     return(ee.Feature(geom_sel).set('length',geomLength));
+  };
+  // map function over all cutlines and exclude any resulting features that are too short
+  var filteredFeatures = ee.FeatureCollection(geometries.map(getGeomLength))
+                                   .filter(ee.Filter.gte('length',3000));
+  
+  // for each feature created from the cutlines, select only the middle km
+  // later that segment is buffered by 2km, which creates a 5km long segment by 2km wide
+  // and prevents overlap with other segments
+  var segments = filteredFeatures.map(function(feature2){
+    var list = ee.List(feature2.geometry().cutLines([0,2000,3000]).geometries()).get(1);
+    var feature = ee.Feature(null).setGeometry(list);
+    // Calculate the length of the feature in km
+    var length_km = ee.Number(feature2.geometry().length()).divide(1000);
+    // Return the feature with properties copied from the input rivers feature
+    return(feature.set(properties)
+                  .set('cut_length_km', length_km, 'length', null)); // length not relevant anymore 
+  });
+    
+  // Return all the middle km segments as a feature collection
+  // Make sure we're not trying to export any zero length features
+  return(ee.FeatureCollection(segments).filterMetadata('cut_length_km','greater_than',1));
+};
+
+// Apply the getCutRivers function to the streamline feature collection
+var cutRivers = MERIT_Unioned_Streams
+        .map(getLength) // get the length of each feature
+        .map(getCutRivers)
+        .flatten();
+   
+// Apply a buffer to each cut segment
+var segmentBuffers = cutRivers.map(function (feature) {
+return feature.buffer(2000); // in meters. change buffer size here
+});
+    
+// Export buffers to be used elsewhere -- uncomment to run
+// (in thiessen_polys to provide centroids for thiessen polygons)
+// Export.table.toAsset({
+//   collection: segmentBuffers, 
+//   description: 'MERIT_Segment_Buffers',
+//   assetId: 'MERIT_Segment_Buffers'
+//   });

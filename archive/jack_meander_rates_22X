@@ -1,0 +1,669 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var monthly_climate = ee.ImageCollection("ECMWF/ERA5/MONTHLY"),
+    mackenzie = 
+    /* color: #bf04c2 */
+    /* shown: false */
+    ee.Geometry.LineString(
+        [[-134.2465691616823, 68.6722175532347],
+         [-134.1971306851198, 68.63722731907842],
+         [-134.1476922085573, 68.60318441368062],
+         [-134.19987726715104, 68.58413792328467],
+         [-134.2410759976198, 68.54097303140227],
+         [-134.26030207183854, 68.50577763308955],
+         [-134.22184992340104, 68.49269105565659],
+         [-134.1257195523073, 68.50275832712433],
+         [-134.0927605679323, 68.49772525264883],
+         [-134.0982537319948, 68.4765740795053],
+         [-134.15043879058854, 68.4574202284754],
+         [-134.2136101773073, 68.44834168636945],
+         [-134.19438410308854, 68.42108419308911],
+         [-134.07353449371354, 68.40592695916912],
+         [-134.0598015835573, 68.38772489671442],
+         [-134.15593195465104, 68.36849576092364],
+         [-134.2300896694948, 68.35127693911646],
+         [-134.23283625152604, 68.30868036690815],
+         [-134.40861750152604, 68.28633605162516],
+         [-134.3674187710573, 68.25481369918849],
+         [-134.4333367398073, 68.21815245238963],
+         [-134.4553093960573, 68.19163832293026],
+         [-134.42509699371354, 68.13135772593334],
+         [-134.47453547027604, 68.03499002865465],
+         [-134.4388299038698, 67.95678074234223],
+         [-134.34269953277604, 67.88761369359466],
+         [-134.33171320465104, 67.82791459077875],
+         [-134.3234734585573, 67.75628427760898],
+         [-134.28227472808854, 67.68339141153241],
+         [-134.2026238491823, 67.62700495466262],
+         [-133.9883904507448, 67.57153128762995],
+         [-133.81472431364185, 67.49817780498019],
+         [-133.78725849332935, 67.47083210952263],
+         [-133.77077900114185, 67.45188202354258],
+         [-133.65542255582935, 67.46767481056398],
+         [-133.5922511691106, 67.4718844493123],
+         [-133.5483058566106, 67.44872220736981],
+         [-133.5483058566106, 67.4023299941533],
+         [-133.41921650114185, 67.33574731329162],
+         [-133.07864032926685, 67.24136930274052],
+         [-133.0099757784856, 67.20947271216173],
+         [-132.8396876925481, 67.19883111369506],
+         [-132.5924953097356, 67.25199210369632],
+         [-132.41946064176685, 67.30927414087272],
+         [-132.1145900362981, 67.33680563140392],
+         [-131.68161941844724, 67.40353742420699],
+         [-131.5085847504785, 67.4572991663015],
+         [-131.23117996532224, 67.45203377213693],
+         [-131.1350495942285, 67.45308694421828],
+         [-131.01145340282224, 67.47940109726548],
+         [-130.90708328563474, 67.47098373722758],
+         [-130.84665848094724, 67.40353742420699],
+         [-130.7615144379785, 67.33907459604886],
+         [-130.5417878754785, 67.31684219064844],
+         [-130.35227371532224, 67.27019299876498],
+         [-130.2341706879785, 67.10727296605565],
+         [-130.23691727000974, 66.99804636764657],
+         [-130.151773227041, 66.87430772747592],
+         [-130.11057449657224, 66.80300862746594],
+         [-129.9595124848535, 66.7596960261575],
+         [-129.80845047313474, 66.73909579067121],
+         [-129.62717605907224, 66.73584154581553],
+         [-129.49534012157224, 66.68262798131816],
+         [-129.3662507661035, 66.62712039177573],
+         [-129.283853305166, 66.5965926226954],
+         [-129.2344148286035, 66.55073040564959],
+         [-129.07785965282224, 66.52995536537242],
+         [-129.00095535594724, 66.45216854876146],
+         [-128.95933901921882, 66.39394391360861],
+         [-128.81926333562507, 66.38184255805659],
+         [-128.69566714421882, 66.35431772481772],
+         [-128.66820132390632, 66.32235103988906],
+         [-128.63249575750007, 66.28261159846429],
+         [-128.71489321843757, 66.24059623838612],
+         [-128.82200991765632, 66.22399193422594],
+         [-128.89616763250007, 66.19629380295049],
+         [-129.09941470281257, 66.12302466235579],
+         [-129.09666812078132, 65.97025747247682],
+         [-129.06370913640632, 65.9064269104806],
+         [-128.99504458562507, 65.85255122539512],
+         [-128.86870181218757, 65.80869385996212],
+         [-128.79729067937507, 65.77490649254871],
+         [-128.78585232206524, 65.72094032453833],
+         [-128.8105715603465, 65.68025198549063],
+         [-128.70894802519024, 65.65648755382493],
+         [-128.60457790800274, 65.63610068572218],
+         [-128.530420193159, 65.61569778681897],
+         [-128.31893337675274, 65.60775899467473],
+         [-128.11568630644024, 65.61683170193392],
+         [-127.959131130659, 65.58619861125528],
+         [-127.79158962675275, 65.52482402292776],
+         [-127.56087673612775, 65.44390745728654],
+         [-127.4049776217527, 65.39821021418881],
+         [-127.3006075045652, 65.33753852628851],
+         [-127.1248262545652, 65.30313391790287],
+         [-126.88587361784646, 65.2594901683187],
+         [-126.6688936373777, 65.22843622731767],
+         [-126.3942354342527, 65.14891017594196],
+         [-126.2459200045652, 65.10847952938715],
+         [-126.15674754609248, 65.01556456275964],
+         [-126.05787059296748, 64.9574975451764],
+         [-125.94526072968623, 64.92026842134278],
+         [-125.78046580781123, 64.92026842134278],
+         [-125.66236278046748, 64.88298753708773],
+         [-125.50855418671748, 64.89580868275921],
+         [-125.32178660859248, 64.87832378435422],
+         [-125.21741649140498, 64.87016026855869],
+         [-125.12952586640498, 64.86432766725252],
+         [-125.11579295624873, 64.80827026269229],
+         [-125.09931346406123, 64.7403783266165],
+         [-125.09382029999873, 64.69228264964347],
+         [-125.03614207734248, 64.68288815825969],
+         [-124.97846385468623, 64.69463076364198],
+         [-124.89606639374873, 64.69463076364198],
+         [-124.87409373749873, 64.67349040959486],
+         [-124.91444573370346, 64.65431566634543],
+         [-124.92387553681513, 64.63307236949255],
+         [-124.89160319794794, 64.62056733954378],
+         [-124.87873633328984, 64.60833867267837],
+         [-124.8929905201074, 64.59611039389766],
+         [-124.92216427448392, 64.5747416519247],
+         [-124.91254588593623, 64.54984261415251],
+         [-124.94225295081341, 64.5113321166361],
+         [-124.89556105628216, 64.48886595264703],
+         [-124.81316359534466, 64.46993274872939],
+         [-124.78844435706341, 64.43558290118976],
+         [-124.76372511878216, 64.38932030885435],
+         [-124.71154006018841, 64.31561392464279],
+         [-124.55498488440716, 64.29894320340199],
+         [-124.48906691565716, 64.25509675611728],
+         [-124.42314894690716, 64.20135869722161],
+         [-124.42314894690716, 64.14991139107566],
+         [-124.43688185706341, 64.05514285911897],
+         [-124.42589552893841, 64.01907016533573],
+         [-124.37645705237591, 64.00222027494127],
+         [-124.34899123206341, 63.95884528873656],
+         [-124.22814162268841, 63.972105893993714],
+         [-124.17046340003216, 63.92989124372542],
+         [-124.12377150550091, 63.89728215725684],
+         [-124.02764113440716, 63.86463514764777],
+         [-123.97270949378216, 63.757966446744256],
+         [-123.88207228675091, 63.71178002416422],
+         [-123.80791457190716, 63.63626111648971],
+         [-123.75298293128216, 63.53362386868088],
+         [-123.68157179846966, 63.41832839873344],
+         [-123.67058547034466, 63.333400406301266],
+         [-123.59093459143841, 63.261817202088444],
+         [-123.3650378217478, 63.17146810515776],
+         [-123.3046130170603, 63.13673871393582],
+         [-123.27989377877905, 63.063422667797006],
+         [-123.25792112252905, 63.03603712261585],
+         [-123.2551745404978, 62.98493169036956],
+         [-123.2222155561228, 62.966212209963054],
+         [-123.2277087201853, 62.91248320947434],
+         [-123.24693479440405, 62.85239007015792],
+         [-123.2002428998728, 62.793429529040246],
+         [-123.1562975873728, 62.75950510833292],
+         [-123.1892565717478, 62.70665613532911],
+         [-123.2002428998728, 62.618364136216556],
+         [-123.2551745404978, 62.49684941605188],
+         [-123.2991198529978, 62.41652874996705],
+         [-123.36229123971655, 62.34649916605977],
+         [-123.4089831342478, 62.29801946349472],
+         [-123.35130491159155, 62.26224751029153],
+         [-123.24144163034155, 62.225153159693505],
+         [-123.12608518502905, 62.1803233122406],
+         [-123.0134753217478, 62.153393454155534],
+         [-122.8816393842478, 62.13927776833231],
+         [-122.7662829389353, 62.12772367520877],
+         [-122.67015256784155, 62.14826123891123],
+         [-122.51085081002905, 62.14184474617217],
+         [-122.4586657514353, 62.130291632299574],
+         [-122.3652819623728, 62.143128153500726],
+         [-122.2828845014353, 62.09817652188218],
+         [-122.09337034127905, 62.06088035759488],
+         [-121.9917468061228, 62.05444535321645],
+         [-121.92518290410317, 62.03611720470027],
+         [-121.84553202519692, 61.99874478481731],
+         [-121.72468241582192, 61.97810587309221],
+         [-121.62855204472817, 61.96261751607144],
+         [-121.56812724004067, 61.93032483840604],
+         [-121.40882548222817, 61.888940352080915],
+         [-121.25227030644692, 61.846203913915254],
+         [-121.01606425175942, 61.839723493996594],
+         [-120.84302958379067, 61.82805528675521],
+         [-120.70295390019692, 61.79172580750627],
+         [-120.71668681035317, 61.76315105493387],
+         [-120.68922099004067, 61.715033606967445],
+         [-120.70844706425942, 61.66684094600172],
+         [-120.74415263066567, 61.61465606785673],
+         [-120.68647440800942, 61.58591683601971],
+         [-120.66948827975183, 61.553226244041895],
+         [-120.61181005709558, 61.521810851350615],
+         [-120.54039892428308, 61.495607077677214],
+         [-120.47997411959558, 61.47069303525791],
+         [-120.41405615084558, 61.44182027933526],
+         [-120.33989843600183, 61.44313325767647],
+         [-120.25475439303308, 61.44313325767647],
+         [-120.16686376803308, 61.406348961599655],
+         [-120.05700048678308, 61.36557289226871],
+         [-119.95537695162683, 61.32210762802985],
+         [-119.84002050631433, 61.32342564387066],
+         [-119.73015722506433, 61.28781975463261],
+         [-119.60930761568933, 61.27462212711777],
+         [-119.51592382662683, 61.23103057647605],
+         [-119.44176611178308, 61.221776109597826],
+         [-119.33464941256433, 61.23235242097999],
+         [-119.24126562350183, 61.21516410945436],
+         [-118.99681982272058, 61.25085241272592],
+         [-118.83202490084558, 61.26670088713836],
+         [-118.69194921725183, 61.30101183466521],
+         [-118.52990087740808, 61.30760579488588],
+         [-118.40355810397058, 61.35372471263581],
+         [-118.32940038912683, 61.41292076620625],
+         [-118.11302276461967, 61.44838461823913],
+         [-117.93174835055717, 61.423432777047175],
+         [-117.76970001071342, 61.387940549464226],
+         [-117.62413116305717, 61.29705479304394],
+         [-117.40440460055717, 61.22442052074909],
+         [-117.20115753024467, 61.12245015789127],
+         [-116.97319122165092, 61.09325516710712]]),
+    lakes = ee.FeatureCollection("users/JohnPerrotti/HydroLAKES_polys_v10_shp"),
+    rivers_asset = ee.FeatureCollection("users/JohnPerrotti/rivers"),
+    segmentBuffers_asset = ee.FeatureCollection("users/JohnPerrotti/segmentBuffers"),
+    lat67 = /* color: #ff0000 */ee.Geometry.LineString(
+        [[-139.9739142314343, 67.57763006526794],
+         [-125.58889654024293, 67.53463809829742]]),
+    AOI = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-134.39065494946573, 68.48015540364264],
+          [-134.67080631665323, 68.01808869704391],
+          [-134.74771061352823, 67.69926296760585],
+          [-133.9882806818876, 67.69978408190671],
+          [-134.0913690386466, 68.0342905750833],
+          [-134.33006781744064, 68.2121964631545],
+          [-133.90176334790323, 68.26148211302507],
+          [-134.17092838696573, 68.76050332732228],
+          [-134.6683029860386, 68.95374203475546],
+          [-134.98391666821573, 69.27776221016349],
+          [-135.2915338557157, 69.2680415834709],
+          [-135.18716373852823, 69.03736579596243],
+          [-134.87405338696573, 68.89145620350125],
+          [-134.45657291821573, 68.6267739799592]]]),
+    AOI2 = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-118.13481088582925, 64.2158529647207],
+          [-118.96977182332925, 63.77754714155163],
+          [-118.58525033895425, 62.87510074369276],
+          [-113.98197885457925, 62.835001255475504],
+          [-111.91654916707925, 64.45376659862885],
+          [-113.35575815145425, 65.17833778944373],
+          [-116.89335580770425, 65.1275571116128],
+          [-118.91484018270425, 64.8675261808257]]]),
+    entireBasin = 
+    /* color: #98ff00 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-117.54333947636664, 51.77665720724685],
+          [-107.87537072636664, 55.821634748234125],
+          [-103.04138635136664, 58.764195364147895],
+          [-104.09607385136664, 61.09705615061634],
+          [-107.69958947636664, 64.80827002149317],
+          [-116.57654260136664, 67.06442378454945],
+          [-123.16833947636664, 68.03757292234394],
+          [-131.43005822636664, 68.16868324811077],
+          [-134.68201135136664, 69.80664284939166],
+          [-136.79138635136664, 69.77628208991847],
+          [-136.79138635136664, 67.90571436963167],
+          [-139.77966760136664, 65.40022993570608],
+          [-136.87927697636664, 64.12641351560849],
+          [-131.34216760136664, 64.16474138632536],
+          [-130.28748010136664, 62.305204393551186],
+          [-132.22107385136664, 60.66939552428596],
+          [-129.14490197636664, 57.13204806369749],
+          [-124.75037072636664, 53.53571749326901],
+          [-119.65271447636664, 52.209606194429526]]]),
+    AOI3 = 
+    /* color: #0b4a8b */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-118.96453364270528, 65.40591770855707],
+          [-116.30584223645528, 62.79765110029379],
+          [-113.03191645520528, 62.02431549037405],
+          [-111.66961176770528, 62.977897153292666],
+          [-112.92205317395528, 64.5509934018676],
+          [-118.01970942395528, 65.70596280123746]]]),
+    AOI4 = 
+    /* color: #fff208 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-126.3565172364336, 59.49064256452668],
+          [-126.30295888682423, 59.42644002902481],
+          [-126.04615346690235, 59.387300499592634],
+          [-125.83192006846485, 59.39708962175532],
+          [-125.73441640635548, 59.37051256893788],
+          [-125.58884755869923, 59.32290161870544],
+          [-125.37598745127735, 59.252764173678024],
+          [-125.19333974619923, 59.2745222404594],
+          [-124.9997057129961, 59.314492755213706],
+          [-124.88846914073048, 59.351616211585615],
+          [-124.8019518067461, 59.32290161870544],
+          [-124.72642080088673, 59.24152876612686],
+          [-124.74839345713673, 59.167000618307696],
+          [-124.69071523448048, 59.16911214253647],
+          [-124.65226308604298, 59.21764122821832],
+          [-124.70444814463673, 59.30117446695892],
+          [-124.8568834473711, 59.39988599455382],
+          [-124.99283925791798, 59.38520246272257],
+          [-125.18921987315235, 59.32290161870544],
+          [-125.37461416026173, 59.28995502055369],
+          [-125.50645009776173, 59.34671543830746],
+          [-125.7302965333086, 59.40897261256702],
+          [-125.78248159190235, 59.47251072883659],
+          [-126.00907460948048, 59.430630868285995],
+          [-126.07911245127735, 59.423645847891],
+          [-126.2631334473711, 59.466929743957955]]]),
+    WesternMack = ee.FeatureCollection("users/jordanffieldsgr/WesternMack"),
+    geometry = 
+    /* color: #98ff00 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-134.28312804504532, 68.58135545606825],
+          [-134.40397765442032, 68.41019795188932],
+          [-134.51933409973282, 68.26013047470046],
+          [-134.01945617004532, 68.2255155598359],
+          [-133.95353820129532, 68.57132325670585]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// summer version of code (before MERIT) but with buffer and cpixel parts removed (split out into separate files)
+
+
+// load pre-generated assets: rivers, segment buffers, and re-defined project area
+// this is much faster then attempting to generate them from scratch
+//Map.addLayer(rivers_asset, {},'rivers_asset');
+//Map.addLayer(segmentBuffers_asset, {},'segmentBuffers_asset');
+//Map.addLayer(WesternMack, {}, 'Western Mack');
+
+///                 ///
+//// IMPORT IMAGES ////
+///                 ///
+
+// using Landsat 5, 7, and 8
+// using Collection 1 b/c water pixel detection algorithm is designed for that data
+// (Collection 2 has different scaling factors)
+
+var ls5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR');
+var ls7 = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+          .filterDate('1999-01-01', '2003-01-01');
+var ls8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+     .map(function(image) { 
+       var imageSelect = image.select(['B1','B2','B3','B4','B5', 'B6', 'B7', 'B10', 'B11', 'pixel_qa']);
+       var returnImage = imageSelect.rename(['B0','B1','B2','B3','B4','B5', 'B7', 'B6', 'B11', 'pixel_qa']);
+    return returnImage;
+     });
+var oldvis = {bands:['B3', 'B2', 'B1'], min:0, max:2000};
+
+
+// example start and end river images
+var riverImage2020 = ls8.filterDate('2020-06-01', '2020-09-01')
+                        .filter(ee.Filter.bounds(WesternMack))
+                        .filterMetadata('CLOUD_COVER','less_than',10)
+                        .first();
+
+var riverImage1986 = ls5.filterDate('1986-6-01', '1986-8-30')
+                        .filter(ee.Filter.bounds(WesternMack))
+                        .filterMetadata('CLOUD_COVER','less_than',10)
+                        .first();
+                  
+Map.addLayer(riverImage1986, landsat_vis, 'riverImage1986');
+Map.addLayer(riverImage2020, landsat_vis, 'riverImage2020');                    
+
+  // Defining function to remove Speckle from water occurence sensing code
+var removeSpeckle = function(image){
+  var imageSel = image.select(['B2', 'B5']);
+  var replaceNegatives = imageSel.where(imageSel.lt(0), 1);
+  var returnImage = image.addBands(replaceNegatives, null, true);
+  return returnImage;
+  };
+
+// Merge landsat images together
+var images = ls5
+      .merge(ls7)
+      .merge(ls8)
+      .filter(ee.Filter.bounds(WesternMack)) // change this if re-defining project area
+      .filter(ee.Filter.dayOfYear(151,270))
+      .filterMetadata('CLOUD_COVER', 'less_than', 20)
+      .map(removeSpeckle);
+
+///                        ///
+/// FUNCTIONS FOR ANALYSIS ///
+///                        ///
+
+// Function for masking all pixels in an image except water pixels
+  // using normalized differences and bitmasks in data
+var waterOnly = function(image){ 
+  var land = image.select('B7').lt(500);
+  var cloudFinal = image.select('B1').add(image.select('B2'))
+      .lt(5000); // usually .lt(3500), but not >>ssc, like white r. SD
+  // var snowIceFinal = image.select('B3').divide(image.select('B1'))
+  //                     .add(image.select('B4').divide(image.select('B1')))
+  //                     .gt(1.6)
+  var qa = image.select('pixel_qa');
+  var bitcloud = qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3));   
+          // .or(qa.bitwiseAnd(1 << 4)) 
+  
+  var snow_ice_qa = qa
+      .updateMask(qa.bitwiseAnd(1 << 4)).rename('snow_ice_qa');
+      
+  var snow_ice_qa_b1 = image.select('B1').lt(2000);
+      
+  var cloud_qa = qa
+      .updateMask(qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3))).rename('cloud_qa');
+          
+  var nd = image.normalizedDifference(['B5','B2']);
+  
+  return image.addBands(nd)
+          .addBands(ee.Image(1).rename('water'))
+          .updateMask(cloudFinal)
+          // .updateMask(snowIceFinal)
+          .updateMask(land)
+          .updateMask(bitcloud.not())
+          .updateMask(nd.lt(0)) // threshold of 0
+          .updateMask(snow_ice_qa_b1)
+          .addBands(snow_ice_qa)
+          .addBands(cloud_qa);
+}; 
+
+// Function to unmask the image, setting non-water pixels = 0
+var getUnmask = function(image){ 
+                  return(image.unmask(0));
+                  };
+
+// pull in the image collection of all connected pixel images
+var connected_collection = ee.ImageCollection("users/jackkreisler/MackRiverCPixelCollect");
+
+// define latitude filter to use later with connected pixels mask:
+// any pixel below 67.7 degrees latitude passes the mask
+var latMask = ee.Image.pixelLonLat().select('latitude').lt(67.7);
+
+// For a given set of years:
+// Of all selected images, only select water pixels
+// Result is mean water occurrence (1 = always water, 0 = never water)
+// takes a year (integer), returns an image
+var getWater_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(2, 'year');
+  
+  // // get the right connected pixel image and turn it into a mask
+  // var connectedImg = connected_collection.filter(ee.Filter.eq('year', ee.Number(year).toInt16().format())).first() // only one image should match
+  // var connectedMask = connectedImg
+  //                                 .lt(1024) // binary image where lakes = 1
+  //                                 .unmask() // make image 0 where no data (land, ice, etc)
+  //                                 .not() // rivers plus land/ice/etc are 1, only lakes set to zero (to mask out)
+  //                                 .set('system:footprint', latMask.geometry()) // change footprint to cover entire world
+  //                                 .unmask() // make image 0 where it was previously masked
+  //                                 .add(latMask) // make image 1 where below 67.7 deg lat
+  //                                 .clip(WesternMack); // not necessary?
+  
+  var water_img = images
+    .filterDate(startDate, endDate)
+    .map(waterOnly)       // mask out non-water pixels
+    .select('water')      // select only the water occurrence band
+    .map(getUnmask)       // unmask the image, setting non-water pixels = 0
+    .median();               // compute the median water occurrence for each pixel across all images
+  return(water_img
+    .updateMask(water_img.gt(0.5)) // hide areas covered by water < 10% of time
+    //.updateMask(connectedMask) // mask out any lake areas as determined by connected pixels
+    .set('start_year',year));
+};
+
+///                   ///
+//// PERFORM ANALYSIS ////
+///                   ///
+
+// Construct list 1985-2021 
+var waterYear = ee.List.sequence(1985,2021,1);
+
+// Generate water occurence image for each year in the list
+var waterYear_long = ee.ImageCollection(waterYear.map(getWater_years));
+    
+// Generate water occurence image for each year 1990 and onwards
+// (images 1985-89 not useful b/c area change calculations are over a 5 year span,
+//  so need 5 years of data before we do the first one)
+var waterYear_short = ee.ImageCollection(waterYear.map(getWater_years))
+                      .filterMetadata('start_year', 'greater_than', 1989);
+
+
+// function to compute water area change image
+// takes a water occurence image, subtracts the water occurence image from 5 years ago
+// returns an image showing change in water occurence over 5 years
+var getareaChange = function(image){
+  var year_sel = ee.Number(image.get('start_year'));
+  var year_pre = year_sel.subtract(5);
+  var pre_image = ee.Image(waterYear_long
+      .filterMetadata('start_year', 'equals', year_pre)
+      .first());
+  var inverse = pre_image.gt(0).unmask(0).eq(0);
+  var landLost = image.updateMask(inverse);
+  return ee.Image(landLost);
+};
+
+// Generate water area change images for all data (first image 1990, last image 2021)
+/// this is the main output!!! here it is!! ///
+var mappedArea =  waterYear_short.map(getareaChange);
+
+
+// filter the collection of segment buffers
+// since we are restricting our analysis to the westernMack AOI
+segmentBuffers_asset = segmentBuffers_asset.filterBounds(WesternMack);
+//Map.addLayer(segmentBuffers_asset, {}, 'clipped buffers')
+
+// function to calculate water area change values
+// takes image of water area change
+//Calculate how many pixels in Year X are now water in Year Y (area change calculations)
+  var pixelsLost = function(image){
+    var start_year = image.get('start_year');
+      return image.reduceRegions({    // reduce to count pixels of change
+        reducer: ee.Reducer.count(),
+        collection: segmentBuffers_asset, // NOTE: remove "_asset" if you are using 
+        // a new set of segmentBuffers.
+        scale: 30, // 30 meter pixels
+        crs: 'EPSG:32610'
+        })
+      .map((function(feature){ // map property generating function over each image
+        return ee.Feature(feature)
+                  .set('start_year', start_year) // For 1990 - 1985, 1990 is the start year
+                  .setGeometry(null)
+                  .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                  .set('longitude', feature.geometry().centroid().coordinates().get(0));
+                  
+  }))};
+     
+//print(mappedArea)
+// Flatten Pixels Lost
+var flatten_pixelsLost = ee.FeatureCollection(mappedArea.map(pixelsLost))
+                        .flatten();
+//print('flatten_pixelsLost', flatten_pixelsLost) 
+                
+// Calculate area of land that is now water // 
+// multiply by 0.0009 to convert data from 30m^2 scale to 1km^2 scale
+var arealostCalculations = flatten_pixelsLost.map(function(feature) {
+  return feature.set('Area_Lost_km2', ee.Number(feature.get('count')).multiply(0.0009));
+});
+//print('areaLostCalculations', arealostCalculations)
+  
+// Select properties (may need to change if you add another property above)
+var export_arealost = arealostCalculations.map(function(feature){
+  return ee.Feature(feature.select(['start_year', 'Area_Lost_km2', 'count', 'latitude', 'longitude', 'mean', 'system:index', 'BB_LEN_KM', 'BB_VOL_TCM', 'LENGTH_KM', 'OBJECTID', 'RIV_ORD', 'UPLAND_SKM', 'VOLUME_TCM', 'cut_length_km']));
+});
+
+//print('export_arealost', export_arealost);
+
+// Export area lost to drive
+Export.table.toDrive({
+  collection: export_arealost,
+  folder: 'ARCTIC_CARBON',
+  description: 'export_arealost1990_2020_1', // to calculate a ddifferent year range
+                                             // you change waterYear_short  
+  fileNamePrefix: 'export_arealost1990_2020_1',
+  fileFormat: 'CSV'
+});
+
+    
+// Calculate total area covered by water for each segment
+    var totalArea = waterYear_short.map(function(image){ 
+      var start_year = image.get('start_year')
+      var totalPixels = image
+      .reduceRegions({
+        reducer: ee.Reducer.count(),
+        collection: segmentBuffers_asset, //NOTE: must remove "_asset" if using new set of segmentBuffers
+        scale: 30,
+        crs: 'EPSG:32610'
+      })
+      return totalPixels.map(function(feature) {
+        var year = function(image){
+        return image.get('start_year') // Start year is the most modern endmember of the range 
+      }
+            return feature
+                    .set('Total_Area_km2', ee.Number(feature.get('count')).multiply(0.0009))
+                    .setGeometry(null)
+                    .set('start_year', start_year)  
+                    .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                    .set('longitude', feature.geometry().centroid().coordinates().get(0));
+      });
+    })
+    .flatten();
+    // Select properties to export
+  var export_totalArea = totalArea.map(function(feature) {
+            return ee.Feature(feature.select(['Total_Area_km2','start_year','date','count', 'latitude', 'longitude', 'mean', 'system:index', 'BB_LEN_KM', 'BB_VOL_TCM', 'LENGTH_KM', 'OBJECTID', 'RIV_ORD', 'UPLAND_SKM', 'VOLUME_TCM', 'cut_length_km']));
+    });
+     
+  //print('export_totalArea', export_totalArea)
+    
+     
+  // Export Total Water Area
+    Export.table.toDrive({
+    collection: export_totalArea,
+    folder: 'ARCTIC_CARBON',
+    description: 'export_totalArea1990_2020_1', // to change year range, change waterYear_short
+                                              
+    fileNamePrefix: 'export_totalArea1990_2020_1',
+    fileFormat: 'CSV'
+  }) ;
+
+    
+  
+  
+  // Generate total water AREA for years 1985-1989 (used in some of the R code)
+     var list80s = ee.List.sequence(1985,1989,1);
+     var images80s = ee.ImageCollection(list80s.map(getWater_years));
+     
+
+    var totalArea_80s = images80s.map(function(image){ 
+      var start_year = ee.Number(image.get('start_year'));
+      var initial_land_year = start_year.subtract(5);
+      var totalPixels = image
+      .reduceRegions({
+        reducer: ee.Reducer.count(),
+        collection: segmentBuffers_asset,  //NOTE: must remove "_asset" if using new set of segmentBuffers
+        scale: 30,
+        crs: 'EPSG:32610'
+      });
+      return totalPixels.map(function(feature) {
+        var year = function(image){
+          return image.get('start_year'); // Start year is the most modern endmember of the range 
+      };
+            return feature
+                    .set('Total_Area_km2', ee.Number(feature.get('count')).multiply(0.0009))
+                    .setGeometry(null)
+                    .set('initial_land_year', initial_land_year)  
+                    .set('start_year', start_year)  
+                    .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                    .set('longitude', feature.geometry().centroid().coordinates().get(0));
+      });
+    })
+    .flatten();
+    
+  // Select properites for export
+  var export_totalArea_80s = totalArea_80s.map(function(feature) {
+            return ee.Feature(feature.select(['Total_Area_km2','initial_land_year','date','count', 'latitude', 'longitude', 'mean', 'system:index', 'BB_LEN_KM', 'BB_VOL_TCM', 'LENGTH_KM', 'OBJECTID', 'RIV_ORD', 'UPLAND_SKM', 'VOLUME_TCM', 'cut_length_km']));
+    });
+     
+    //print('export_totalArea_80s.first()', export_totalArea_80s.first());
+    
+     
+  // Export Total Water Area for the 80s range (again, used in R code)
+    Export.table.toDrive({
+    collection: export_totalArea_80s,
+    folder: 'ARCTIC_CARBON',
+    description: 'export_totalArea_80s_1',
+    fileNamePrefix: 'export_totalArea_80s_1',
+    fileFormat: 'CSV'
+  }) ;
+  
+  
+  

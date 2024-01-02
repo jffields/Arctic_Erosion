@@ -1,0 +1,349 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var MERIT_Streams = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7"),
+    Thiessens = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3"),
+    WesternMack_1 = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/WesternMack_1");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+//Old data -- for testing
+//var daily_climate = ee.ImageCollection("ECMWF/ERA5/DAILY")
+                                     // .select("mean_2m_air_temperature"); //old
+//var monthly_climate = ee.ImageCollection("ECMWF/ERA5/MONTHLY"); //old 
+
+
+//// TOGGLES FOR EXPORTS /////
+var tFirst = 0; // change this for exports
+var tEnd = tFirst + 55; 
+
+//FUNCTIONS 
+
+
+// BIG LOOP
+
+for(var i = 0; i < 50; i++) {
+  var tFirst = (i * 55)
+  var tEnd = (tFirst + 55);
+
+
+// filter thiessen polygons for project AOI to exclude unwanted polys (covering lake areas)
+var thiessen_polys = Thiessens;
+var tlist_ALL = thiessen_polys.aggregate_array('point_ID'); 
+var tlist_select = tlist_ALL.slice(tFirst,tEnd); 
+//print(tlist_select);
+var thiessen_polys = thiessen_polys.filter(ee.Filter.inList('point_ID', tlist_select)); 
+//print(thiessen_polys); 
+
+
+//new climate data
+var monthly_climate = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
+                                        .select('temperature_2m')
+                                        .filterDate('1979-01-01','2023-12-31') // goes through 8/23
+                                        .filterBounds(WesternMack_1);
+                                        
+var daily_climate = ee.ImageCollection("ECMWF/ERA5_LAND/DAILY_AGGR")
+                                        .filterDate('1979-01-01','2023-12-31') //goes through 9/09/23
+                                        //.filterBounds(WesternMack_1)
+                                        .select('temperature_2m'); 
+
+//print("old ERA5:", daily_climate.first());
+//print("new ERA5:", daily_climate1.first());
+//Map.addLayer(Thiessens, {}, 'Thiessen Polygons');
+//Map.addLayer(MERIT_Streams, {}, 'MERIT Streams')
+
+//print('last date entry for ERA5:', monthly_climate.sort('year', false));
+  
+  
+// NOTE: This is the start of calculating temp parameters used in final analysis
+  
+// Days Above 0 Degrees and Degree Days  // 
+  
+// Select mean daily temperature
+var dailyMean = daily_climate.filter(ee.Filter.dayOfYear(151, 288));
+                            
+//print('dailyMean', dailyMean.first());
+
+//Generates image collection for each day with mean air temperature
+// var mean_tempCollection = dailyMean.filterDate('1979-01-01','2023-12-31')
+//           .map(function(dailyMean){
+//             var date = ee.Date(dailyMean.get('system:time_start')) // formerly 'system:time_start' with the old ERA5 data 
+//             var DOY = date.getRelative('day', 'year')
+//             var year = date.get('year')
+//             var temp = dailyMean
+//                           //.subtract(273)
+//                           .set('date', date)
+//                           .set('system:time_start', date)
+//                           .set('DOY', DOY)
+//                           .set('year', year)
+//               return temp
+//           });
+          
+
+// List of years for temperature calculation --
+// ends in 2018 bc fxn below advances 5 years, then takes mean, so we reach 2023 in this way -- upated to 2023 on 9/19/23
+var allYears = ee.List.sequence(1979,2023);
+var temp_yearList = ee.List.sequence(1979, 2018);  //takes a very long time to load
+                                                     // to visualize, narrow year range (minimum range is 5 years however)        
+                                                     
+//print(temp_yearList);                                                    
+//var startDate =  ee.Date.fromYMD(allYears, 1, 1);
+//print("start Date", startDate);
+
+
+// Calculate number of days above 0 and degree days for every year; returns 1 images for every year with bands for degDays and above0
+// with properties: 'year'
+var get_above0Collection = function(list){
+  var startDate = ee.Date.fromYMD(list, 1, 1)
+  var advanceYear = 1
+  var endDate = startDate.advance(advanceYear,'year') // just want 1 year's image
+  var tempImage_select = dailyMean.filterDate(startDate, endDate) //mean_tempCollection.filterDate(startDate, endDate)
+  var sum = tempImage_select.map(function(image){
+    var image_above0 = image.subtract(273).gt(0)
+    return image_above0
+  }).sum().rename('above0Days')
+  var degreeDays = tempImage_select.map(function(image){
+    var imageC = image.subtract(273)
+    var image_below0 = imageC.where(imageC.lt(0), 0)
+    return image_below0
+  }).sum()
+  return ee.Image(sum.addBands(degreeDays.rename('degreeDays')))
+          .set('year', ee.Number(list))//.add(advanceYear)) //'year' represents the end year of the range
+                                                         // e.g. 'year' = 1990 means that between 1985 and 1990 there were X days
+                                                         // above 0 degrees celsius
+};
+
+
+ 
+var above0Collection = ee.ImageCollection(allYears.map(get_above0Collection));
+//print(above0Collection);   
+
+//print ('mean_tempCollection', mean_tempCollection.limit(10));
+//Map.addLayer(mean_tempCollection.first(), {min: 0, max: 1, palette: ['blue','red']}, 'mean_tempCollection.first()')  // Maps everywhere that is above freezing in red  
+
+// Select for day of year 250 for visualization/valaidation purposes
+//var mean_tempCollectionDOY250 = mean_tempCollection.filterMetadata('DOY', 'equals', 250)
+
+ // Maps everywhere that is above freezing in red  
+//Map.addLayer(mean_tempCollectionDOY250, {min: 0, max: 1, palette: ['blue','red']}, 'mean_tempCollectionDOY250')
+//print(mean_tempCollectionDOY250, 'mean_tempCollectionDOY250')
+
+
+// Calculate number of days above 0 and degree days
+var get_above0 = function(list){
+  var startDate = ee.Date.fromYMD(list, 1, 1) //ee.Date.fromYMD(list, 1, 1)
+  var advanceYear = 5 // 5 years to match up with meander rate calculations
+  var endDate = startDate.advance(advanceYear,'year') // just want 1 year's image
+  //var tempImage_select = above0Collection.filterDate(startDate, endDate)
+
+  //var advanceYear = 5
+  //var endDate = startDate.advance(advanceYear,'year') // 5 years to match up with meander rate calculations
+  var tempImage_select1 = above0Collection.filter(ee.Filter.gt('year', ee.Number(list)))
+  var tempImage_select2 = tempImage_select1.filter(ee.Filter.lt('year', ee.Number(list).add(advanceYear)))  //startDate, endDate) //mean_tempCollection.filterDate(startDate, endDate)
+  var sum = tempImage_select2.sum()
+    
+  //   ee.ImageCollection(tempImage_select).map(function(image){
+  //   var image_above0 = image.subtract(273).gt(0)
+  //   return image_above0
+  // }).sum().rename('above0Days')
+  // var degreeDays = tempImage_select.map(function(image){
+  //   var imageC = image.subtract(273)
+  //   var image_below0 = imageC.where(imageC.lt(0), 0)
+  //   return image_below0
+  // }).sum()
+  return sum //.addBands(degreeDays.rename('degreeDays'))
+          .set('year', ee.Number(list).add(advanceYear)) //'year' represents the end year of the range
+                                                         // e.g. 'year' = 1990 means that between 1985 and 1990 there were X days
+                                                         // above 0 degrees celsius
+};
+
+var above0Result = ee.ImageCollection(temp_yearList.map(get_above0));
+//print('above0Result', above0Result.first());
+
+//Map.addLayer(above0Result.first().select('above0Days'),  {min: 50, max: 1500, palette: ['blue','red']}, 'above0Days.first()');
+//Map.addLayer(above0Result.first().select('degreeDays'),  {min: 100, max: 1300, palette: ['blue','red']}, 'degreeDays.first()');
+
+// Calculate each parameter within the Thiessen Polygons
+var reduceAbove0 = above0Result.map(function(image){
+  var reducer = image.reduceRegions({
+          collection:  thiessen_polys, // remove _asset if working with new areas
+          reducer: ee.Reducer.mean(), 
+          scale: 500 
+          //crs: 'EPSG:4326'
+  })
+          .map(function(feature){
+            return feature.set('year', image.get('year'))
+                          .setGeometry(null)
+                          .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                          .set('longitude', feature.geometry().centroid().coordinates().get(0))
+                          .set('Thiessen_ID', feature.get('point_ID'));
+          });
+      return reducer;
+}).flatten();
+
+//print('reduceAbove0', reduceAbove0.first());
+
+// Export temperature parameters to drive
+Export.table.toDrive({
+    collection: reduceAbove0, 
+    folder: 'ARCTIC_CARBON',
+    description: 'Temp_' + 'Thiessens_' + tFirst + '_' + tEnd,
+  fileNamePrefix: 'Temp_' + 'Thiessens_' + tFirst + '_' + tEnd,
+    fileFormat: 'CSV'
+  }) ;
+  
+  
+}  // close big loop
+  
+//ee.FeatureCollection(ee.Feature(ee.Geometry.Point(-125.1608, 64.8735).buffer(500))),
+  
+  
+///////////////////////////////////////
+// CODE NOT USED IN THE FINAL ANALYSIS:
+
+/*
+ // Temperature Raster //
+ // A lot of these variables were not used for final temp parameters. left here for reference
+ // and for visualization purposes
+  var max_t_C_1985 = monthly_climate.filterDate('1985-01-01', '1985-12-31')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+
+  var sd_max_t_C_1970s = monthly_climate.filterDate('1970-01-01', '1980-01-01')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .reduce(ee.Reducer.stdDev());
+  
+  var sd_max_t_C_2010s = monthly_climate.filterDate('2010-01-01', '2020-12-31')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .reduce(ee.Reducer.stdDev());
+                    
+  var max_t_C_1980s = monthly_climate.filterDate('1980-01-01', '1990-01-01')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+                    
+  var max_t_C_1990s = monthly_climate.filterDate('1990-01-01', '2000-01-01')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+  
+  var max_t_C_2000s = monthly_climate.filterDate('2000-01-01', '2010-01-01')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273)
+                    
+  var max_t_C_2010s = monthly_climate.filterDate('2010-01-01', '2020-12-31')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('maximum_2m_air_temperature')
+                    .mean()
+                    .subtract(273);
+                    
+   var precip_m_2010s = monthly_climate.filterDate('2010-01-01', '2020-12-31')
+                    .filter(ee.Filter.dayOfYear(151, 288))
+                    .select('total_precipitation')
+                    .mean()
+                    .multiply(12);
+  
+                    
+  var t_vis = {min: -10, max: 40, palette: ['black','navy','blue','green','yellow','red']};
+  var t_compare_vis = {min: -5, max: 5, palette: ['black','navy','grey','red','white']};
+  var t_vis = {min: -10, max: 40, palette: ['black','navy','blue','green','yellow','red']};
+  var t_sd_vis = {min: 0, max: 10, palette: ['green','grey','orange']};
+  var precip_vis = {min: 0, max: 4, palette: ['black','green','yellow','red', 'white']};
+  
+  // Map.addLayer(max_t_C_1990s, t_vis, 'mean max T deg C, 1990s');
+  //Map.addLayer(max_t_C_1970s, t_vis, 'mean max T deg C, 1970s')
+  //Map.addLayer(max_t_C_2010s, t_vis, 'mean max T deg C, 2010s')
+  // Map.addLayer(sd_max_t_C_1970s, t_sd_vis, 'sd max T deg C, 1970s')
+  //Map.addLayer(sd_max_t_C_2010s, t_sd_vis, 'sd max T deg C, 2010s')
+  //Map.addLayer(precip_m_2010s, precip_vis, 'precip, annual avg. meters, 2010s')
+  //Map.addLayer(max_t_C_2010s.subtract(max_t_C_1970s), t_compare_vis, 'mean max T deg C, 2010s vs 1970s')
+
+
+// Function to calculate select temp parameters for each year from temp raster
+var gettemp_years = function(year){ 
+    var startDate = ee.Date.fromYMD(year, 1, 1);
+    var endDate = startDate.advance(5, 'year') 
+    var temp = daily_climate.filterDate(startDate, endDate) //changed to daily by JF on 9/19/23
+                      .filter(ee.Filter.dayOfYear(151, 288))
+                      .select('temperature_2m')  // can change min to max/mean
+                      .mean()
+                      .subtract(273)
+                      .set('year', year)
+  return(temp)
+  
+};
+     
+ var yearList = ee.List.sequence(1979,2023,1); //updated to 2023 on 9/19/23 by JFF
+
+// Collection of years with the temperature variable selected above 
+var tempCollection = ee.ImageCollection(yearList.map(gettemp_years));
+print('tempCollection', tempCollection);
+   
+   
+     
+//Reformats so that "year" property in 1985-1990 is represented by 1990 instead of 1985
+// neccessary to get into same format as area is calculated.
+     var reformat_TC = tempCollection.map(function(image){
+      var startYear = ee.Number(image.get('year'))
+      var endYear = startYear.add(5)
+      return image.set('year', endYear) 
+       
+     });
+    
+     //print('Reformat', reformat_TC);
+    
+ 
+     var tempCollection1990 = reformat_TC.filterMetadata('year', 'equals', 1990)
+     Map.addLayer(tempCollection1990, t_vis, 'tempCollection1990')
+
+    
+  //Reducing to find the mean temperature in each temp parameter
+  //NOTE: commented out because did not end up being used in final analysis
+  
+  
+    var reduced = reformat_TC.map(function(image){
+      var year = function(image){
+          return image.get('year')};
+    return image
+                .reduceRegions({
+                    collection:segmentBuffers_asset, 
+                    reducer:ee.Reducer.mean(), 
+                    scale: 500})
+                .map((function(feature){
+    var year = function(image) {
+      return image.get('year');
+    };
+    return ee.Feature(feature)
+        .set('date', year(image))
+        .setGeometry(null)
+        .set('latitude', feature.geometry().centroid().coordinates().get(1))
+        .set('longitude', feature.geometry().centroid().coordinates().get(0));
+      //Selecting only for attributes we need 
+}));
+           
+    });
+    //Flatten collection of collections
+    var flatten_reduced = reduced.flatten();
+    
+    //Remove extraenous properties
+    var export_temp_parameter = flatten_reduced.map(function(feature) {
+            // return ee.Feature(feature.select(['date','count', 'latitude', 'longitude', 'mean', 'system:index', 'BB_LEN_KM', 'BB_VOL_TCM', 'LENGTH_KM', 'OBJECTID', 'RIV_ORD', 'UPLAND_SKM', 'VOLUME_TCM', 'cut_length_km']));
+            return ee.Feature(feature.select(['date', 'latitude', 'longitude', 'mean', 'OBJECTID']));
+    });
+   
+    
+    print('export_temp_parameter', export_temp_parameter.first());
+    
+    // Export
+    Export.table.toDrive({
+    collection: export_temp_parameter, 
+    folder: 'Thesis',
+    description: 'export_minimumtemp1985-2020',
+    fileNamePrefix: 'export_minimumtemp1985-2020',
+    fileFormat: 'CSV'
+  }) ;
+*/

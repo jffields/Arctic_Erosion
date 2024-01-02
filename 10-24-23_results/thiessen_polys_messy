@@ -1,0 +1,463 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var lakes = ee.FeatureCollection("users/JohnPerrotti/HydroLAKES_polys_v10_shp"),
+    segmentBuffers_asset = ee.FeatureCollection("users/JohnPerrotti/segmentBuffers"),
+    rivers_asset = ee.FeatureCollection("users/JohnPerrotti/rivers"),
+    geometry = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.MultiLineString(
+        [[[-123.58914685919763, 59.919429998074186],
+          [-123.57541394904138, 59.824306196505866],
+          [-123.33371473029138, 59.79944651535909],
+          [-123.33920789435388, 59.70952097175544]],
+         [[-123.65781140997888, 59.856044370233285],
+          [-123.64682508185388, 59.93456952298055],
+          [-123.48203015997888, 59.935945500875384],
+          [-123.48203015997888, 59.88086184196738],
+          [-123.25406385138513, 59.94695126910474],
+          [-123.05356336310388, 59.83672908520274]],
+         [[-123.55618787482263, 59.74690405113327],
+          [-123.66879773810388, 59.67209608976665],
+          [-123.49301648810388, 59.72198664142925],
+          [-123.29251599982263, 59.665160966213584]]]),
+    Single_Unioned_Buffer = ee.FeatureCollection("users/jekreisler/mackenzie/Single_Unioned_Buffer"),
+    WesternMack = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/WesternMack"),
+    MERIT_VF_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7"),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams"),
+    MERIT_Segment_Buffers = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Segment_Buffers"),
+    MERIT_Streamline_Polygons = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Streamline_Polygons"),
+    MERIT_Buffers_Filtered = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Buffers_filtered_Oct22");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+/*
+/////////////////////////////////////////////////////////////// 
+ //                                                         //
+ //  HYDROSHEDS DATA USED TO MASK OUT LAKES IN MERIT DATA   //
+ //                                                         //
+///////////////////////////////////////////////////////////////  
+
+// Generate lake areas to filter out the river lines that pass through lakes
+var lakes_filtered = lakes
+                        .filterBounds(WesternMack)
+                        .filter(ee.Filter.eq('Country', 'Canada'))
+                        .filter(ee.Filter.gte('Lake_area', 25))
+
+
+// Creating filters to select for rivers outside lakes
+var filterInside = ee.Filter.bounds(lakes_filtered);
+var filterNot = filterInside.not();
+
+ 
+///////////////////////////////////////////////////////////////         
+ // TRYING NEW MERIT HYDRO RASTER DATASET VERSUS HYDROSHEDS //
+ // This code generates the river network shapefile then    //
+ // exports it as an asset to save time when running        //
+ // the code in the future.                                  //
+///////////////////////////////////////////////////////////////   
+
+var MERIT_Vectors = ee.FeatureCollection(MERIT_Vectors_Mack)
+  // filter by stream order greater than or equal to 7
+                    .filter(ee.Filter.gte('strmOrder', 7)) // filter for streams greater than or equal to 7th order
+                    .filter(ee.Filter.bounds(WesternMack)) // filter for Western Mackenzie Basin
+                    .filter(filterNot); // Filter out lakes greater than 50km2 area
+
+//Map.addLayer(MERIT_Vectors_Mack, {}, 'MERIT_Vectors_All');
+Map.addLayer(MERIT_Vectors, {}, 'MERIT_Vectors');
+
+// Export MERIT_Vectors FeatureCollection as an Earth Engine asset.
+Export.table.toAsset({
+  collection: MERIT_Vectors,
+  description:'MERIT_Vectors_filtered',
+  assetId: 'MERIT_Vectors_filtered',
+});
+
+
+
+// Add MERIT_Vectors_Filtered Earth Engine asset to the map
+// hoping it will load faster this way, the generation takes
+// a long time
+var MERIT = ee.FeatureCollection(MERIT_VF_Ord7); 
+// 'VF_Ord7' stands for vectors filtered for lakes and only rivers of 7th order and greater
+Map.addLayer(MERIT_VF_Ord7, {color: 'blue'}, 'MERIT_VF_Ord7');
+//Map.addLayer(MERIT_Unioned_Streams,{},'unioned streams');
+//Map.addLayer(MERIT_Segment_Buffers, {}, 'buffers');
+//Map.addLayer(segmentBuffers_asset,{},'old buffers');
+//print(MERIT_Unioned_Streams)
+Map.addLayer(MERIT_Unioned_Streams, {color:'red'}, "unioned streams");
+// working on buffering line strings directly
+// buffer 11th order (main stem) by 3k on each side
+var elevens = MERIT_Unioned_Streams.filter(ee.Filter.eq('order',11))
+              .map(function(feature){
+                return feature.buffer(3000);
+              });
+// buffer all other streams according to order (larger order = larger buffer)
+var others = MERIT_Unioned_Streams.filter(ee.Filter.neq('order',11))
+              .map(function(feature){
+                var buffer_size = feature.getNumber("order");
+                return feature.buffer(buffer_size.multiply(200));
+              });
+
+var buffered = elevens.merge(others);
+Map.addLayer(buffered, {}, "unioned buffered");
+// join these into a single river-scale buffer
+
+// Export MERIT_Vectors FeatureCollection as an Earth Engine asset.
+Export.table.toAsset({
+  collection: buffered,
+  description:'MERIT_Buffers_filtered',
+  assetId: 'MERIT_Buffers_filtered',
+});
+
+////////////////////////////////////////////////////////
+//// TURN MERIT INTO SEGMENTS OF APPROPRIATE LENGTH ////
+////////////////////////////////////////////////////////
+// We have encountered an issue with the MERIT Hydro file where
+// the segments of the geometry are very short (<<5km) so when we go to create the segments, and then buffers, 
+// we are not able to create segments everywhere. So we need to "union" the segments together
+
+// this is to visualize size of each river segment, if desired
+
+var empty1 = ee.Image().byte();
+// Paint the edges with different colors, display.
+var riverSegments1 = empty1.paint({
+  featureCollection: MERIT_VF_Ord7,
+  color: 'LINKNO',
+  width: 4
+});
+Map.addLayer(riverSegments1.randomVisualizer(), {}, 'riverSegments');
+
+
+/// START BY Making MERIT Vector file a raster again /// 
+// Create an empty image into which to paint the features, cast to byte.
+var empty = ee.Image().byte();
+// Paint the edges with different colors, display.
+var riverSegments = empty.paint({
+  featureCollection: MERIT,
+  color: 'strmOrder',
+  width: 4
+});
+var to_vector = riverSegments.select('constant').int32();
+//Map.addLayer(riverSegments.randomVisualizer(), {}, '7th Order Collection');
+
+
+// connect river segments in the riverSegments image, colored by stream order
+var Connected = riverSegments
+                            .select('constant') // this is the band that has the stream order info
+                            .int32() //have to cast the image to 32 bit for connected components to work
+                            .connectedComponents(ee.Kernel.plus(1), 1024); //connect MERIT vector segements 
+                            
+                  
+                            
+//Map.addLayer(to_vector.randomVisualizer(), {}, 'MERIT_Connected'); //confirmation that segements have been connected
+
+
+
+//convert MERIT image, classified by stream order, back to a feature collection (vector file type)
+// this creates a polygon, so we will have to make it back into a line after this step
+var StrmOrder_Collection = Connected.reduceToVectors({
+  scale: 2000,
+  geometry: WesternMack,
+  geometryType: 'polygon', //have to use polygon here, there is no polyline option
+  eightConnected: true,
+  labelProperty: 'constant',
+  maxPixels: 1000000000,
+  reducer: ee.Reducer.mean()
+});
+//Map.addLayer(StrmOrder_Collection);
+//print(StrmOrder_Collection.first().geometry().length())
+
+//(below) Function that takes the Merit vectors original feature collection and 
+//filters it by the bounding polygons of 'StrmOrder_Collection', created above
+//then unions the segements of the MERIT vector polyline feature collection within 
+//the bounding polygon and returns a polyline feature collection, the unioned river segments
+var getSections = function(feature){
+  var meritFilter = MERIT.filterBounds(feature.geometry());
+  var meritUnion = ee.Feature(meritFilter
+                                      .union()
+                                      .first())
+                                      .set("order", feature.get('mean'));
+  return(meritUnion);
+};
+
+var strmSections = StrmOrder_Collection
+                                      .map(getSections) // map the function over the polygon collection
+                                      .filterBounds(WesternMack);
+                                      
+
+// export to save time later
+// Export.table.toAsset({
+//   collection: strmSections, 
+//   description: 'MERIT_Unioned_Streams',
+//   assetId: 'MERIT_Unioned_Streams'
+//   });
+
+*/
+
+/*
+  
+///////////////////////////////////////////////////////////////         
+ //             GENERATIING SEGMENT BUFFERS                 //
+ // This code uses the river network shapefile to generate  //
+ // the segment buffers used as 'study sites' and then      //
+ // exports the buffer feature collection as an asset to    // 
+ // save time when running the code in the future.          //
+ //                 FROM JOHN PERROTTI                      //
+/////////////////////////////////////////////////////////////// 
+
+// Set the length of the desired cutLines segments
+// For each feature, we will make sure the feature length is longer than this length 
+var cutLength = 5000;
+
+// Function to calculate the length of a feature
+var getLength = function(feature){
+  var length = feature.geometry().length();
+  return(feature.set('length',length));
+};
+
+/// VERSION OF getCutRivers FROM THE SUMMER ///
+  // Function to cut a feature into multiple shorter segments
+  // NOTE: for some reason, ee.Clamp is not being recognized as a function
+  // not sure if something changed in the documentation, but it still turns purple 
+  // when written as code (indicating it should be a function?)
+  var getCutRivers = function(feature){
+            // get the properties of the input feature
+            var properties = feature.toDictionary()
+            // get the length of the input feature
+            var length = ee.Number(feature.get('length'))
+            // Get the maximum length of the cut. 
+            // This makes sure that the cut is shorter than the total length.
+            var max_cut = ee.Number(cutLength).clamp(0, length);
+            // generate cut lines 
+            var cutLines = feature.cutLines(ee.List.sequence(0, length,max_cut))
+            // Get the geometries of the cut lines. Returns a list.
+            var geometries = cutLines.geometry().geometries()
+            // Convert each element of the list into a feature
+            var segments = geometries.map(function(list){
+              // Make a feature with the geometry of the list
+                        var feature = ee.Feature(null).setGeometry(list)
+              // Calculate the length of the feature in km
+                        var length_km = ee.Number(feature.geometry().length()).divide(1000)
+              // Return the feature with properties copied from the input rivers feature
+                        return(feature.set(properties)
+                                .set('cut_length_km', length_km,
+              // get rid of the length variable from before, since we've now cut it into multiple                 
+                                      'length', null)) 
+                      })
+              // Explicitly cast the output from our mapped function (a list)
+              // as a feature collection for export
+                  return(ee.FeatureCollection(segments)
+                  // Make sure we're not trying to export any zero length features
+                            .filterMetadata('cut_length_km','greater_than',3)
+                            )    
+                    
+                      }
+/// VERSION OF getCutRivers FROM THE FALL (USED IN MASTER FILE) ///
+var getCutRivers = function(feature){
+            // get the properties of the input feature
+            var properties = feature.toDictionary()
+            // Get the maximum length of the cut. 
+            var length = ee.Number(feature.get('length'))
+            // This makes sure that the cut is shorter than the total length.
+            var max_cut = length.clamp(0, cutLength)
+            // generate cut lines 
+            var cutLines = feature.cutLines(ee.List.sequence(0, length,max_cut))
+            // Get the geometries of the cut lines. Returns a list.
+            var geometries = cutLines.geometry().geometries()
+            // Convert each element of the list into a feature
+            var getGeomLength = function(list){
+                 var geom_sel = ee.Geometry(list)
+                 var geomLength = geom_sel.length()
+                 return(ee.Feature(geom_sel).set('length',geomLength))
+              } 
+            var filteredFeatures = ee.FeatureCollection(geometries.map(getGeomLength))
+                                             .filter(ee.Filter.gte('length',3000));
+            var segments = filteredFeatures.map(function(feature2){
+              // Make a feature with the geometry of the list
+              // The next line also takes the 5km segments, selects the middle Km (between 2 and 3km) and 
+              // then applies the 2km buffer to that segment, which creates a 5km long segment by 2km wide
+              // and prevents overlap with other segmetns
+                        var list = ee.List(feature2.geometry().cutLines([0,2000,3000]).geometries()).get(1)
+                        var feature = ee.Feature(null).setGeometry(list)
+              // Calculate the length of the feature in km
+                        var length_km = ee.Number(feature2.geometry().length()).divide(1000)
+              // Return the feature with properties copied from the input rivers feature
+                        return(feature2.set(properties)
+                                .set('cut_length_km', length_km,
+              // get rid of the length variable from before, since we've now cut it into multiple                 
+                                      'length', null)) 
+                      })
+              // Explicitly cast the output from our mapped function (a list)
+              // as a feature collection for export
+                  return(ee.FeatureCollection(segments)
+                  // Make sure we're not trying to export any zero length features
+                            .filterMetadata('cut_length_km','greater_than',1)
+                            )    
+                    
+                      }
+  // Apply the getCutRivers function to the rivers feature collection
+  var cutRivers = MERIT_Unioned_Streams
+          .map(getLength) // get the length of each feature
+          .map(getCutRivers)
+          // Flatten our cutRivers output so its not a collection of collections
+          // Result is a feature collection
+          .flatten();
+ 
+  // Print first example of cutRivers
+   //print('cut example', cutRivers.first());
+  // Add all the cutRivers to the map (there are a lot of features, so this is slow)
+   //Map.addLayer(cutRivers, {}, 'cut rivers flatten');
+ 
+   
+   // Apply a buffer to each cut segment
+   var segmentBuffers = cutRivers.map(function (feature) {
+   return feature.buffer(2000); // change buffer size here
+   });
+   
+
+  // Add all the buffered river segments (will be very slow. Import as asset layer
+  // to speed it up
+    //Map.addLayer(segmentBuffers, {}, 'Buffered River Segments');
+
+//Map.addLayer(MERIT_Segment_Buffers, {}, 'buffers');
+//Map.addLayer(MERIT_Segment_Buffers.union())
+//Map.addLayer(WesternMack,{},"Western Mack")
+
+
+*/ 
+
+
+
+/// CREATING THIESSEN POLYGONS /// 
+var get_centroid = function(feature) {
+  return feature.centroid();
+};
+// create a single polygon surroundinng the stream lines (feature collection with 1 feature)
+//var unioned_polys = MERIT_Buffers_Filtered.union(); 
+// apparently unioning the buffers is slow, so loading as asset instead (Single_Unioned_Buffer)
+var unioned_polys = Single_Unioned_Buffer; // rename for convenience
+
+// get centroid for every buffer ~ every 5km (4010 centroids total)
+// each centroid is a feature, w/properties for length and stream order
+var centroids = MERIT_Segment_Buffers.map(get_centroid);
+centroids = centroids.randomColumn("point_ID")
+                    .map(function(point) {
+                      var ID = point.getNumber("point_ID").multiply(1e7).round().int32();
+                      return point.set("point_ID", ID);
+                    });
+//print(centroids)
+
+// Construct a collection of images with two bands, one of which is the
+// distance to the point and the other is an identifier for the point.
+var distanceImages = centroids.map(function(point) {
+  // Compute distance from points, apply mask, invert for qualityMosaic.
+  var distanceImage = ee.FeatureCollection([point]).distance(1e4, 10)
+    .multiply(-1);
+
+  // Make an image from the unique point identifier.
+  var numberImage = ee.Image.constant(point.getNumber("point_ID"))
+    .int32().rename("point_ID");
+  
+  // Make an image from the stream order
+  var orderImage = ee.Image.constant(point.getNumber("order"))
+    .int32().rename("order");
+  
+  // Concatenate bands and return the image.
+  return distanceImage.addBands(numberImage).addBands(orderImage);
+});
+
+// Reduce the collection to a single image based on minimum distances.
+var nearest = ee.ImageCollection(distanceImages)
+  .qualityMosaic('distance')
+  .select("point_ID", "order");
+//print(nearest);
+
+var nearest_viz = nearest.randomVisualizer(); // if you want to display
+
+// next step: vectorize so each polygon is its own feature
+var thiessen_vector = nearest.reduceToVectors({
+  scale: 300, // CHANGE SCALE HERE 
+  geometry: unioned_polys, 
+  geometryType: 'polygon',
+  eightConnected: true,
+  maxPixels: 1000000000,
+  reducer: ee.Reducer.mean(), // takes the mean of each band? 
+  labelProperty: "point_ID",
+  tileScale: 16
+});
+//print(thiessen_vector);
+
+/// END THIESSEN POLYGON CREATION ///
+
+Map.addLayer(centroids, {}, 'centroids');
+// Map.addLayer(ee.Image(distanceImages.first()), {}, 'distance image');
+// Map.addLayer(nearest_viz, null, 'Thiessen polygons');
+// Map.addLayer(thiessen_vector, {}, "thiessen vectors");
+// Map.addLayer(MERIT_Streamline_Polygons,{}, "streamline polys")
+// Map.addLayer(MERIT_Streamline_Polygons.union(), {}, "unioned polys")
+
+
+// EXPORT THE SEGMENT BUFFERS TO SAVE COMPUTATIONAL POWER LATER 
+// Load them in as an asset for all future operations 
+// Export.table.toAsset({
+//   collection: thiessen_vector, 
+//   description: 'Thiessen_Polygons',
+//   assetId: 'Thiessen_Polygons'
+//   });
+
+
+/// DISPLAY AND VALIDATE ASSET POLYGONS ///
+var thiessens_500m = ee.FeatureCollection("users/jekreisler/mackenzie/Thiessen_Polygons_500scale");
+var thiessens_400m = ee.FeatureCollection("users/jekreisler/mackenzie/Thiessen_Polygons_400scale");
+var thiessens_300m = ee.FeatureCollection("users/jekreisler/mackenzie/Thiessen_Polygons");
+
+Map.addLayer(thiessens_500m, {}, '500m');
+Map.addLayer(thiessens_400m, {}, '400m');
+Map.addLayer(thiessens_300m, {}, '300m');
+print(thiessens_500m);
+print(thiessens_400m);
+print(thiessens_300m);
+
+// export to drive instead
+// Export.table.toDrive({
+//     collection: thiessens_300m,
+//     description: "Thiessen_Polygons_300m"
+//   });
+
+
+// code snippet from master meander rates used to find and delete problem thiessens
+// (polys without any intersecting streamlines)
+
+/*
+//Find Thiessen that Doesn't intersect streamline
+// create a filter
+var filterInside = ee.Filter.bounds(MERIT_Unioned_Streams);
+var filterNot = filterInside.not();
+var badOne = ee.Filter.eq('point_ID', 1775204); // this Thiessen has no line and yet it is not the problem, so something else going on
+// note -- I don't think that is the problem Thiessen
+var goodOnes = badOne.not(); 
+
+var wLines = Good_Thiessens.filter(filterInside);
+var testGood = Good_Thiessens.filter(goodOnes); 
+var noLines = Good_Thiessens.filter(filterNot);
+//Map.addLayer(noLines, {}, "bad bad bad boy") // SW corner of lake athabasca
+//print('Thiessens With Lines:', wLines.size()) // 2717 have lines
+//print('Thiessens Without Lines:', noLines); //1 doesn't have a line
+//print('Total Good_Thiessens:', Good_Thiessens.size()); // 2718 total, so math adds up
+//print('The Thiessen without a Line:', noLines.first()); 
+  
+Export.table.toAsset({
+  collection: Good_Thiessens_test,
+  //folder: 'ArcticCarbon',
+  description: 'Good_Thiessens_test',
+  assetId: 'Good_Thiessens_3',
+});
+
+// Export.table.toDrive({
+//   collection: Good_Thiessens,
+//   folder: 'ARCTIC_CARBON',
+//   description: 'Good_Thiessens',
+//   fileNamePrefix: 'Good_Thiessens_REAL',
+//   fileFormat: 'CSV'
+// });
+
+*/

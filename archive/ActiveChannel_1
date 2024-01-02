@@ -1,0 +1,272 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = /* color: #d63000 */ee.Geometry.LineString(
+        [[-129.27069124349802, 65.57317337800363],
+         [-129.27103456625193, 65.56415643383409],
+         [-129.26863130697458, 65.56060559874875],
+         [-129.26279482015818, 65.55847486523821],
+         [-129.25524171957224, 65.55755149323632],
+         [-129.24425539144724, 65.55677015289228],
+         [-129.2389338887617, 65.55598878910553],
+         [-129.2337840474531, 65.55478118077778],
+         [-129.22811922201365, 65.55208161851118],
+         [-129.22365602621286, 65.54931072418756],
+         [-129.22039446005076, 65.5461131721732],
+         [-129.2198794759199, 65.54462084692898]]),
+    Copernicus_Images = ee.ImageCollection("ECMWF/ERA5/MONTHLY");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+//// DEFINE REGION OF INTEREST ////
+  // Selected regions to choose from
+  var susitna = ee.Geometry.Point(-150.0128, 62.8347); // susitna
+  var big_delta = ee.Geometry.Point(-145.8847, 64.1741); // big delta
+  var mackenzie = ee.Geometry.Point(-128.5676, 65.6261); // mackenzie
+  var upstream_meander = ee.Geometry.Point(-129.25919, 65.5589); // upstream avulsion on tributary
+  
+  // Choose one of selected regions
+  // buffer by a given amount to increase footprint of calculation
+  var buffer_dist = 1000;
+  var aoi = upstream_meander       // change name here to one of region names above
+              .buffer(buffer_dist); // buffer by ~80000 to add adjacent landsat imgs
+  
+
+//// IMPORT IMAGES ////
+  // Import images intersecting region of interest from the Landsat archive
+  var images = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+        .merge(ee.ImageCollection('LANDSAT/LE07/C01/T1_SR'))
+  .filterBounds(aoi)
+  .filter(ee.Filter.dayOfYear(180,240))
+  // .filterDate('1980-09-01','2017-01-01') // optional filter by date
+  // .filterMetadata('CLOUD_COVER','less_than',10); // optional filter by cloud cover
+ 
+ /*
+   
+   var Cop_Images = ee.ImageCollection('ECMWF/ERA5/MONTHLY')
+      .filter(ee.Filter.dayOfYear(180,240))
+      // Define the visualization parameters.
+   var vizParams = {
+          bands: ['B2']
+   }
+   Map.addLayer(vizParams)
+   
+   */
+  
+//// SELECT ONLY WATER PIXELS ////
+  // Function for selecting water pixels only
+  var waterOnly = function(image){ 
+    // var land = image.select('B7').lt(b7_thresh)
+    var land = image.select('B7').lt(500)
+    var cloudFinal = image.select('B1').add(image.select('B2'))
+        .lt(5000) // usually .lt(3500), but not >>ssc, like white r. SD
+    // var snowIceFinal = image.select('B3').divide(image.select('B1'))
+    //                     .add(image.select('B4').divide(image.select('B1')))
+    //                     .gt(1.6)
+    var qa = image.select('pixel_qa')
+    var bitcloud = qa.bitwiseAnd(1 << 5)
+            .and(qa.bitwiseAnd(1 << 7))
+            .or(qa.bitwiseAnd(1 << 3))    
+            // .or(qa.bitwiseAnd(1 << 4)) 
+    
+    var snow_ice_qa = qa
+        .updateMask(qa.bitwiseAnd(1 << 4)).rename('snow_ice_qa')
+        
+    var cloud_qa = qa
+        .updateMask(qa.bitwiseAnd(1 << 5)
+            .and(qa.bitwiseAnd(1 << 7))
+            .or(qa.bitwiseAnd(1 << 3))).rename('cloud_qa')
+            
+    // var snow_ice_qa_b1 = image.select('B1').lt(b1_thresh)       
+    var snow_ice_qa_b1 = image.select('B1').lt(2000)       
+            
+    var nd = image.normalizedDifference(['B5','B2'])
+    return image.addBands(nd)
+            .addBands(ee.Image(1).rename('water'))
+            .updateMask(cloudFinal)
+            // .updateMask(snowIceFinal)
+            .updateMask(land)
+            .updateMask(bitcloud.not())
+            // .updateMask(nd.lt(nd_thresh))
+            .updateMask(nd.lt(0))
+            .updateMask(snow_ice_qa_b1)
+            .addBands(snow_ice_qa)
+            .addBands(cloud_qa);
+  };
+  // Function to unmask the image, setting non-water pixels = 0
+  var getUnmask = function(image){ 
+                    return(image.unmask(0))
+                    }
+
+  // For a given set of years:
+  // Of all selected images, only select water pixels
+  // Result is mean water occurrence (1 = always water, 0 = never water)
+  var getWater_years = function(year){
+    var startDate = ee.Date.fromYMD(year, 1, 1)
+    var endDate = startDate.advance(5, 'year')
+    var water = images
+              .filterDate(startDate, endDate)
+              .map(waterOnly)       // mask out non-water pixels
+              .select('water')      // select only the water occurrence band
+              .map(getUnmask)       // unmask the image, setting non-water pixels = 0
+              .mean()               // compute the mean water occurrence for each pixel across all images
+    return(water
+            .updateMask(water.gt(0.1)) // hide areas covered by water < 10% of time
+            .set('start_year',year))
+  }
+  
+//// CALCULATE WATER OCCURRENCE FOR SELECTED FIVE-YEAR PERIODS ////
+  // Probably a more elegant way to do this
+  var water1985 = getWater_years(1985);
+  var water1990 = getWater_years(1990);
+  var water1995 = getWater_years(1995);
+  var water2000 = getWater_years(2000);
+  var water2005 = getWater_years(2005);
+  var water2010 = getWater_years(2010);
+  var water2015 = getWater_years(2015);
+ 
+//// FIND CHANGE IN CHANNEL AREA BETWEEN 1985 AND 2015 ////  
+ 
+    // Stream Vector and Buffer // 
+  var buffer = geometry.buffer(800, 0);
+  Map.addLayer(buffer, {}, 'buffer');
+  
+  // Dissolve areas outside of buffer //
+  
+  var water1985Buff = water1985.clip(buffer);
+  Map.addLayer(water1985Buff, {bands: 'water', min:0,max:1, palette: ['white','blue']}, 'water1985Buff');
+  
+ // var water2005Buff = water2005.clip(buffer);
+ // Map.addLayer(water2005Buff, {bands: 'water', min:0,max:1, palette: ['white','red']}, 'water2005Buff');
+
+  
+  var water2015Buff = water2015.clip(buffer);
+ Map.addLayer(water2015Buff, {bands: 'water', min:0,max:1, palette: ['white','orange']}, 'water2015Buff');
+
+ // start and end  years (need to calculate difIference between for rate) //
+ 
+ var endYear = ee.Number(water2015.get('start_year'));
+ var startYear = ee.Number(water1985.get('start_year'));
+ var yearsElapsed = endYear.subtract(startYear);
+ 
+ print('Start Year', startYear);
+ print('End Year', endYear);
+ print('Years Elapsed', yearsElapsed);
+ 
+  // Dissolve 2015 by 1985 // 
+
+ var Inverse1985 = water1985Buff.gt(0).unmask(0).eq(0); 
+    
+ var landLost = water2015Buff.updateMask(Inverse1985);
+ 
+ Map.addLayer(landLost, {}, 'Land Lost');
+
+// Area of Land Lost from 1985-2015//
+
+   var pixelsLost = landLost.reduceRegion({
+     reducer: ee.Reducer.count(),
+     scale: 30
+    });
+    
+    
+  var areaLost = pixelsLost
+  .set('Area_Lost_km2', ee.Number(pixelsLost.get('water')).multiply(0.0009));
+  
+ print(areaLost);
+  
+  
+// Dissolve 1985 by 2015 //
+  var Inverse2015 = water2015Buff.gt(0).unmask(0).eq(0);
+  
+  var landGained = water1985Buff.updateMask(Inverse2015);
+  
+  Map.addLayer(landGained, {bands: 'water', min:0,max:1, palette: ['white','green']}, 'Land Gained');
+  
+ // Area of Land Gained from 1985-2015//
+ 
+   var pixelsGained = landGained.reduceRegion({
+    reducer: ee.Reducer.count(),
+    scale: 30
+     });
+  
+  var areaGained = pixelsGained
+   .set('Area_Gained_km2', ee.Number(pixelsGained.get('water')).multiply(0.0009));
+  
+ print(areaGained);
+ 
+  // Create Table of Meander Locations // 
+ 
+ var meander_locations = ee.FeatureCollection([
+  ee.Feature(ee.Geometry.Point([-129.26915, 65.5595]).buffer(2000)).set('name', 'Mack_Trib_1'),
+  ee.Feature(ee.Geometry.Point([-128.68677, 65.56038]).buffer(2000)).set('name', 'Mack_Trib_2'),
+  ])
+  
+Map.addLayer(meander_locations, {color: 'red'}, 'Meander Locations')
+  
+Export.table.toAsset({
+  collection: meander_locations,
+  description: 'meander_locations_export',
+  assetId: 'meander_locations_export'
+})
+
+
+ 
+  
+  
+  
+  /*
+// Generate image collection with each image containing a water band ('water')
+  /// WORKING HERE, refer to evan's code to set up
+  var Channel = ls_ic.map(getLakes).merge(ls8_ic.map(getLakes_ls8))
+  
+/// CALCULATE CHANNEL (AND CLOUD) AREA ///
+
+    var ChannelExtract = function(image){
+    // Only select feature(s) that intersect with selected image area
+    var fc_overlapping = geometry.filterBounds(image.geometry().buffer(-14000))
+    var ChannelArea = image
+          .select(['Channel_Change','cloud_qa'])
+          .reduceRegions({
+            collection: fc_overlapping, 
+            reducer: ee.Reducer.count(),
+            scale: 30
+          });
+          
+    return(ChannelArea.map(function(feature){
+      var ft_with_props = feature.setGeometry(null)
+      .set(
+        'Channel_Change_area_km2',ee.Number(feature.get('water')).multiply(0.0009),
+        'cloud_area_km2',ee.Number(feature.get('clouds')).multiply(0.0009),
+        'latitude', feature.geometry().centroid().coordinates().get(1),
+        'longitude', feature.geometry().centroid().coordinates().get(0),
+            'date',ee.Date(image.get('system:time_start')).format('yyyy-MM-dd'));
+      return(ft_with_props);
+    }));
+    // return(Channel_Area)
+  };
+  
+  var Eroded_Area = ls_lakes.map(LakeExtract)
+            .flatten()
+            .filterMetadata('lake', 'greater_than', 0)
+// Export to drive
+  Export.table.toDrive({
+    collection: lake_pdsi_elevation,
+    folder: 'ears76',
+    description: 'lake_pdsi_elevation',
+    fileNamePrefix: 'western_lakes_pdsi_elevation',
+    fileFormat: 'CSV'
+  })
+  
+  
+  /// Working below, need to set up the "ls_lakes" reference above in line 124
+  var lake_area = ls_lakes.map(LakeExtract)
+            .flatten()
+            .filterMetadata('lake', 'greater_than', 0)
+
+  
+*/ 
+
+//// MAP ////
+  Map.centerObject(aoi, 13)
+  // Add water occurrence to the map
+  // Map.addLayer(water1985, {bands: 'water', min:0,max:1, palette: ['white','blue']})
+  // Map.addLayer(water2005, {bands: 'water', min:0,max:1, palette: ['white','red']})
+  // Map.addLayer(water2015, {bands: 'water', min:0,max:1, palette: ['white','orange']})
+  
+  

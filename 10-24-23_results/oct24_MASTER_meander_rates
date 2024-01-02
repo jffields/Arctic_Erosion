@@ -1,0 +1,1031 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var lat67 = /* color: #ff0000 */ee.Geometry.LineString(
+        [[-139.9739142314343, 67.57763006526794],
+         [-125.58889654024293, 67.53463809829742]]),
+    WesternMack_1 = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-136.6456709949952, 69.08700872525338],
+          [-135.9095870106202, 67.87016851592068],
+          [-139.8097334949952, 65.58436510570839],
+          [-137.7223311512452, 64.72117178492286],
+          [-137.0961104481202, 64.18582131453974],
+          [-132.86735897662507, 64.13488777854788],
+          [-132.14226132037507, 63.96663147147016],
+          [-131.72478085162507, 63.62706112028824],
+          [-132.16423397662507, 61.21772241622296],
+          [-130.81291561725007, 58.961706898233146],
+          [-127.73674374225007, 56.99327089862608],
+          [-126.27556210162507, 55.547683741517396],
+          [-124.39450906519401, 55.18418223783264],
+          [-123.46067117456901, 54.82504107514072],
+          [-122.66965554956901, 54.57108866017406],
+          [-119.70334695581901, 53.55889196832195],
+          [-117.87961648706901, 52.48844832964847],
+          [-115.04514383081901, 52.94100627077756],
+          [-112.71604226831901, 54.187173343213814],
+          [-111.51853250269401, 55.259381607205],
+          [-109.68381570581901, 55.781807596214904],
+          [-107.81613992456901, 56.79995924397231],
+          [-107.93698953394401, 57.337475413529546],
+          [-110.2660286621488, 58.19765033824793],
+          [-110.6780159668363, 58.461542875776566],
+          [-110.7823860840238, 58.6463837443152],
+          [-110.87851645511755, 58.64209618896625],
+          [-111.02133872074255, 58.742002033794655],
+          [-111.0185921387113, 59.54630702154173],
+          [-112.3589241699613, 60.540548039770066],
+          [-113.11835410160192, 61.29017605178613],
+          [-113.56879355472692, 61.34158994661358],
+          [-113.66217734378942, 61.31259760425681],
+          [-114.01648642582067, 60.892299219090994],
+          [-114.63446738285192, 60.8695777282006],
+          [-114.93109824222692, 60.858879663748255],
+          [-115.15082480472692, 60.79997622390134],
+          [-116.18903281253942, 60.90832818122992],
+          [-116.83447958988317, 61.12393190089451],
+          [-117.7971565918363, 61.64517054926209],
+          [-119.22054667045435, 62.47716940751586],
+          [-119.90169901420435, 62.750060973609536],
+          [-122.31319803764185, 62.69467530114029],
+          [-122.99600661276838, 63.55539257222384],
+          [-124.15231764792463, 64.60551065147534],
+          [-123.80075514792463, 64.79331762591438],
+          [-123.62772047995588, 64.95425769744203],
+          [-123.33246291159651, 65.04943298104435],
+          [-123.51511061667463, 65.15811986175466],
+          [-124.08509852381793, 65.23314032381094],
+          [-125.22767664881793, 65.83822432510175],
+          [-126.28236414881793, 66.43049026853159],
+          [-127.64673126694969, 66.52074455978627],
+          [-128.20909393784814, 66.45911486041581],
+          [-130.0117241586976, 67.33934298019352],
+          [-130.9180962290101, 67.55214316628319],
+          [-131.2312065805726, 67.52695949984033],
+          [-131.7200981821351, 67.47230296197807],
+          [-132.9066216196351, 67.30121806529371],
+          [-133.3790337290101, 67.54165322583393],
+          [-133.3131157602601, 67.75473063347964],
+          [-133.77462392248088, 68.11158271667242],
+          [-133.64004140294963, 68.54969176170329],
+          [-133.83779530919963, 69.47427105762804],
+          [-135.28799062169963, 69.73462108489251]]]),
+    MERIT_Unioned_Streams = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Unioned_Streams"),
+    MERIT_VF_Ord7 = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/MERIT_Vectors_filtered_Ord7"),
+    Mack_GT_sites = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/Mack_Groundtruth_Sites"),
+    New_cpixel_AOI = 
+    /* color: #5220d6 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-133.965367054451, 67.70163967529295],
+          [-133.954379343736, 67.80978401066871],
+          [-133.89394771213844, 67.86573930174703],
+          [-133.9269102520006, 67.93601095480037],
+          [-133.80055313545822, 68.01841210695784],
+          [-133.73462760090118, 68.07386747444518],
+          [-133.72913374855213, 68.09795928576627],
+          [-133.67968967043697, 68.10513068405275],
+          [-133.65496760960747, 68.11485974236905],
+          [-133.64810025240658, 68.15271273813845],
+          [-133.7758307448652, 68.16191085922013],
+          [-134.24005566052864, 68.20376666906606],
+          [-134.1205657436365, 68.26996695929493],
+          [-133.92278910214284, 68.39370357428372],
+          [-133.94751102539507, 68.4810282009582],
+          [-134.0230506308254, 68.55446250501647],
+          [-134.10408406873006, 68.67116123899149],
+          [-134.17000968094726, 68.71258563235436],
+          [-134.41173717809684, 68.83739068478991],
+          [-134.6520915792932, 68.95804575261798],
+          [-134.7138970909606, 69.00139938646362],
+          [-134.91716807244248, 68.97480603220676],
+          [-134.96798568395178, 68.94077894009473],
+          [-134.87047034533376, 68.89236035257777],
+          [-134.6630786995987, 68.76527084631734],
+          [-134.46237492964588, 68.6274852394607],
+          [-134.39507573397157, 68.4863954284469],
+          [-134.52555303519972, 68.27385905858004],
+          [-134.61026458431925, 68.12065213970762],
+          [-134.67033130647616, 68.01998013226864],
+          [-134.69642647659177, 67.90764371076529],
+          [-134.76149574841546, 67.69742465452227],
+          [-134.93957242845428, 67.59947578660257],
+          [-134.93290087421306, 67.48577873034489],
+          [-134.61577674132107, 67.58020599374713],
+          [-134.39367950440356, 67.6300859527481]]]),
+    Good_Thiessens = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/Good_Thiessens_3"),
+    High_Relief_Region = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/High_Relief_Region"),
+    High_Relief_North = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/High_Relief_North"),
+    High_Relief_South = ee.FeatureCollection("users/jordanffieldsgr/ArcticCarbon/High_Relief_South"),
+    cpixel_Masks = ee.ImageCollection("users/jordanffieldsgr/ArcticCarbon/cpixel_Masks_Sept23"),
+    Mack_SlopeMask = ee.Image("users/jordanffieldsgr/ArcticCarbon/Mack_SlopeMask"),
+    geometry = /* color: #98ff00 */ee.Geometry.Polygon(
+        [[[-134.25296708445927, 67.76883881069324],
+          [-134.26189347606083, 67.75974445131472],
+          [-134.27837296824833, 67.75870487111538],
+          [-134.27425309520146, 67.74674638297918],
+          [-134.27219315867802, 67.72385226783172],
+          [-134.18086930613896, 67.73452162428339],
+          [-134.18979569774052, 67.7446660229989],
+          [-134.19185563426396, 67.7698779412387],
+          [-134.2550270209827, 67.77611175627837]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// load pre-generated assets: rivers, segment buffers, and re-defined project area
+// this is much faster then attempting to generate them from scratch
+//Map.addLayer(MERIT_VF_Ord7, {}, "MERIT STREAMS"); 
+//print(MERIT_VF_Ord7);
+//print(MERIT_Unioned_Streams, "Merit Unioned Streams");
+//Map.addLayer(MERIT_Unioned_Streams, {}, "MERIT UNIONED STREAMS"); 
+// Map.addLayer(Mack_GT_sites, {}, "GT Sites")
+//Map.addLayer(WesternMack_1, {}, 'Western Mack 1'); 
+//Map.addLayer(Good_Thiessens, {}, 'Good Thiessens'); 
+//Map.addLayer(High_Relief_Region, {Palette: 'Purple'}, 'High Relief Region'); 
+//var High_Relief_Region = ee.FeatureCollection(High_Relief_Region);
+//Export.table.toAsset(High_Relief_Region, 'High_Relief_Region'); 
+// var High_Relief_North = ee.FeatureCollection(High_Relief_North);
+//Export.table.toAsset(Hig, 'High_Relief_North'); 
+// var High_Relief_South = ee.FeatureCollection(High_Relief_South);
+//Export.table.toAsset(High_Relief_Region, 'High_Relief_South'); 
+
+// print(Good_Thiessens.limit(10));
+
+// // Export area lost to drive
+// Export.table.toDrive({
+//   collection: Good_Thiessens,
+//   folder: 'ARCTIC_CARBON',
+//   description: 'Good_Thiessens_3', 
+//   fileNamePrefix: 'Good_Thiessens_3',
+//   fileFormat: 'CSV'
+// });
+//print('Cpix', cpixel_Masks.first());
+//var pix_sel = cpixel_Masks.filter(ee.Filter.eq('year', 1986)) //.first()
+//filterDate('1990-01-01', '1990-12-31');
+
+//print('Cpix_sel', pix_sel);
+//Map.addLayer(pix_sel, {min: 0, max:1, palette:['white', 'red']}, 'cpix_test_85')
+//Map.addLayer(cpixel_Masks.filter(ee.Filter.eq('year', 1990)), {min: 0, max:1, palette:['white', 'red']}, 'cpix_test_90')
+
+
+
+
+//// TOGGLES FOR EXPORTS /////
+var tFirst = 0; // change this for exports
+var tEnd = tFirst + 55; 
+
+// FUNCTIONS
+
+// Defining function to remove Speckle from water occurence sensing code
+var removeSpeckle = function(image){
+  var imageSel = image.select(['Green', 'NIR']);
+  //var replaceNegatives = imageSel.lt(0), 1); // trying to replace .where(), which is memory intensive
+  var replaceNegatives = imageSel.where(imageSel.lt(0), 1);
+  var returnImage = image.addBands(replaceNegatives, null, true);
+  return returnImage;
+  };
+  
+////// RENAME BANDS ///////
+//Function to get and rename bands all landsat 8 collection 2 images.
+function renameOli(img) {
+  return img.select(
+                  ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7'], //'SR_QA_AEROSOL',  'QA_PIXEL' -- Taking these out to save memory 9/23/23
+                  ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2']) //'SR_QA_AEROSOL', 'pixel_qa' -- Taking these out to save memory 9/23/23
+            .copyProperties(img, img.propertyNames()); 
+}
+
+// Functions to rename bands in LS5 and LS7 Collection 2 images.
+function renameEtm(img) {
+  return img.select(
+                  ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7'], // ,'QA_PIXEL' -- Taking this out to save memory 9/23/23
+                  ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2']) // ,'pixel_qa' -- Taking this out to save memory 9/23/23
+            .copyProperties(img, img.propertyNames()); 
+}
+  
+
+// Function to calculate median water elevation in each Thiessen 
+
+var waterOnly = function(image){ 
+  var land = image.select('SWIR2').lt(10909.09).rename('land'); // see doc for notes on this threshold; 10909.09; if we scale bands, this is <0.1
+  var cloudFinal = image.select('Blue').add(image.select('Green'))
+      .lt(22545.45).rename('cloudFinal'); // see docs for notes on this threshold; 15272.73; if we scale bands, this is <0.22
+  // var snowIceFinal = image.select('B3').divide(image.select('B1'))
+  //                     .add(image.select('B4').divide(image.select('B1')))
+  //                     .gt(1.6)
+  //var qa = image.select('pixel_qa');
+  // var bitcloud = qa.bitwiseAnd(1 << 5)
+  //         .and(qa.bitwiseAnd(1 << 7))
+  //         .or(qa.bitwiseAnd(1 << 3));   
+  //         // .or(qa.bitwiseAnd(1 << 4)) 
+  // var cloudShadow = getQABits(image.select('pixel_qa'),10,11,'cloud_shadow_state')
+  //                                 .eq(3)
+  //                                 .rename('cloudShadow');
+  
+  // var snow_ice_qa = qa.updateMask(qa.bitwiseAnd(1 << 4)).rename('snow_ice_qa');
+  // var snow_ice_qa_b1 = image.select('Blue').lt(2000).rename('snow_ice_qa_b1');
+      
+  // var cloud_qa = qa
+  //     .updateMask(qa.bitwiseAnd(1 << 5)
+  //         .and(qa.bitwiseAnd(1 << 7))
+  //         .or(qa.bitwiseAnd(1 << 3))).rename('cloud_qa');
+          
+  //var nd = image.normalizedDifference(['NIR','Green']);
+  
+  // calculate WRI (water detection algorithm)
+  var GREEN = image.select('Green');
+  var RED = image.select('Red');
+  var NIR = image.select('NIR');
+  var SWIR1 = image.select('SWIR1');
+  var WRI = (GREEN.add(RED)).divide(NIR.add(SWIR1)); 
+  
+  // save the image's original mask (edges and/or LS7 stripes) for use later
+  // can select any band, rename for clarity
+  var orig_mask = image.unmask(-1).gte(0).select(["Green"],["orig_mask"]);
+  
+  return image.addBands(ee.Image(1).rename('water'))
+              .updateMask(cloudFinal)
+              // .updateMask(snowIceFinal) // this was already commented out
+              .updateMask(land)
+              .updateMask(Mack_SlopeMask)
+              //.updateMask(cloudShadow.not())
+              //.updateMask(bitcloud.not())
+              //.updateMask(nd.lt(0)) // previously, threshold of 0
+              .updateMask(WRI.gt(1))
+              //.updateMask(snow_ice_qa_b1)
+              .addBands(WRI)
+              //.addBands(snow_ice_qa)
+              //.addBands(cloud_qa) // not using this
+              .addBands(orig_mask);
+              // .addBands(land)
+              // .addBands(slopeMask)
+              // .addBands(cloudFinal)
+              // .addBands(cloudShadow)
+              // .addBands(snow_ice_qa_b1);
+};
+// print(waterOnly(allImages_NEW.first()), "water only test");
+// Map.addLayer(waterOnly(allImages_NEW.first()), {}, "water only img")
+
+
+// Function to unmask the image, setting valid non-water pixels = 0 and masking invalid pixels
+// invalid pixels are those masked in the original image
+var getUnmask = function(image){
+  return(image.unmask(0).mask(image.select("orig_mask")));
+  };
+
+
+// MAIN FUNCTION FOR ANALYSIS
+// For a given set of years:
+// Of all selected images, only select water pixels
+// Result is mean water occurrence (1 = always water, 0 = never water)
+var getWater_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(2, 'year'); // rolling 2 year time window
+    
+  // get the right connected pixel mask
+  var connectedMask = cpixel_Masks.filter(ee.Filter.eq('year', year)).first(); // only one image should match
+ 
+  var water = allImages_NEW
+            .filterDate(startDate, endDate)
+            .map(waterOnly)       // mask out non-water pixels
+            .map(getUnmask)       // unmask the image to set valid non-water pixels = 0
+            .select('water')      // select only the water occurrence band
+            .mean()            // compute the mean water occurrence for each pixel across all images
+            .gt(0.20)  ;       //threshold for % of time (images) that a pixel must be water to be counted as water (added by JF 04/11/23)
+            
+  return ee.Image(water
+          .updateMask(water) // any pixels that are water in less than X% (currently 20%) of images don't count as water
+          .updateMask(connectedMask) // mask out any lake areas as determined by connected pixels
+          .set('start_year',year)
+          .rename('water'));
+  };
+
+// print(getWater_years(2001), "GWY test");
+ 
+ ///// NDVI ///// 
+//create function to calc NDVI
+function NDVI_Calc(image) {
+  // Claculate NDVI using normalizedDifference([list of bandname]).rename()
+  var NDVI = image.normalizedDifference(['NIR','Red']).rename('NDVI');
+  //Add the NDVI band to the image and return
+  return image.addBands([NDVI]);
+}
+
+
+
+// BIG LOOP
+
+for(var i = 0; i < 50; i++) {
+  var tFirst = (i * 55)
+  var tEnd = (tFirst + 55);
+
+
+// filter thiessen polygons for project AOI to exclude unwanted polys (covering lake areas)
+var thiessen_polys = Good_Thiessens;
+var tlist_ALL = thiessen_polys.aggregate_array('point_ID'); 
+var tlist_select = tlist_ALL.slice(tFirst,tEnd); 
+//print(tlist_select);
+var thiessen_polys = thiessen_polys.filter(ee.Filter.inList('point_ID', tlist_select)); 
+//print(thiessen_polys); 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+                /////// PREPARE IMAGE COLLECTIONS FOR ANALYSIS ///////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////// SCALE BANDS TO SURFACE REFLECTANCE //////////
+// Transformation function, scales Raw Collection 2 Level 2 Landsat data
+// to surface refelctance values, as explained here:
+// https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products#:~:text=Landsat%20Collection%202%20surface%20temperature,the%20scale%20factor%20is%20applied.
+// FOR LANDSAT8
+//function Olito_SR(img) {
+  //return img.select(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+  //.multiply(0.0000275) // scaling to surf reflectance
+  //.add(-0.2)
+  //.addBands(img.select('pixel_qa'))  -- Taking this out to save memory 9/23/23
+  //.addBands(img.select('SR_QA_AEROSOL'));  -- Taking this out to save memory 9/23/23
+//}
+
+// Transformation function, scales Raw Collection 2 Level 2 Landsat data
+// to surface refelctance values. 
+// FOR LANDSAT 5 AND LANDSAT 7 COLLECTIONS
+//function ETMto_SR(img) {
+  //return img.select(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'])
+  //.multiply(0.0000275) // scaling to surf reflectance
+  //.add(-0.2)
+  //.addBands(img.select('pixel_qa'));
+//}
+
+////////// FULL IMAGE PREP ///////////
+// Define wrapper function to prepare images: 
+// consolidates all above functions for convenience in 
+// applying them to their respective image collections.
+// function prepOli(img) {
+//   var orig = img;
+//   img = renameOli(img);
+//   //img = Olito_SR(img);
+//   return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+// }
+
+// Define function to prepare ETM+ images.
+// works for TM images as well (landsat 5)
+// function prepETM(img) {
+//   var orig = img;
+//   img = renameEtm(img);
+//   //img = ETMto_SR(img);
+//   return ee.Image(img.copyProperties(orig, orig.propertyNames()));
+// }
+
+//// IMPORT IMAGES ////
+// COLLECTION 2 DATA //
+var ls5new = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
+                                .filter(ee.Filter.bounds(WesternMack_1)) // change this if re-defining project area // was "WesternMack_1 //thiessen_polys.geometry()
+                                .filter(ee.Filter.dayOfYear(151,288))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+var ls7new = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')
+                                .filter(ee.Filter.bounds(WesternMack_1)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,288))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+                                
+var ls8new = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2") //new
+                                .filter(ee.Filter.bounds(WesternMack_1)) // change this if re-defining project area
+                                .filter(ee.Filter.dayOfYear(151,288))
+                                .filterMetadata('CLOUD_COVER', 'less_than', 20);
+
+
+  
+
+// Filter NEW (C2 instead of C1) collections and prepare them for merging.
+var etmCol_new = ls7new.map(renameEtm); //(prepETM);
+var tmCol_new = ls5new.map(renameEtm);   //(prepETM);
+var oliCol_new = ls8new.map(renameOli);      //(prepOli);
+
+// Merge the collections.
+var allImages_tm_new = etmCol_new
+                      .merge(tmCol_new)
+                      .map(removeSpeckle);
+var allImages_NEW = oliCol_new
+                      .merge(allImages_tm_new);
+
+///// END IMAGE PREP /////
+
+/// FUNCTIONS FOR ANALYSIS ///
+// Function for masking all pixels in an image except water pixels
+// using normalized differences and bitmasks
+
+//------------------------------------------------------
+// Utility code to change band names and extract parts of a bitmask
+//------------------------------------------------------
+
+// Helper function to extract the bits in a bitmask for an image
+// function getQABits(image, start, end, newName) {
+//     // Compute the bits we need to extract.
+//     var pattern = 0;
+//     for (var i = start; i <= end; i++) {
+//       pattern += Math.pow(2, i);
+//     }
+//     // Return a single band image of the extracted QA bits, giving the band
+//     // a new name.
+//     return image.select([0], [newName])
+//                   .bitwiseAnd(pattern)
+//                   .rightShift(start);
+// }
+//------------------------------------------------------
+
+
+// calculate per-pixel NDVI for all images
+var allImages_NEW = allImages_NEW.map(NDVI_Calc); 
+
+// function to calculate mean NDVI value per pixel
+// over entire study area, in two year rolling windows
+var getNDVI_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(2, 'year'); // rolling 2 year time window
+  var meanNDVI = allImages_NEW
+            .filterDate(startDate, endDate)
+            .select('NDVI')
+            .mean(); // This returns the mean value of each pixel, not mean for entire image 
+  return ee.Image(meanNDVI).set('start_year',year)
+};
+
+
+//// PERFORM ANALYSES ////
+//// CALCULATE WATER OCCURRENCE FOR SELECTED FIVE-YEAR PERIODS ////
+
+// Construct list 1985-2023 -- all years for which we have data
+var waterYear = ee.List.sequence(1985,2023,1); // change back to 85-2023 later, this is a shorter test range 
+
+
+// Select water/NDVI pixels for each year
+var waterYear_long = ee.ImageCollection(waterYear.map(getWater_years));
+var ndviYear_long = ee.ImageCollection(waterYear.map(getNDVI_years)); 
+//print(waterYear_long.first(), "water Year Long check")
+
+// Select water pixels for each year starting in 1990
+// we will later do area calculations over a 5 year span, so can't
+// perform the first calculation until 1990, when we have 5 years of data
+var waterYear_short = waterYear_long.filter(ee.Filter.gte('start_year', 1990)); //when running in blocks, this date = start of waterYear list +5 yrs
+var ndviYear_short = waterYear_long.filter(ee.Filter.gte('start_year', 1990)); //when running in blocks, this date = start of waterYear list +5 yrs
+
+///// Trying to solve coordinate systemm issue ///////
+// fxn that starts with a feature collection of UTM zones 
+// Each feature is a UTM zone "slice" 
+// for each zone, a function filters the Thiessen Polygons to only those that fall within the 
+// specified UTM zone, then applies reduceRegions to this selection of Thiessens
+// this selection becomes the collection that is specified in reduceRegions
+
+// var UTM_Zones = ee.featureCollection(UTM_zones).map function (feature) {
+//   var Sel_Poly = Thiessens.filterBounds(feature.geometry()); // selects Thiessens in this UTM Zone
+  
+  
+  
+//   };
+
+
+
+
+// Subtract water occurence of earlier year from more recent year
+// results in map of area that changed between land and water
+ var getareaChange = function(image){
+   var year_sel = ee.Number(image.get('start_year'));
+   var year_pre = year_sel.subtract(5);
+   var pre_image = ee.Image(waterYear_long
+        .filterMetadata('start_year', 'equals', year_pre)
+        .first());
+   var pre_land = pre_image.gt(0).unmask(0).eq(0);
+   var landLost = image.updateMask(pre_land);  //.pixelArea();
+   var post_land = image.gt(0).unmask(0).eq(0);
+   var landGained = pre_image.updateMask(post_land);  //.pixelArea();
+   // return image.addBands(landLost.rename('Land Lost')).addBands(landGained.rename('Land Gained')); // is this better?
+   return ee.Image(landLost).rename('Land Lost')
+                            .addBands(landGained.rename('Land Gained'));
+                            //.addBands(image); // added this 6/22/23 to preserve water band; so 'image' is water in the end of the
+                                              // 5yr window (i.e. it is 1990 water for the 1985-1990 period). We use water from the 
+                                              // start of the period to normalize so we want to save 'pre_image' here potentially. 
+   };
+
+// Generate water occurence difference for each range of years
+var mappedArea =  waterYear_short.map(getareaChange);
+//print(mappedArea);
+
+//var gwy_image = getWater_years(2001);
+//Map.addLayer(gwy_image, {}, "gwy image");
+//var areachange_img = getareaChange(gwy_image);
+//print(areachange_img, "getareaChange test");
+
+
+
+// Function to count quantity of area change for an image that is a map of area change
+// returns feature collection with area lost/gained in each, along with 'MERIT Hydro' raster properties 
+/////// NOTE: WHEN RUNNING FOR 'Total Water Area' COMMENT OUT THE AREA LOST/GAINED PROPERTIES HERE AND REMOVE 
+/////// THOSE PARAMETERS FROM THE 'GET_EXPORT_PROPS' FUNCTION
+var pixelArea = ee.Image.pixelArea();
+
+var areaCount = function(image){
+  var start_year = image.get('start_year');
+  var image1 = pixelArea.multiply(image);
+  //var image1 = pixelArea.updateMask(image);
+  //var UTM_Zones = ee.featureCollection(UTM_zones).map function (feature) { //each needs to have a property called 'crs'
+  //var poly = Thiessens.filterBounds(feature.geometry()); // selects Thiessens in this UTM Zone
+  var reduced = image1.reduceRegions({
+      reducer: ee.Reducer.sum(), // change to .count() if not using the .pixelArea method
+      collection: thiessen_polys, // this becomes 'poly' //.limit(50)
+      scale: 30,
+      crs: image.projection() // exports fail due to memory limits when we specify "EPSG:32610"
+      //tileScale: 16 // otherwise exceeds memory limit
+    });
+    return reduced.map(function(feature){ // map function to generate properties over each image
+      return ee.Feature(feature)
+                                .set('start_year', start_year) // For 1990 - 1985, 1990 is the start year
+                                .setGeometry(null)
+                                .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                                .set('longitude', feature.geometry().centroid().coordinates().get(0))
+                                .set('Water_Area_km2', ee.Number(feature.get('sum')).divide(1e6)) // when using the .pixelArea() method, converts from m2 to km2
+                                //.set('area_gained_km2', ee.Number(feature.get('Land Gained')).divide(1e6)) // when using the .pixelArea() method, converts from m2 to km2
+                                //.set('area_lost_km2', ee.Number(feature.get('Land Lost')).divide(1e6)) // when using the .pixelArea() method, converts from m2 to km2
+                                //.set('Water_Area_km2', ee.Number(feature.get('count')).multiply(0.0009)) // when using the .count() method -- each Landsat pixel has an area of 0.0009km2
+                                //.set('area_gained_km2', ee.Number(feature.get('Land Gained')).multiply(0.0009)) // when using the .count() method 
+                                //.set('area_lost_km2', ee.Number(feature.get('Land Lost')).multiply(0.0009)) // when using the .count() method 
+                                .set('Polygon_Area_km2', feature.get('Area_km2'))
+                                .set('Stream_Order', feature.get('mean'))
+                                .set('Flw_Dir', feature.get('dir'))
+                                .set('Elv', feature.get('elv'))
+                                .set('Thiessen_ID', feature.get('point_ID'))
+                                .set('Upstream_Area_km2', feature.get('upa'))
+                                .set('Upstream_pix', feature.get('upg'))
+                                .set('Hydro_Adj_Elv', feature.get('hnd'))
+                                .set('Width', feature.get('wth'))
+                                //.set('Length_m', feature.get('length_m'));
+                
+    });
+};
+
+
+// var reducereg = areachange_img.reduceRegions({
+//       reducer: ee.Reducer.count(),
+//       collection: thiessen_polys, // small scale test 
+//       scale: 30,
+//       //crs: 'EPSG:32610',
+//     });
+//print(reducereg, "reduce regions test");
+
+// function to select desired properties for export
+var get_export_props = function(feature) {
+  return ee.Feature(feature.select(['start_year', 'Water_Area_km2', 'Polygon_Area_km2', 'latitude', 'longitude', 
+                                    'Stream_Order', 'Flow_Dir', 'Elv', 'Thiessen_ID', 'Upstream_Area_km2', 
+                                    'Upstream_pix', 'Hydro_Adj_Elv', 'Width']));
+};
+
+// IMPORTANT: put this in the list above and take out 'area lost/gained' when running/exporting for total water area
+// 'area_lost_km2', 'area_gained_km2',
+
+
+
+
+///////////// Calculate PIXELS LOST/GAINED by segment over all years, flatten output, select properties /////////////
+// var pixelsChanged = ee.FeatureCollection(mappedArea.map(areaCount)).flatten();
+
+// // get rid of this step?
+// var pixelsChanged_to_export = pixelsChanged.map(get_export_props);
+
+
+
+//////////// Calculate TOTAL AREA covered by water by segment over all years ////////////////
+var totalArea = ee.FeatureCollection(waterYear_long.map(areaCount)).flatten();
+
+var totalArea_to_export = totalArea.map(get_export_props);
+//print('Total Area Data:', totalArea_to_export.first());
+
+
+
+////// NDVI FUNCTIONS //////
+
+//
+ var getNDVI_Change = function(image){
+   var year_sel = ee.Number(image.get('start_year'));
+   var year_pre = year_sel.subtract(5);
+   var pre_image = ee.Image(ndviYear_long
+        .filterMetadata('start_year', 'equals', year_pre)
+        .first());
+   var ndviChange = image.divide(pre_image); // making a ratio of later NDVI over earlier NDVI:
+   // 0-1 means browning; 1 means no change; >1 means greening
+   return ee.Image(ndviChange).rename('NDVI Ratio').set('Year', year_sel); 
+ };
+ 
+// Generate water occurence difference for each range of years
+var ndviDiff =  ndviYear_short.map(getNDVI_Change);
+//print('NDVI Diff', ndviDiff.limit(2)); 
+
+// Function to get mean NDVI value in each Thiessen Polygon
+// returns feature collection with NDVI Ratio in each, along with 'MERIT Hydro' raster properties 
+var ndviReduce = function(image){
+  var Year = image.get('Year');
+  var reduced = image.reduceRegions({
+      reducer: ee.Reducer.mean(),
+      collection: thiessen_polys, //.limit(50)
+      scale: 30
+      //crs: image.projection() //'EPSG:32610',
+      //tileScale: 16 // otherwise exceeds memory limit
+    });
+    return reduced.map(function(feature){ // map function to generate properties over each image
+      return ee.Feature(feature)
+                                .set('Year', Year) // For 1990 - 1985, 1990 is the start year
+                                // .setGeometry(null)
+                                // .set('latitude', feature.geometry().centroid().coordinates().get(1))
+                                // .set('longitude', feature.geometry().centroid().coordinates().get(0))
+                                .set('NDVI_Ratio', ee.Number(feature.get('mean')))
+                                //.set('Polygon_Area_km2', feature.get('Area_km2'))
+                                // .set('Stream_Order', feature.get('mean'))
+                                // .set('Flw_Dir', feature.get('dir'))
+                                // .set('Elv', feature.get('elv'))
+                                .set('Thiessen_ID', feature.get('point_ID'))
+                                // .set('Upstream_Area_km2', feature.get('upa'))
+                                // .set('Upstream_pix', feature.get('upg'))
+                                // .set('Hydro_Adj_Elv', feature.get('hnd'))
+                                // .set('Width', feature.get('wth'))
+                                //.set('Length_m', feature.get('length_m'));
+                
+    });
+};
+
+// function to select desired properties for export
+var get_export_props = function(feature) {
+  return ee.Feature(feature.select(['Year', 'NDVI_Ratio', 'Thiessen_ID']));
+};
+
+// 'Polygon_Area_km2', 'latitude', 'longitude', 
+                                    // 'Stream_Order', 'Flow_Dir', 'Elv', 'Upstream_Area_km2', 
+                                    // 'Upstream_pix', 'Hydro_Adj_Elv', 'Width'
+
+// Calculate change in NDVI by segment over all years, flatten output, select properties
+var ndviData = ee.FeatureCollection(ndviDiff.map(ndviReduce)).flatten();
+//print('NDVI Data:', ndviData.limit(2)); 
+
+// Map export Properties fxn
+var ndviExport = ndviData.map(get_export_props);
+//print('NDVI export Data:', ndviExport.first()); 
+
+/*
+
+////////// TROUBLESHOOTING CODE BLOCK ////////////////
+var problem_ids = ee.List([388852, 1486504, 2713721, 5356155, 6647545, 7952461, 8134763,
+                           8256392, 8864240, 9914455])
+//var problem_polys = Good_Thiessens.filter(ee.Filter.eq('point_ID', 388852));
+var problem_polys = Good_Thiessens.filter(ee.Filter.inList('point_ID', problem_ids));
+
+var target = ee.Feature(Good_Thiessens.filter(ee.Filter.eq('point_ID', 556931)).first());
+Map.addLayer(target, {}, "Bad Thiessens");
+print("actual area for real this time: ", target.geometry().area().divide(1e6));
+
+var gwy = getWater_years(1996)
+
+
+//////////////// .pixelArea() Test /////////////////
+
+
+// Create a pixel area image. Pixel values are square meters based on
+// a given CRS and scale (or CRS transform).
+var pixelArea = ee.Image.pixelArea();
+
+// The default projection is WGS84 with 1-degree scale.
+print('Pixel area default projection', pixelArea.projection());
+
+// When inspecting the output in the Code Editor map, the scale of analysis is
+// determined by the zoom level. As you zoom in and out, you'll notice that the
+// area of the clicked pixel changes. To set a specific pixel scale when
+// performing a computation, provide an argument to the `scale` or
+// `crsTransform` parameters whenever a function gives you the option.
+Map.addLayer(pixelArea, null, 'Pixel area for inspection', false);
+
+// The "area" band produced by the `pixelArea` function can be useful for
+// calculating the area of a certain condition of another image. For example,
+// here we use the sum reducer to determine the area above 2250m in the North
+// Cascades ecoregion, according to a 30m digital elevation model.
+
+// Water Image
+var gwy = getWater_years(1989);
+Map.addLayer(gwy, {min:0, max:1, palette: ['white', 'Blue']}, 'GWY89'); 
+var gwy = getWater_years(1985);
+Map.addLayer(gwy, {min:0, max:1, palette: ['white', 'red']}, 'GWY85');
+
+
+// Apply the high elevation mask to the pixel area image.
+var gwy = pixelArea.updateMask(gwy);
+
+// Display the ecoregion and high elevation area.
+//Map.setCenter(-134.1713, 67.757, 11);
+
+var gwy_proj = gwy.projection();//.transform (); 
+print('gwy projection:', gwy_proj);
+
+// Sum the area of high elevation pixels in the North Cascades ecoregion.
+var area = gwy.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: Good_Thiessens.filter(ee.Filter.eq('point_ID', 388852)),
+  scale: 30,
+  crs: gwy.projection(), //'EPSG:32610',   // GWY coordinate reference system
+  //crsTransform: [gwy.projection().transform()],  // GWY grid alignment //.getInfo()
+  maxPixels: 1e13
+});
+
+// Fetch the summed area property from the resulting dictionary and convert
+// square meters to square kilometers.
+var squareMeters = area.getNumber('area');
+var squareKilometers = squareMeters.divide(1e6);
+
+//print('Square meters of water in selected Thiessen', squareMeters);
+print('Water area in selected Thiessen w/ .pixelArea', squareKilometers);
+
+
+//////////////// .pixelArea() Test /////////////////
+
+
+var img = ee.Image.constant(1)
+//print(gwy)
+var water_area = gwy.reduceRegions({
+      reducer: ee.Reducer.count(),
+      collection: Good_Thiessens.filter(ee.Filter.eq('point_ID', 388852)), 
+      scale: 30,
+      crs: gwy.projection() //'EPSG:32610',
+    });
+    
+var water_area_img = water_area.first();
+print('water area img:', water_area_img)
+//var water_count = water_area_img.get('count');
+//print("Water area in selected Thiessen  w/ .count():", water_count);
+print("manually measured water area ", geometry.area().divide(1e6))
+
+var point = ee.Geometry.Point (-134.5072, 68.7526);//(-126.4752, 61.8664);
+
+
+var pool = allImages_NEW.filterDate('1985-06-01', '2023-10-15') 
+                    .filterBounds(point)
+                    .sort("SENSING_TIME")
+//print("gwy image pool at selected point:", pool)
+
+var pool2 = allImages_NEW.filterDate('2010-01-01', '2021-01-01')
+                    .filterBounds(New_cpixel_AOI)
+                    .sort("SENSING_TIME")
+//print("GWY image pool in entire cpixel AOI", pool2)
+
+var testimg = ee.Image(pool.first());
+print("test image:", testimg);
+var WO_test = ee.Image(waterOnly(testimg));
+//var WO_test_WRI = ee.Image(waterOnly1(testimg));
+var GREEN = testimg.select('Green');
+var RED = testimg.select('Red');
+var NIR = testimg.select('NIR');
+var SWIR1 = testimg.select('SWIR1');
+var BLUE = testimg.select('Blue');
+var WRI = (GREEN.add(RED)).divide(NIR.add(SWIR1)).rename('WRI');
+var Land = testimg.select('SWIR2'); //.gt(0.1);
+var Clouds = (GREEN.add(BLUE)).rename('CloudsFinal')
+//var WRI = ee.Image(WO_test.get('WRI'));
+//print(WO_test);
+//var NDWI = testimg.normalizedDifference(['NIR','Green']);
+
+// find pixels masked out by filters -- take all NDWI water hits, mask out waterOnly hits
+// anything remaining would have been water but got filtered out
+var WO_mask = WO_test.select('water').unmask().not();
+//var filtered_out = NDWI.lt(0.35).updateMask(WO_mask);
+//filtered_out = filtered_out.updateMask(filtered_out); // mask out any areas with NDWI > 0.35
+
+Map.addLayer(testimg, {bands:[ "Red", "Green", "Blue"], min:0, max:18000}, "test image"); // max:2000 for collection1 //unscaled Collection2: 10909
+//Map.addLayer(WRI, {min:0, max:1, palette:['white', 'blue']}, 'WRI');
+// Map.addLayer(Land, {min:0, max:10909, palette:['green', 'white']}, 'Land');
+// Map.addLayer(Clouds, {min:24000, max:25000, palette:['white', 'purple']}, 'Clouds')
+
+// Get first image in date range 
+// Use .select() method to rename its bands using standard band names
+var firstImage = pool.first()
+//                                 //.select(modisBandNames,standardBandNames);
+//print(firstImage);
+
+
+/*
+//------------------------------------------------------
+// Extract and display the bitmasks
+//------------------------------------------------------
+
+// 1-bit mask (2^1 = 2 possible values)
+var binaryVis = {
+  min: 0,
+  max: 1,
+  palette: ['white', 'black']
+}
+
+// 2-bit mask (2^2 = 4 possible values)
+var quadVis = {
+  min: 0,
+  max: 3,
+  palette: ['white', 'green', 'blue', 'red']
+}
+
+Bit 0: Fill
+    Bit 1: Dilated Cloud
+    Bit 2: Cirrus (high confidence)
+    Bit 3: Cloud
+    Bit 4: Cloud Shadow
+    Bit 5: Snow
+    Bit 6: Clear
+      0: Cloud or Dilated Cloud bits are set
+      1: Cloud and Dilated Cloud bits are not set
+    Bit 7: Water
+    Bits 8-9: Cloud Confidence
+      0: None
+      1: Low
+      2: Medium
+      3: High
+    Bits 10-11: Cloud Shadow Confidence
+      0: None
+      1: Low
+      2: Medium
+      3: High
+    Bits 12-13: Snow/Ice Confidence
+      0: None
+      1: Low
+      2: Medium
+      3: High
+    Bits 14-15: Cirrus Confidence
+      0: None
+      1: Low
+      2: Medium
+      3: High
+      
+var cloudShadow_test =   getQABits(pool.first()
+                                  .select('pixel_qa'),10,11,'cloud_shadow_state');
+var Shadow_Mask = cloudShadow_test.eq(3); 
+//Map.addLayer(cloudShadow_test, quadVis, 'Cloud Shadow State');
+//Map.addLayer(Shadow_Mask, binaryVis, 'Cloud Shadow Mask'); 
+
+// Snow and Ice filter Test
+
+var snowIce_test = getQABits(pool.first()
+                                  .select('pixel_qa'),12,13,'snow_ice_state');
+
+// var snowIceFinal = testimg
+//                         .select('Red').divide(testimg.select('Blue'))
+//                         .add(testimg.select('NIR').divide(testimg.select('Blue')))
+//                         .rename('SnowIceMask')
+//                         .gt(2.2); 
+                        
+                        
+// {min:0, max:5, palette:['white', 'green']}
+//Map.addLayer(snowIce_test, quadVis , 'Snow and Ice Bit Mask'); 
+
+
+// for these three, black = pixel will be masked out by filter
+// Map.addLayer(WO_test.select('land').updateMask(WO_test.select('land').not()),
+//   {min:0, max:1, palette:['black', 'green']}, 'land mask'); // masked for SWIR2 > 500
+// Map.addLayer(WO_test.select('cloudFinal').updateMask(WO_test.select('cloudFinal').not()),
+//   {min:0, max:1, palette:['black', 'green']}, 'cloud mask'); // masked for blue + green > 5000
+// Map.addLayer(WO_test.select('snow_ice_qa_b1').updateMask(WO_test.select('snow_ice_qa_b1').not()),
+//   {min:0, max:1, palette:['black', 'green']}, 'snow/ice mask'); // masked for blue > 2000
+// Map.addLayer(NDWI.lt(0.35).updateMask(NDWI.lt(0.35)), {min:0, max:1, palette:['white', 'blue']}, 'NDWI mask'); // blue = NDWI < 0.35, not masked
+// Map.addLayer(filtered_out, {min:0, max:1, palette:['black', 'green']}, "filtered pixels"); // cumulative effects of all filters
+//Map.addLayer(WO_test.select('water'), {min:0, max:1, palette:['black', 'blue']}, 'waterOnly');
+//Map.addLayer(WO_Elv_tst.select('water'), {min:0, max:1, palette:['black', 'purple']}, 'waterOnly_elv');
+
+//Map.addLayer(WO_test_WRI.select('water'), {min:0, max:1, palette:['black', 'blue']}, 'waterOnlyWRI');
+//Map.addLayer(GWY_2019_NoCS_Mask, {palette: ['blue']}, 'GWY_2019_NoCS_Mask');
+//Map.addLayer(GWY_2019_CS_Mask, {palette: ['purple']}, 'GWY_2019_CS_Mask');
+//Map.addLayer(GWY_2019_lowerNDWI, {palette: ['purple']}, 'GWY_2019_lowerNDWI');
+//Map.addLayer(GWY_2019_NDWI_0, {palette: ['red']}, 'GWY_2019_NDWI_0');
+//Map.addLayer(GWY_2019_WRI, {palette: ['blue']}, 'GWY_2019_WRI');
+
+
+// Map.addLayer(ee.Image(pool.filter(ee.Filter.eq("LANDSAT_ID", "LE07_L1TP_062013_20210615_20210712_01_T1")).first()),
+//     {bands:['Red', "Green", "Blue"], min:0, max:2000}, "LS7 6/15 dup1");
+// Map.addLayer(ee.Image(pool.filter(ee.Filter.eq("LANDSAT_ID", "LE07_L1TP_062012_20210615_20210712_01_T1")).first()),
+//     {bands:['Red', "Green", "Blue"], min:0, max:2000}, "LS7 6/15 dup2");
+
+
+
+////////// END TROUBLESHOOTING CODE BLOCK ////////////////
+
+*/
+
+/////////////// ALL EXPORTS ////////////////////
+
+
+// Export area lost to drive
+// Export.table.toDrive({
+//   collection: pixelsChanged_to_export,
+//   folder: 'ARCTIC_CARBON',
+//   description: 'AreaChanged_'+ 'Thiessens_' + tFirst + '_' + tEnd, // to calculate a different year range
+//                                           // you change waterYear_short  
+//   fileNamePrefix: 'AreaChanged_'+ 'Thiessens_' + tFirst + '_' + tEnd,
+//   fileFormat: 'CSV'
+// });
+
+
+
+//Export Total Water Area
+Export.table.toDrive({
+  collection: totalArea_to_export,
+  folder: 'ARCTIC_CARBON',
+  description: 'TotalArea_' + 'Thiessens_' + tFirst + '_' + tEnd,
+  fileNamePrefix: 'TotalArea_' + 'Thiessens_' + tFirst + '_' + tEnd,
+  fileFormat: 'CSV'
+});
+
+
+//Export NDVI Ratio for each Thiessen Polygon
+// Export.table.toDrive({
+//   collection: ndviExport,
+//   folder: 'ARCTIC_CARBON',
+//   description: 'ndviRatio_' + 'Thiessens_' + tFirst + '_' + tEnd,
+//   fileNamePrefix: 'ndviRatio_' + 'Thiessens_' + tFirst + '_' + tEnd,
+//   fileFormat: 'CSV'
+// });
+
+
+// Calculate total area of Thiessen Polygons (MODIFY)
+// var thiessenArea = ee.FeatureCollection(Good_Thiessens.map(areaCount)).flatten();
+// var totalArea_to_export = totalArea.map(get_export_props);
+
+/////////////// END EXPORTS ////////////////////
+
+} // END FOR LOOP from the very top
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // This if we want to look at vegetated AREA over time, but I am just going to look at raw NDVI over time for now
+/*
+///// NDVI ///// 
+// Calculate NDVI at each thiessen polygon
+var vegOnly = function (image) {
+  var water = image.normalizedDifference('NIR','Green').lt(0);
+  var cloudFinal = image.select('Blue').add(image.select('Green'))
+      .lt(5000); // usually .lt(3500), but not >>ssc, like white r. SD
+  // var snowIceFinal = image.select('B3').divide(image.select('B1'))
+  //                     .add(image.select('B4').divide(image.select('B1')))
+  //                     .gt(1.6)
+  var qa = image.select('pixel_qa');
+  var bitcloud = qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3));   
+          // .or(qa.bitwiseAnd(1 << 4)) 
+  
+  var snow_ice_qa = qa.updateMask(qa.bitwiseAnd(1 << 4)).rename('snow_ice_qa');
+  var snow_ice_qa_b1 = image.select('Blue').lt(2000);
+      
+  var cloud_qa = qa
+      .updateMask(qa.bitwiseAnd(1 << 5)
+          .and(qa.bitwiseAnd(1 << 7))
+          .or(qa.bitwiseAnd(1 << 3))).rename('cloud_qa');
+          
+  var NDVI = image.normalizedDifference(['NIR','Red']).rename('NDVI');
+  
+  // save the image's original mask (edges and/or LS7 stripes) for use later
+  // can select any band, rename for clarity
+  var orig_mask = image.unmask(-1).gte(0).select(["pixel_qa"],["orig_mask"]);
+  
+  return image.addBands(NDVI)
+              .addBands(ee.Image(1).rename('Vegetation'))
+              .updateMask(cloudFinal)
+              .updateMask(bitcloud.not())
+              .updateMask(water) // threshold of 0
+              .updateMask(snow_ice_qa_b1)
+              .addBands(snow_ice_qa)
+              .addBands(cloud_qa)
+              .addBands(orig_mask);
+};
+
+
+// NDVI Calculation
+// For a given set of years:
+// Of all selected images, only select water pixels
+// Result is mean water occurrence (1 = always water, 0 = never water)
+var getVeg_years = function(year){
+  var startDate = ee.Date.fromYMD(year, 1, 1);
+  var endDate = startDate.advance(2, 'year'); // rolling 2 year time window
+    
+  // get the right connected pixel mask
+  var connectedMask = cpixel_Masks.filter(ee.Filter.eq('year', year)).first(); // only one image should match
+  // keeping this mask to mask out lakes still 
+ 
+  var Veg = allImages_NEW
+            .filterDate(startDate, endDate)
+            .map(vegOnly)       // mask out non-water pixels
+            .map(getUnmask)       // unmask the image to set valid non-water pixels = 0
+            .select('vegetation')      // select only the water occurrence band
+            //.mean()            // compute the mean vegetation occurrence for each pixel across all images
+            // do we need to take mean here, outliers are ok, unlike high flows with water 
+            
+  return ee.Image(vegetation
+          .updateMask(vegetation) // any pixels that are water in less than X% (currently 20%) of images don't count as water
+          .updateMask(connectedMask) // mask out any lake areas as determined by connected pixels
+          .set('start_year',year)
+          .rename('vegetation'));
+  };
+*/
