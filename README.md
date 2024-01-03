@@ -2,6 +2,9 @@
 # Temperature Controls Erosion along Arctic Rivers
 This Github repo contains code related to *Temperature Controls Erosion along Arctic Rivers*, a brief communication submitted to Nature Climate Change by Jordan Fields, Jack Kreisler, Evan Dethier, John Perrotti, and Carl Renshaw.
 
+##NOTE!!
+Not all files could be uploaded to GitHub, due to their size, a complete repository of all data files exists on Zenodo: https://zenodo.org/doi/10.5281/zenodo.10454653
+
 ## Datasets
 
 The primary dataset for this study was Landsat [5](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2), [7](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LE07_C02_T1_L2), and [8](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2) surface reflectance images (Collection 2). Additional datasets include:
