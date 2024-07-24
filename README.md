@@ -18,7 +18,7 @@ The primary dataset for this study was Landsat [5](https://developers.google.com
 
 ## Software
 
-Datasets were accessed and analyzed through [Google Earth Engine](https://earthengine.google.com/). Results were exported from Earth Engine and further analyzed in R for trend analysis, statistics, and visualizations. We used the [data.table package](https://cran.r-project.org/web/packages/data.table/data.table.pdf) for it's speed during our data organization but created plots using [ggplot](https://ggplot2.tidyverse.org/reference/). 
+Datasets were accessed and analyzed through [Google Earth Engine](https://earthengine.google.com/). Results were exported from Earth Engine and further analyzed in R for trend analysis, statistics, and visualizations. We used the [data.table package](https://cran.r-project.org/web/packages/data.table/data.table.pdf) for its speed during our data organization but created plots using [ggplot](https://ggplot2.tidyverse.org/reference/). 
 
 ## Code
 
@@ -69,7 +69,7 @@ The main analysis for this study. Detects water in all Landsat 5, 7, and 8 image
 
 ### Assets
 
-To reduce computational complexity and prevent time-out errors, some items (such as Thiessen polygons and connected pixel masks) are computed ahead of time and imported into Earth Engine scripts. These assets, along with the exported results tables, are listed in `list_of_assets` and also available in ***list folder with assets***.
+To reduce computational complexity and prevent time-out errors, some items (such as Thiessen polygons and connected pixel masks) are computed ahead of time and imported into Earth Engine scripts. These assets are listed in `list_of_assets` and the asset files are available in the Zenodo repository listed above.
 
 ### Batch Exports
 Due to the vast number of images used and despite the ability to run computations on Earth Engine servers, we still encountered some memory limitations. To avoid these limitations and allow results to compute, in some cases we export the NDVI/temperature/meander results in batches. Each batch export comprises all years but only a subset of all Thiessen polygons. The for-loops and other commands used for batch exports are present in scripts (for transparency) but commented out (for clarity). Reproducing our results may or may not require batch exports, depending on code optimizations.
@@ -86,7 +86,7 @@ This script contains all the data organization and analysis done outside of Goog
  - Summarization of data by year, latitude, stream order and permafrost extent 
  - Plotting and statistical analyses
 
-The inputs used in this script are included in the folder: **Data**. These inputs include:
+The inputs used in this script are included in `Input_R_Data.zip` on Zenodo:
 
  - Raw GEE Exports files in folder **GEE_Exports**
  - Discharge Data in folder **Discharge_Data**
@@ -95,10 +95,10 @@ The inputs used in this script are included in the folder: **Data**. These input
  - Groundtruth Data **Groundtruth_Data.csv**
  - Case study data **Manually_Measured_Data.csv**
 
-The analysis in R creates the following outputs, which are included in the folder: **Data/R_Outputs**
+The analysis in R creates the following outputs, which are included in the `Data` folder and in `R_Outputs.zip` on Zenodo:
 
  - All data **Master1_ArcticErosion.csv**
- - Future temperature data fro CMIP6 **Future_Temperature.csv**
+ - Future temperature data from CMIP6 **Future_Temperature.csv**
  - Data summarized by year **Summary1_ArcticErosion_Year.csv**
  - Data summarized by stream order **Summary2_ArcticErosion_StrmOrd.csv**
  - Data summarized by latitude **Summary3_ArcticErosion_LatBins.csv**
